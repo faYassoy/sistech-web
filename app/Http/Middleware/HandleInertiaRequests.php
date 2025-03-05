@@ -37,6 +37,7 @@ class HandleInertiaRequests extends Middleware
     public function share(Request $request): array
     {
         [$message, $author] = str(Inspiring::quotes()->random())->explode('-');
+        $logoImg = asset('logo.png');
 
         return [
             ...parent::share($request),
@@ -45,6 +46,7 @@ class HandleInertiaRequests extends Middleware
             'auth' => [
                 'user' => $request->user(),
             ],
+            'general' => ['logo' => $logoImg]
         ];
     }
 }
