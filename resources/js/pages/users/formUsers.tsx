@@ -144,7 +144,7 @@ const FormUsers: React.FC = () => {
                             type={autoGenerate ? 'text' : 'password'}
                             value={data.password || genPass}
                             onChange={(e) => setData('password', e.target.value)}
-                            required
+                            required = {isEditing?false:true}
                         />
                         {errors.password && <p className="text-sm text-red-500">{errors.password}</p>}
                     </div>
@@ -157,7 +157,8 @@ const FormUsers: React.FC = () => {
                             type="password"
                             value={data.password_confirmation || ''}
                             onChange={(e) => setData('password_confirmation', e.target.value)}
-                            required
+                            required = {isEditing?false:true}
+
                         />
                         {errors.password_confirmation && <p className="text-sm text-red-500">{errors.password_confirmation}</p>}
                     </div>

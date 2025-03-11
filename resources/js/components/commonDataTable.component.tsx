@@ -8,11 +8,13 @@ import { useEffect, useState } from 'react';
 interface CommonDataTableProps<T> {
     columns: TableColumn<T>[];
     data: T[];
+    searchRoute:string
 }
 
 const CommonDataTable = <T,>({
     columns,
     data,
+    searchRoute,
 
     ...props
 }: CommonDataTableProps<T>) => {
@@ -23,11 +25,12 @@ const CommonDataTable = <T,>({
         setData('search', searchTerm);
         const delay = setTimeout(() => {
             if (searchTerm.trim() !== '') {
-                get(route('users.index'), { preserveState: true, replace: true });
+                get(route(searchRoute), { preserveState: true, replace: true });
             }
         }, 500); // 500ms delay
 
         return () => clearTimeout(delay); // Cleanup function
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [searchTerm]);
     const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
         setSearchTerm(e.target.value); // Update local state first
@@ -35,7 +38,7 @@ const CommonDataTable = <T,>({
     const resetSearch = () => {
         setData('search', '');
         setSearchTerm('');
-        router.visit(route('users.index'));
+        router.visit(route(searchRoute));
     };
     return (
         <>

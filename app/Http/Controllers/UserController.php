@@ -101,7 +101,9 @@ class UserController extends Controller
             $user->update([
                 'name' => $validated['name'] ?? $user->name,
                 'email' => $validated['email'] ?? $user->email,
-                'password' => $validated['password'] ? Hash::make($validated['password']) : $user->password,
+                'password' => array_key_exists('password', $validated) && $validated['password']
+                    ? Hash::make($validated['password'])
+                    : $user->password,
                 'role' => $validated['role'] ?? $user->role,
                 'is_active' => $validated['is_active'] ?? $user->is_active,
             ]);

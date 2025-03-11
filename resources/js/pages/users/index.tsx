@@ -1,13 +1,12 @@
-import { Link, router, useForm, usePage } from '@inertiajs/react';
-import React, { useEffect, useState } from 'react';
+import { Link, router, usePage } from '@inertiajs/react';
+import React from 'react';
 
 import CommonDataTable from '@/components/commonDataTable.component';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import AppLayout from '@/layouts/app-layout';
 import { cn, extractBreadcrumbs } from '@/lib/utils';
 import { BreadcrumbItem } from '@/types';
-import { RefreshCcw, Search, SearchX } from 'lucide-react';
+
 
 interface User {
     id: number;
@@ -88,6 +87,7 @@ const UsersIndex: React.FC = () => {
                     //@ts-ignore
                     columns={columns}
                     data={users.data}
+                    searchRoute='users.index'
                 />
             </div>
         </AppLayout>
