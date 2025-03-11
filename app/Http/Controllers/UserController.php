@@ -14,16 +14,20 @@ class UserController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(): Response
-    {
-        $users = User::query()
-            ->select(['id', 'name', 'email', 'role', 'is_active', 'created_at'])
-            ->paginate(10);
+    public function index(Request $request)
+{
+    $search = $request->query('search');
 
-        return Inertia::render('users/index', [
-            'users' => $users,
-        ]);
-    }
+    $users = User::query()
+        ->when($search, fn($query) => 
+            $query->where('name', 'like', "%{$search}%")
+                  ->orWhere('email', 'like', "%{$search}%")
+        )
+        ->paginate(10)
+        ->withQueryString();
+
+    return Inertia::render('users/index', ['users' => $users, 'search' => $search]);
+}
 
     /**
      * Show the form for creating a new resource.
@@ -55,7 +59,7 @@ class UserController extends Controller
                 'is_active' => $validated['is_active'] ?? false,
             ]);
 
-            return back()->with('success', 'User created successfully.');
+            return redirect()->route('users.index')->with('success', 'User created successfully.');
         } catch (\Exception $e) {
             return back()->withErrors(['error' => 'Failed to create user: ' . $e->getMessage()]);
         }
@@ -75,6 +79,9 @@ class UserController extends Controller
     public function edit(string $id)
     {
         //
+        $data['user'] = User::find($id);
+        return Inertia::render('users/formUsers',$data);
+
     }
 
     /**
@@ -99,7 +106,7 @@ class UserController extends Controller
                 'is_active' => $validated['is_active'] ?? $user->is_active,
             ]);
 
-            return back()->with('success', 'User updated successfully.');
+            return redirect()->route('users.index')->with('success', 'User updated successfully.');
         } catch (\Exception $e) {
             return back()->withErrors(['error' => 'Failed to update user: ' . $e->getMessage()]);
         }
@@ -112,7 +119,7 @@ class UserController extends Controller
     {
         try {
             $user->delete();
-            return back()->with('success', 'User deleted successfully.');
+            return redirect()->route('users.index')->with('success', 'User deleted successfully.');
         } catch (\Exception $e) {
             return back()->withErrors(['error' => 'Failed to delete user: ' . $e->getMessage()]);
         }

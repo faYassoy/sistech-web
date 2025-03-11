@@ -1,10 +1,13 @@
-import { Link, router, usePage } from '@inertiajs/react';
-import React from 'react';
+import { Link, router, useForm, usePage } from '@inertiajs/react';
+import React, { useEffect, useState } from 'react';
 
 import CommonDataTable from '@/components/commonDataTable.component';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import AppLayout from '@/layouts/app-layout';
-import { cn } from '@/lib/utils';
+import { cn, extractBreadcrumbs } from '@/lib/utils';
+import { BreadcrumbItem } from '@/types';
+import { RefreshCcw, Search, SearchX } from 'lucide-react';
 
 interface User {
     id: number;
@@ -27,8 +30,10 @@ interface PageProps {
 }
 
 const UsersIndex: React.FC = () => {
-    const { users } = usePage<PageProps>().props;
-
+    const props = usePage<PageProps>().props;
+    const breadcrumbs: BreadcrumbItem[] = extractBreadcrumbs(window.location.pathname);
+    const users = props.users
+    
 
     // Define columns following RDTC's pattern
     const columns = [
@@ -45,7 +50,7 @@ const UsersIndex: React.FC = () => {
         {
             name: 'Status',
             cell: (row: User) => (
-                <p className={cn('text-red-500 font-semibold', { 'text-green-700': row.is_active })}>{row.is_active ? 'Active' : 'Suspense'}</p>
+                <p className={cn('font-semibold text-red-500', { 'text-green-700': row.is_active })}>{row.is_active ? 'Active' : 'Suspense'}</p>
             ),
             sortable: true,
         },
@@ -58,23 +63,26 @@ const UsersIndex: React.FC = () => {
             sortable: true,
         },
         {
-            name: "",
+            name: '',
             cell: (row: User) => (
-              <Link href={route("users.edit", row.id)}>
-                <Button variant="outline">Detail</Button>
-              </Link>
+                <Link href={route('users.edit', row.id)}>
+                    <Button variant="outline">Detail</Button>
+                </Link>
             ),
-          },
+        },
     ];
+ 
+    
+  console.log(props);
 
-    // Submit the edit form to update the user
     return (
-        <AppLayout>
+        <AppLayout breadcrumbs={breadcrumbs}>
             <div className="container mx-auto p-4">
                 <div className="mb-4 flex items-center justify-between">
                     <h1 className="text-2xl font-bold">Users</h1>
                     <Button onClick={() => router.visit(route('users.create'))}>Create New User</Button>
                 </div>
+                
                 <CommonDataTable
                     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
                     //@ts-ignore

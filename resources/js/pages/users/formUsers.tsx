@@ -1,111 +1,187 @@
-import React from "react";
-import { usePage, useForm, Link } from "@inertiajs/react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+/* eslint-disable @typescript-eslint/ban-ts-comment */
+import { Button } from '@/components/ui/button';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import AppLayout from '@/layouts/app-layout';
+import { extractBreadcrumbs, generatePassword } from '@/lib/utils';
+import { BreadcrumbItem } from '@/types';
+import { Link, router, useForm, usePage } from '@inertiajs/react';
+import React, { useEffect, useState } from 'react';
 
 interface User {
-  id?: number;
-  name: string;
-  email: string;
-  role: "admin" | "sales_person";
-  is_active: boolean;
+    id?: number;
+    name: string;
+    email: string;
+    role: 'admin' | 'sales_person';
+    is_active: boolean;
+    password?: string;
+    password_confirmation?: string;
 }
 
 interface PageProps {
-  user?: User;
+    user?: User;
 }
 
 const FormUsers: React.FC = () => {
-  const { user } = usePage<PageProps>().props;
-  const isEditing = !!user;
+    // @ts-ignore
+    const { user } = usePage<PageProps>().props;
+    const breadcrumbs: BreadcrumbItem[] = extractBreadcrumbs(window.location.pathname);
 
-  const { data, setData, post, put, processing, errors } = useForm({
-    name: user?.name || "",
-    email: user?.email || "",
-    role: user?.role || "sales_person",
-    is_active: user?.is_active ?? false, // Ensure boolean value
-  });
+    const isEditing = !!user;
+    const [autoGenerate, setAutoGenerate] = useState(false);
+    const [genPass, setGenPass] = useState('');
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (isEditing) {
-      put(route("users.update", user?.id));
-    } else {
-      post(route("users.store"));
+    // Define initial form values using Inertia's useForm.
+
+    const initialValues: Partial<User> = {
+        name: user?.name || '',
+        email: user?.email || '',
+        role: user?.role || 'sales_person',
+        is_active: user?.is_active ?? false,
+    };
+
+    // For new users, if auto-generation is disabled, include password fields.
+    if (!isEditing && !autoGenerate) {
+        initialValues.password = '';
+        initialValues.password_confirmation = '';
     }
-  };
 
-  return (
-    <div className="container mx-auto p-6 max-w-lg">
-      <Card>
-        <CardHeader>
-          <CardTitle>{isEditing ? "Edit User" : "Create User"}</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div>
-              <Label htmlFor="name">Name</Label>
-              <Input
-                id="name"
-                value={data.name}
-                onChange={(e) => setData("name", e.target.value)}
-                required
-              />
-              {errors.name && <p className="text-red-500 text-sm">{errors.name}</p>}
-            </div>
+    const { data, setData, post, put, processing, errors } = useForm(initialValues);
 
-            <div>
-              <Label htmlFor="email">Email</Label>
-              <Input
-                id="email"
-                type="email"
-                value={data.email}
-                onChange={(e) => setData("email", e.target.value)}
-                required
-              />
-              {errors.email && <p className="text-red-500 text-sm">{errors.email}</p>}
-            </div>
+    const handleSubmit = (e: React.FormEvent) => {
+        e.preventDefault();
+        if (isEditing) {
+            put(route('users.update', user?.id));
+        } else {
+            post(route('users.store'));
+        }
+    };
 
-            <div>
-              <Label htmlFor="role">Role</Label>
-              <select
-                id="role"
-                value={data.role}
-                onChange={(e) => setData("role", e.target.value as User["role"])}
-                className="border p-2 w-full rounded-md"
-              >
-                <option value="admin">Admin</option>
-                <option value="sales_person">Sales Person</option>
-              </select>
-              {errors.role && <p className="text-red-500 text-sm">{errors.role}</p>}
-            </div>
+    const handleDelete = () => {
+        if (confirm('Are you sure you want to delete this user?')) {
+            router.delete(route('users.destroy', user?.id));
+        }
+    };
+    console.log(autoGenerate);
 
-            <div>
-              <Label className="flex items-center space-x-2">
-                <input
-                  type="checkbox"
-                  checked={data.is_active}
-                  onChange={(e) => setData("is_active", e.target.checked)}
-                />
-                <span>Active</span>
-              </Label>
-            </div>
+    useEffect(() => {
+        if (autoGenerate) {
+          const newPass =generatePassword()
+            setData('password', newPass);
+            setGenPass(newPass);
+        } else {
+            setGenPass('');
+        }
 
-            <div className="flex justify-end space-x-2">
-              <Link href={route("users.index")} className="border px-4 py-2 rounded-md text-gray-600 hover:bg-gray-100">
-                Cancel
-              </Link>
-              <Button type="submit" disabled={processing}>
-                {isEditing ? "Update User" : "Create User"}
-              </Button>
+        return () => {
+            setGenPass('');
+        };
+    }, [autoGenerate, setData]);
+
+    return (
+        <AppLayout breadcrumbs={isEditing ? [breadcrumbs[0], breadcrumbs[2]] : breadcrumbs}>
+            <div className="container mx-auto max-w-lg p-6">
+                <form onSubmit={handleSubmit} className="space-y-4">
+                    {/* Name Field */}
+                    <div>
+                        <Label htmlFor="name" className="mb-1 block">
+                            Name
+                        </Label>
+                        <Input id="name" value={data.name} onChange={(e) => setData('name', e.target.value)} required />
+                        {errors.name && <p className="text-sm text-red-500">{errors.name}</p>}
+                    </div>
+
+                    {/* Email Field */}
+                    <div>
+                        <Label htmlFor="email" className="mb-1 block">
+                            Email
+                        </Label>
+                        <Input id="email" type="email" value={data.email} onChange={(e) => setData('email', e.target.value)} required />
+                        {errors.email && <p className="text-sm text-red-500">{errors.email}</p>}
+                    </div>
+
+                    {/* Role Field */}
+                    <div>
+                        <Label htmlFor="role" className="mb-1 block">
+                            Role
+                        </Label>
+                        <Select value={data.role as string} onValueChange={(value) => setData('role', value as User['role'])}>
+                            <SelectTrigger className="w-full">
+                                <SelectValue placeholder="Select role" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectItem value="admin">Admin</SelectItem>
+                                <SelectItem value="sales_person">Sales Person</SelectItem>
+                            </SelectContent>
+                        </Select>
+                        {errors.role && <p className="text-sm text-red-500">{errors.role}</p>}
+                    </div>
+
+                    {/* Active Checkbox */}
+                    <div className="flex items-center space-x-2">
+                        <Checkbox checked={data.is_active} onCheckedChange={(checked) => setData('is_active', !!checked)} />
+                        <Label>Active</Label>
+                    </div>
+
+                    {/* Auto Generate Password Toggle */}
+
+                    <div className="flex items-center space-x-2">
+                        {/* @ts-ignore */}
+                        <Checkbox checked={autoGenerate} onCheckedChange={setAutoGenerate} />
+                        <Label>Auto Generate Password</Label>
+                    </div>
+
+                    {/* Password Fields (only when not auto-generating) */}
+
+                    <div>
+                        <Label htmlFor="password" className="mb-1 block">
+                            Password
+                        </Label>
+                        <Input
+                            id="password"
+                            type={autoGenerate ? 'text' : 'password'}
+                            value={data.password || genPass}
+                            onChange={(e) => setData('password', e.target.value)}
+                            required
+                        />
+                        {errors.password && <p className="text-sm text-red-500">{errors.password}</p>}
+                    </div>
+                    <div>
+                        <Label htmlFor="password_confirmation" className="mb-1 block">
+                            Confirm Password
+                        </Label>
+                        <Input
+                            id="password_confirmation"
+                            type="password"
+                            value={data.password_confirmation || ''}
+                            onChange={(e) => setData('password_confirmation', e.target.value)}
+                            required
+                        />
+                        {errors.password_confirmation && <p className="text-sm text-red-500">{errors.password_confirmation}</p>}
+                    </div>
+
+                    {/* Actions */}
+                    <div className="mt-4 flex items-center justify-between">
+                        <Link href={route('users.index')} className="rounded-md border px-4 py-2 text-gray-600 hover:bg-gray-100">
+                            Cancel
+                        </Link>
+                        <div className="space-x-2">
+                            {isEditing && (
+                                <Button type="button" variant="destructive" onClick={handleDelete}>
+                                    Delete
+                                </Button>
+                            )}
+                            <Button type="submit" disabled={processing}>
+                                {isEditing ? 'Update User' : 'Create User'}
+                            </Button>
+                        </div>
+                    </div>
+                </form>
             </div>
-          </form>
-        </CardContent>
-      </Card>
-    </div>
-  );
+        </AppLayout>
+    );
 };
 
 export default FormUsers;
