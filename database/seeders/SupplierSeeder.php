@@ -17,6 +17,7 @@ class SupplierSeeder extends Seeder
             [
                 'name' => 'Tech Components Ltd',
                 'address' => '123 Silicon Valley, CA',
+                'brand' => 'GadgetPro',
                 'contact_number' => '123-456-7890',
                 'email' => 'contact@techcomponents.com',
                 'created_at' => now(),
@@ -25,6 +26,7 @@ class SupplierSeeder extends Seeder
             [
                 'name' => 'Global Parts Inc',
                 'address' => '456 Industrial Road, NY',
+                'brand' => 'TechMax',
                 'contact_number' => '987-654-3210',
                 'email' => 'info@globalparts.com',
                 'created_at' => now(),
