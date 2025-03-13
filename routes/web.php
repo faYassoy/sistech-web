@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ProductController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -18,6 +19,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // })->name('users');
 
     Route::resource('users', UserController::class);
+    Route::resource('products', ProductController::class);
 });
 
 require __DIR__.'/settings.php';

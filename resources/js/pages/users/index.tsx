@@ -21,8 +21,11 @@ interface User {
 
 interface PageProps {
     users: {
+        per_page: number;
+        current_page: number;
         data: User[];
         links: string;
+        total:number
     };
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     [key: string]: any;
@@ -36,7 +39,12 @@ const UsersIndex: React.FC = () => {
 
     // Define columns following RDTC's pattern
     const columns = [
-        { name: '#', selector: (row: User, index: number) => index + 1, width: '50px' },
+        { 
+            name: '#', 
+            selector: (row: User, index: number) => 
+                (props.users.current_page - 1) * props.users.per_page + index + 1, 
+            width: '50px' 
+        },
         {
             name: 'Name',
             sortable: true,
@@ -72,7 +80,7 @@ const UsersIndex: React.FC = () => {
     ];
  
     
-  console.log(props);
+  console.log(users);
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
@@ -88,6 +96,7 @@ const UsersIndex: React.FC = () => {
                     columns={columns}
                     data={users.data}
                     searchRoute='users.index'
+                    totalRow={users.total}
                 />
             </div>
         </AppLayout>

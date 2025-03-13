@@ -28,7 +28,7 @@ export default function AppSidebarLayout({ children, breadcrumbs = [] }: PropsWi
                 <Toaster
                     toastOptions={{
                         style: {
-                            background: 'oklch(0.637 0.237 25.331)',
+                            background: 'oklch(0.648 0.2 131.684)',
                             border:'none'
                         },duration:5000
                     }}

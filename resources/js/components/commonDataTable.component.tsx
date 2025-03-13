@@ -1,20 +1,22 @@
+import { router, useForm } from '@inertiajs/react';
 import { SearchX } from 'lucide-react';
+import { useEffect, useState } from 'react';
 import DataTable, { TableColumn } from 'react-data-table-component';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
-import { router, useForm } from '@inertiajs/react';
-import { useEffect, useState } from 'react';
 
 interface CommonDataTableProps<T> {
     columns: TableColumn<T>[];
     data: T[];
-    searchRoute:string
+    searchRoute: string;
+    totalRow: number;
 }
 
 const CommonDataTable = <T,>({
     columns,
     data,
     searchRoute,
+    totalRow,
 
     ...props
 }: CommonDataTableProps<T>) => {
@@ -30,7 +32,7 @@ const CommonDataTable = <T,>({
         }, 500); // 500ms delay
 
         return () => clearTimeout(delay); // Cleanup function
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [searchTerm]);
     const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
         setSearchTerm(e.target.value); // Update local state first
@@ -58,7 +60,18 @@ const CommonDataTable = <T,>({
                 </div>
             </div>
             <div className="max-h-[440px] overflow-y-scroll">
-                <DataTable columns={columns} data={data} pagination highlightOnHover {...props} />;
+                <DataTable
+                    columns={columns}
+                    data={data}
+                    pagination
+                    paginationServer
+                    paginationTotalRows={totalRow || 0} // Total users from Laravel
+                    onChangePage={(page) => {
+                        router.get(route(searchRoute, { page }), {}, { preserveState: true, replace: true });
+                    }}
+                    highlightOnHover
+                    {...props}
+                />
             </div>
         </>
     );

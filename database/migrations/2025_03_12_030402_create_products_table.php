@@ -14,7 +14,9 @@ return new class extends Migration
         Schema::create('products', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('part_number');
+            $table->string('part_number')->nullable();
+            $table->string('serial_number');
+            $table->string('price');
             $table->text('description')->nullable();
             $table->foreignId('supplier_id')->nullable()->constrained('suppliers')->nullOnDelete();
             $table->timestamps();

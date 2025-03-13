@@ -9,7 +9,14 @@ class Product extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name', 'part_number', 'description', 'supplier_id'];
+    protected $fillable = [
+        'name',
+        'part_number',
+        'serial_number',
+        'price',
+        'description',
+        'supplier_id',
+    ];
 
     public function supplier()
     {
@@ -21,4 +28,3 @@ class Product extends Model
         return $this->hasMany(Stock::class);
     }
 }
-
