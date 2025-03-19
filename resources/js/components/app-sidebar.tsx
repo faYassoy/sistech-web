@@ -16,6 +16,11 @@ const mainNavItems = [
                 url: "/dashboard",
                 icon: LayoutGrid,
             },
+            {
+                title: "Delivery Order",
+                url: "/delivery-orders",
+                icon: Warehouse,
+            },
         ],
     },
     {
@@ -53,6 +58,7 @@ const mainNavItems = [
             },
         ],
     },
+    
 ];
 
 

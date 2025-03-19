@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\DeliveryOrderController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ReservationController;
 use App\Http\Controllers\SalespersonInventoryController;
@@ -27,6 +28,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::resource('warehouses', WarehouseController::class);
     Route::resource('suppliers', SupplierController::class);
     Route::resource('reservations', ReservationController::class);
+
+    Route::resource('delivery-orders', DeliveryOrderController::class);
 });
 
 require __DIR__ . '/settings.php';
