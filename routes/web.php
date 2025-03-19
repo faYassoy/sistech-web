@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\ReservationController;
+use App\Http\Controllers\SalespersonInventoryController;
 use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\WarehouseController;
@@ -24,8 +26,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::resource('products', ProductController::class);
     Route::resource('warehouses', WarehouseController::class);
     Route::resource('suppliers', SupplierController::class);
+    Route::resource('reservations', ReservationController::class);
 });
 
-require __DIR__.'/settings.php';
-require __DIR__.'/auth.php';
-require __DIR__.'/users.php';
+require __DIR__ . '/settings.php';
+require __DIR__ . '/auth.php';
+require __DIR__ . '/users.php';

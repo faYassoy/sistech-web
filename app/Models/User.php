@@ -47,4 +47,9 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    public function reservedStocks()
+{
+    return $this->hasMany(Reservation::class, 'salesperson_id');
+}
 }

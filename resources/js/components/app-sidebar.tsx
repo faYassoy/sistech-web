@@ -1,5 +1,5 @@
 import { NavFooter } from '@/components/nav-footer';
-import { NavMain } from '@/components/nav-main';
+import {  NavMain } from '@/components/nav-main';
 import { NavUser } from '@/components/nav-user';
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
 import { type NavItem } from '@/types';
@@ -7,33 +7,54 @@ import { Link } from '@inertiajs/react';
 import {  Boxes, Container, LayoutGrid, Users2, Warehouse } from 'lucide-react';
 import AppLogo from './app-logo';
 
-const mainNavItems: NavItem[] = [
+const mainNavItems = [
     {
-        title: 'Dashboard',
-        url: '/dashboard',
-        icon: LayoutGrid,
+        colapsableGroup: "Main",
+        items: [
+            {
+                title: "Dashboard",
+                url: "/dashboard",
+                icon: LayoutGrid,
+            },
+        ],
     },
     {
-        title: 'Pengguna',
-        url: '/users',
-        icon: Users2,
+        colapsableGroup: "Data Master",
+        items: [
+            {
+                title: "Pengguna",
+                url: "/users",
+                icon: Users2,
+            },
+            {
+                title: "Data Barang",
+                url: "/products",
+                icon: Boxes,
+            },
+            {
+                title: "Supplier",
+                url: "/suppliers",
+                icon: Container,
+            },
+        ],
     },
     {
-        title: 'Data Barang',
-        url: '/products',
-        icon: Boxes,
-    },
-    {
-        title: 'Gudang',
-        url: '/warehouses',
-        icon: Warehouse,
-    },
-    {
-        title: 'Supplier',
-        url: '/suppliers',
-        icon: Container,
+        colapsableGroup: "Stock",
+        items: [
+            {
+                title: "Gudang",
+                url: "/warehouses",
+                icon: Warehouse,
+            },
+            {
+                title: "Reservasi",
+                url: "/reservations",
+                icon: Warehouse,
+            },
+        ],
     },
 ];
+
 
 const footerNavItems: NavItem[] = [
     // {
@@ -64,7 +85,7 @@ export function AppSidebar() {
             </SidebarHeader>
 
             <SidebarContent>
-                <NavMain items={mainNavItems} />
+                <NavMain groups={mainNavItems} />
             </SidebarContent>
 
             <SidebarFooter>

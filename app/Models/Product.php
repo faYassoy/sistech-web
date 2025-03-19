@@ -27,4 +27,8 @@ class Product extends Model
     {
         return $this->hasMany(Stock::class);
     }
+    public function reservations()
+    {
+        return $this->hasMany(Reservation::class, 'product_id');
+    }
 }
