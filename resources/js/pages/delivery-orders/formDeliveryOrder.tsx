@@ -13,50 +13,55 @@ import DataTable from 'react-data-table-component';
 import { toast } from 'sonner';
 
 export default function FormDeliveryOrder() {
-    const { warehouses, products } = usePage().props; // Get warehouses & products from Inertia props
-
-    const { data, setData, post, processing, errors } = useForm({
-        date: new Date().toISOString().split('T')[0], // Default to today
-        buyer: '',
-        warehouse_id: '',
-        items: [],
+    const { warehouses, products, deliveryOrder = null } = usePage().props;
+    const { data, setData, post, put, processing, errors } = useForm({
+        date: deliveryOrder?.date || new Date().toISOString().split('T')[0],
+        buyer: deliveryOrder?.buyer || '',
+        warehouse_id: deliveryOrder?.warehouse_id || '',
+        items: deliveryOrder?.items || [],
     });
 
     const handleSubmit = (e) => {
         e.preventDefault();
 
-        post(route('delivery-orders.store'), {
-            onSuccess: () => toast.success('Delivery Order Created!'),
-            onError: (err) => console.error(err),
-        });
+        if (data.items.length === 0) {
+            toast.error('At least one product must be added.');
+            return;
+        }
+
+        if (deliveryOrder) {
+            put(route('delivery-orders.update', deliveryOrder.id), {
+                onSuccess: () => toast.success('Delivery Order Updated!'),
+            });
+        } else {
+            post(route('delivery-orders.store'), {
+                onSuccess: () => toast.success('Delivery Order Created!'),
+            });
+        }
     };
-    console.log(data);
+console.log(data);
     return (
         <AppLayout>
             <form onSubmit={handleSubmit} className="mx-auto max-w-3xl space-y-4 bg-white pt-4">
-                <h1 className="mb-4 text-2xl font-bold">Create Delivery Order</h1>
+                <h1 className="mb-4 text-2xl font-bold">{deliveryOrder ? 'Edit' : 'Create'} Delivery Order</h1>
+
+                {/* Form Fields */}
                 <div className="grid grid-cols-3 gap-4">
-                    {/* Order Date */}
                     <div>
-                        <Label className="pb-1" htmlFor="date">
-                            Order Date
-                        </Label>
+                        <Label htmlFor="date">Order Date</Label>
                         <Input id="date" type="date" name="date" value={data.date} onChange={(e) => setData('date', e.target.value)} required />
                         {errors.date && <p className="text-sm text-red-500">{errors.date}</p>}
                     </div>
 
-                    {/* Buyer */}
                     <div>
-                        <Label className="pb-1" htmlFor="buyer">
-                            Buyer
-                        </Label>
+                        <Label htmlFor="buyer">Buyer</Label>
                         <Input id="buyer" name="buyer" value={data.buyer} onChange={(e) => setData('buyer', e.target.value)} required />
                         {errors.buyer && <p className="text-sm text-red-500">{errors.buyer}</p>}
                     </div>
-                    {/* Warehouse Selection (Using ShadCN Select) */}
+
                     <div>
-                        <Label className="pb-1">Warehouse</Label>
-                        <Select onValueChange={(value) => setData('warehouse_id', value)} value={data.warehouse_id}>
+                        <Label>Warehouse</Label>
+                        <Select onValueChange={(value) => setData('warehouse_id', value)} value={data.warehouse_id.toString()}>
                             <SelectTrigger>
                                 <SelectValue placeholder="Select a warehouse" />
                             </SelectTrigger>
@@ -72,15 +77,15 @@ export default function FormDeliveryOrder() {
                     </div>
                 </div>
 
-                {/* Inline Table for Delivery Items */}
-                <div>
-                    <Label className="pb-1">Delivery Items</Label>
+                {/* Delivery Items Table */}
+                <div className='pb-10'>
+                    <Label>Delivery Items</Label>
                     <InlineDeliveryTable products={products} form={data} errors={errors} onChange={(items) => setData('items', items)} />
                 </div>
 
                 {/* Submit Button */}
                 <Button type="submit" disabled={processing} className="w-full">
-                    {processing ? 'Processing...' : 'Create Delivery Order'}
+                    {processing ? 'Processing...' : deliveryOrder ? 'Update Delivery Order' : 'Create Delivery Order'}
                 </Button>
             </form>
         </AppLayout>
@@ -88,7 +93,7 @@ export default function FormDeliveryOrder() {
 }
 
 export function InlineDeliveryTable({ products, form, errors, onChange }) {
-    const [items, setItems] = useState([{ id: Date.now(), product_id: '', quantity: 1, unit_price: 0 }]);
+    const [items, setItems] = useState(form.items.length ? form.items : [{ id: Date.now(), product_id: '', quantity: 1, unit_price: 0 }]);
 
     useEffect(() => {
         onChange(items);
@@ -105,61 +110,57 @@ export function InlineDeliveryTable({ products, form, errors, onChange }) {
     const removeRow = (id) => {
         setItems(items.filter((item) => item.id !== id));
     };
-    const columns = [
-        {
-            name: 'Product',
-            width: '300px',
-            cell: (row) => (
-                <div className="w-full">
-                    {/* <Label className="pb-1">Product</Label> */}
-                    <ProductCombobox
-                        products={products}
-                        value={row.product_id}
-                        onChange={({ id, price }) => {
-                            updateItem(row.id, 'product_id', id);
-                            updateItem(row.id, 'unit_price', price);
-                        }}
-                    />
-                    {errors?.[`items.${row.id}.product_id`] && <p className="text-sm text-red-500">{errors[`items.${row.id}.product_id`]}</p>}
-                </div>
-            ),
-        },
-        {
-            name: 'Quantity',
-            cell: (row) => (
-                <div>
-                    {/* <Label className="pb-1">Quantity</Label> */}
-                    <Input type="number" value={row.quantity} onChange={(e) => updateItem(row.id, 'quantity', e.target.value)} required />
-                    {errors?.[`items.${row.id}.quantity`] && <p className="text-sm text-red-500">{errors[`items.${row.id}.quantity`]}</p>}
-                </div>
-            ),
-        },
-        {
-            name: 'Unit Price',
-            cell: (row) => (
-                <div>
-                    {/* <Label className="pb-1">Unit Price</Label> */}
-                    <Input type="number" value={row.unit_price} onChange={(e) => updateItem(row.id, 'unit_price', e.target.value)} required />
-                    {errors?.[`items.${row.id}.unit_price`] && <p className="text-sm text-red-500">{errors[`items.${row.id}.unit_price`]}</p>}
-                </div>
-            ),
-        },
-        {
-            name: 'Actions',
-            cell: (row, index) => (
-                <Button variant="destructive" size="icon" onClick={() => removeRow(row.id)} disabled={index == 0}>
-                    <Trash2 className="h-4 w-4" />
-                </Button>
-            ),
-        },
-    ];
 
     return (
         <div>
-            <div className="h-[300px] overflow-y-scroll">
-                <DataTable columns={columns} data={items} noHeader />
+            <div className="max-h-[300px] overflow-y-auto">
+                <DataTable
+                    columns={[
+                        {
+                            name: 'Product',
+                            width: '300px',
+                            cell: (row) => (
+                                <ProductCombobox
+                                    products={products}
+                                    value={row.product_id}
+                                    onChange={({ id, price }) => {
+                                        updateItem(row.id, 'product_id', id);
+                                        updateItem(row.id, 'unit_price', price);
+                                    }}
+                                />
+                            ),
+                        },
+                        {
+                            name: 'Quantity',
+                            cell: (row) => (
+                                <Input type="number" value={row.quantity} onChange={(e) => updateItem(row.id, 'quantity', e.target.value)} required />
+                            ),
+                        },
+                        {
+                            name: 'Unit Price',
+                            cell: (row) => (
+                                <Input
+                                    type="number"
+                                    value={row.unit_price}
+                                    onChange={(e) => updateItem(row.id, 'unit_price', e.target.value)}
+                                    required
+                                />
+                            ),
+                        },
+                        {
+                            name: 'Actions',
+                            cell: (row, index) => (
+                                <Button variant="destructive" size="icon" onClick={() => removeRow(row.id)} disabled={index === 0}>
+                                    <Trash2 className="h-4 w-4" />
+                                </Button>
+                            ),
+                        },
+                    ]}
+                    data={items}
+                    noHeader
+                />
             </div>
-            <Button onClick={addRow} className="float-right m-2">
+            <Button onClick={addRow} className="m-2" variant={'outline'} size={'sm'}>
                 + Add Product
             </Button>
         </div>
@@ -171,14 +172,14 @@ export function ProductCombobox({ products, value, onChange }) {
     const selectedProduct = products.find((p) => p.id === value);
 
     return (
-        <Popover open={open} onOpenChange={setOpen}>
+        <Popover open={open} onOpenChange={setOpen} >
             <PopoverTrigger asChild>
                 <Button variant="outline" className="w-full justify-between">
                     {selectedProduct ? selectedProduct.name : 'Select product'}
                     {/* <Check className="ml-2 h-4 w-4 opacity-50" /> */}
                 </Button>
             </PopoverTrigger>
-            <PopoverContent className="w-[250px] p-0">
+            <PopoverContent className="w-[250px] p-0" >
                 <Command>
                     <CommandInput placeholder="Search product..." />
                     <CommandList>

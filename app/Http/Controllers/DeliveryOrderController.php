@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\DeliveryOrder;
 use App\Models\DeliveryItem;
 use App\Models\Product;
+use App\Models\Stock;
 use App\Models\Warehouse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -93,6 +94,67 @@ class DeliveryOrderController extends Controller
         return redirect()->route('delivery-orders.index')->with('success', 'Delivery order created successfully.');
     }
 
+    public function edit(DeliveryOrder $deliveryOrder)
+    {
+        $deliveryOrder->load([
+            'items:id,delivery_order_id,product_id,quantity,unit_price'
+        ]);
+        return Inertia::render('delivery-orders/formDeliveryOrder', [
+            'deliveryOrder' => $deliveryOrder,
+            'warehouses' => Warehouse::select('id', 'name')->get(),
+            'products' => Product::select('id', 'name', 'price')->with('stocks')->get(),
+        ]);
+    }
+
+    public function update(Request $request, DeliveryOrder $deliveryOrder)
+    {
+        $validated = $request->validate([
+            'date' => ['required', 'date'],
+            'buyer' => ['required', 'string'],
+            'warehouse_id' => ['required', 'exists:warehouses,id'],
+            'items' => ['required', 'array', 'min:1'],
+            'items.*.product_id' => ['required', 'exists:products,id'],
+            'items.*.quantity' => ['required', 'integer', 'min:1'],
+            'items.*.unit_price' => ['required', 'numeric', 'min:0'],
+        ]);
+    
+        DB::transaction(function () use ($deliveryOrder, $validated) {
+            // Restore the previous stock before updating
+            foreach ($deliveryOrder->items as $item) {
+                Stock::where('product_id', $item->product_id)
+                    ->where('warehouse_id', $deliveryOrder->warehouse_id)
+                    ->increment('quantity', $item->quantity);
+            }
+    
+            // Update Delivery Order
+            $deliveryOrder->update([
+                'date' => $validated['date'],
+                'buyer' => $validated['buyer'],
+                'warehouse_id' => $validated['warehouse_id'],
+            ]);
+    
+            // Remove old items
+            $deliveryOrder->items()->delete();
+    
+            // Insert new items & deduct stock
+            foreach ($validated['items'] as $item) {
+                $deliveryOrder->items()->create([
+                    'product_id' => $item['product_id'],
+                    'quantity' => $item['quantity'],
+                    'unit_price' => $item['unit_price'],
+                    'total_price' => $item['unit_price']*$item['quantity'],
+                ]);
+    
+                // Deduct stock from the correct warehouse
+                Stock::where('product_id', $item['product_id'])
+                    ->where('warehouse_id', $validated['warehouse_id'])
+                    ->decrement('quantity', $item['quantity']);
+            }
+        });
+    
+        return redirect()->route('delivery-orders.index')->with('success', 'Delivery Order updated successfully!');
+    }    
+
     /**
      * Generate a unique order number.
      */
@@ -103,4 +165,3 @@ class DeliveryOrderController extends Controller
         return 'DO-' . now()->format('Ymd') . '-' . str_pad($nextNumber, 5, '0', STR_PAD_LEFT);
     }
 }
-
