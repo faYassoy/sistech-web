@@ -30,6 +30,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::resource('reservations', ReservationController::class);
 
     Route::resource('delivery-orders', DeliveryOrderController::class);
+    Route::get('/delivery-orders/{deliveryOrder}/print', [DeliveryOrderController::class, 'print'])->name('delivery-orders.print');
 });
 
 require __DIR__ . '/settings.php';

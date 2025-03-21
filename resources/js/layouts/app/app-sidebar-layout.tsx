@@ -9,7 +9,7 @@ import { usePage } from '@inertiajs/react';
 import { useEffect, type PropsWithChildren } from 'react';
 import { toast } from 'sonner';
 
-export default function AppSidebarLayout({ children, breadcrumbs = [] }: PropsWithChildren<{ breadcrumbs?: BreadcrumbItem[] }>) {
+export default function AppSidebarLayout({ children, breadcrumbs = [],backTo }: PropsWithChildren<{ breadcrumbs?: BreadcrumbItem[],backTo?:string }>) {
     const { flash } = usePage().props;
 
     useEffect(() => {
@@ -24,7 +24,7 @@ export default function AppSidebarLayout({ children, breadcrumbs = [] }: PropsWi
         <AppShell variant="sidebar">
             <AppSidebar />
             <AppContent variant="sidebar">
-                <AppSidebarHeader breadcrumbs={breadcrumbs} />
+                <AppSidebarHeader breadcrumbs={breadcrumbs} backTo={backTo} />
                 <Toaster
                     toastOptions={{
                         style: {

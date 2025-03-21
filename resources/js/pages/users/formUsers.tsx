@@ -81,7 +81,7 @@ const FormUsers: React.FC = () => {
     }, [autoGenerate, setData]);
 
     return (
-        <AppLayout breadcrumbs={isEditing ? [breadcrumbs[0], breadcrumbs[2]] : breadcrumbs}>
+        <AppLayout backTo='users.index'>
             <div className="container mx-auto max-w-lg p-6">
                 <form onSubmit={handleSubmit} className="space-y-4">
                     {/* Name Field */}

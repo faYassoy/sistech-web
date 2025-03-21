@@ -39,10 +39,10 @@ export default function FormDeliveryOrder() {
             });
         }
     };
-console.log(data);
+    console.log(data);
     return (
-        <AppLayout>
-            <form onSubmit={handleSubmit} className="mx-auto max-w-3xl space-y-4 bg-white pt-4">
+        <AppLayout backTo="delivery-orders.index">
+            <form onSubmit={handleSubmit} className="mx-auto max-w-[80%] space-y-4 bg-white pt-4">
                 <h1 className="mb-4 text-2xl font-bold">{deliveryOrder ? 'Edit' : 'Create'} Delivery Order</h1>
 
                 {/* Form Fields */}
@@ -78,13 +78,12 @@ console.log(data);
                 </div>
 
                 {/* Delivery Items Table */}
-                <div className='pb-10'>
-                    <Label>Delivery Items</Label>
-                    <InlineDeliveryTable products={products} form={data} errors={errors} onChange={(items) => setData('items', items)} />
-                </div>
+
+                <Label>Delivery Items</Label>
+                <InlineDeliveryTable products={products} form={data} errors={errors} onChange={(items) => setData('items', items)} />
 
                 {/* Submit Button */}
-                <Button type="submit" disabled={processing} className="w-full">
+                <Button type="submit" disabled={processing} className="mt-4 w-full">
                     {processing ? 'Processing...' : deliveryOrder ? 'Update Delivery Order' : 'Create Delivery Order'}
                 </Button>
             </form>
@@ -100,7 +99,7 @@ export function InlineDeliveryTable({ products, form, errors, onChange }) {
     }, [items]);
 
     const addRow = () => {
-        setItems([...items, { id: Date.now(), product_id: '', quantity: 1, unit_price: 0 }]);
+        setItems([{ id: Date.now(), product_id: '', quantity: 1, unit_price: 0 }, ...items]);
     };
 
     const updateItem = (id, key, value) => {
@@ -113,7 +112,7 @@ export function InlineDeliveryTable({ products, form, errors, onChange }) {
 
     return (
         <div>
-            <div className="max-h-[300px] overflow-y-auto">
+            <div className="max-h-[250px] overflow-y-auto">
                 <DataTable
                     columns={[
                         {
@@ -132,25 +131,45 @@ export function InlineDeliveryTable({ products, form, errors, onChange }) {
                         },
                         {
                             name: 'Quantity',
-                            cell: (row) => (
-                                <Input type="number" value={row.quantity} onChange={(e) => updateItem(row.id, 'quantity', e.target.value)} required />
-                            ),
+                            cell: (row, index) =>
+                                row.product_id ? (
+                                    <Input
+                                        name={`items.${index}.quantity`}
+                                        type="number"
+                                        value={row.quantity}
+                                        onChange={(e) => updateItem(row.id, 'quantity', e.target.value)}
+                                        required
+                                    />
+                                ) : (
+                                    <span className="text-red-500">Please Remove If Product Not Selected!</span>
+                                ),
                         },
                         {
                             name: 'Unit Price',
-                            cell: (row) => (
-                                <Input
-                                    type="number"
-                                    value={row.unit_price}
-                                    onChange={(e) => updateItem(row.id, 'unit_price', e.target.value)}
-                                    required
-                                />
-                            ),
+                            cell: (row) =>
+                                row.product_id && (
+                                    <Input
+                                        type="number"
+                                        value={row.unit_price}
+                                        onChange={(e) => updateItem(row.id, 'unit_price', e.target.value)}
+                                        required
+                                    />
+                                ),
+                        },
+                        {
+                            name: 'Unit Price',
+                            cell: (row) => row.product_id && <Input type="number" value={row.unit_price * row.quantity} disabled />,
                         },
                         {
                             name: 'Actions',
+                            width: '80px',
                             cell: (row, index) => (
-                                <Button variant="destructive" size="icon" onClick={() => removeRow(row.id)} disabled={index === 0}>
+                                <Button
+                                    variant="destructive"
+                                    size="icon"
+                                    onClick={() => removeRow(row.id)}
+                                    disabled={items.length <2  && index === 0}
+                                >
                                     <Trash2 className="h-4 w-4" />
                                 </Button>
                             ),
@@ -172,14 +191,14 @@ export function ProductCombobox({ products, value, onChange }) {
     const selectedProduct = products.find((p) => p.id === value);
 
     return (
-        <Popover open={open} onOpenChange={setOpen} >
+        <Popover open={open} onOpenChange={setOpen}>
             <PopoverTrigger asChild>
                 <Button variant="outline" className="w-full justify-between">
                     {selectedProduct ? selectedProduct.name : 'Select product'}
                     {/* <Check className="ml-2 h-4 w-4 opacity-50" /> */}
                 </Button>
             </PopoverTrigger>
-            <PopoverContent className="w-[250px] p-0" >
+            <PopoverContent className="w-[250px] p-0">
                 <Command>
                     <CommandInput placeholder="Search product..." />
                     <CommandList>

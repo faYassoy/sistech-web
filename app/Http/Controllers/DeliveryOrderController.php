@@ -164,4 +164,13 @@ class DeliveryOrderController extends Controller
         $nextNumber = $latestOrder ? ((int) substr($latestOrder->order_number, -5)) + 1 : 1;
         return 'DO-' . now()->format('Ymd') . '-' . str_pad($nextNumber, 5, '0', STR_PAD_LEFT);
     }
+
+
+    public function print(DeliveryOrder $deliveryOrder)
+{
+    return Inertia::render('delivery-orders/Print', [
+        'deliveryOrder' => $deliveryOrder->load('items.product')
+    ]);
+}
+
 }
