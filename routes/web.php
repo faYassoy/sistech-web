@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\DeliveryOrderController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ReservationController;
@@ -23,10 +24,17 @@ Route::middleware(['auth', 'verified'])->group(function () {
     //     return Inertia::render('users/index');
     // })->name('users');
 
+
     Route::resource('users', UserController::class);
     Route::resource('products', ProductController::class);
+
     Route::resource('warehouses', WarehouseController::class);
+
     Route::resource('suppliers', SupplierController::class);
+
+    Route::resource('customers',CustomerController::class);
+    Route::post('customers/quick',[CustomerController::class,'quick_store'])->name('customers.quick');    
+
     Route::resource('reservations', ReservationController::class);
 
     Route::resource('delivery-orders', DeliveryOrderController::class);

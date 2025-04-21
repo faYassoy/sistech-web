@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Customer;
 use App\Models\DeliveryOrder;
 use App\Models\DeliveryItem;
 use App\Models\Product;
@@ -40,6 +41,7 @@ class DeliveryOrderController extends Controller
         return Inertia::render('delivery-orders/formDeliveryOrder', [
             'warehouses' => Warehouse::select('id', 'name')->get(),
             'products' => Product::select('id', 'name', 'price')->with('stocks')->get(),
+            'customers' => Customer::select('id', 'name', 'company')->get(),
         ]);
     }
     /**
@@ -49,7 +51,7 @@ class DeliveryOrderController extends Controller
     {
         $validated = $request->validate([
             'date' => 'required|date',
-            'buyer' => 'required|string|max:255',
+            'buyer_id' => 'required|integer|max:255',
             'warehouse_id' => 'required|exists:warehouses,id',
             'items' => 'required|array|min:1',
             'items.*.product_id' => 'required|exists:products,id',
@@ -61,7 +63,7 @@ class DeliveryOrderController extends Controller
             $order = DeliveryOrder::create([
                 'order_number' => $this->generateOrderNumber(),
                 'date' => $validated['date'],
-                'buyer' => $validated['buyer'],
+                'buyer_id' => $validated['buyer_id'],
                 'warehouse_id' => $validated['warehouse_id'],
                 'created_by' => auth()->id(),
                 'status' => 'pending', // Default status
@@ -103,6 +105,7 @@ class DeliveryOrderController extends Controller
             'deliveryOrder' => $deliveryOrder,
             'warehouses' => Warehouse::select('id', 'name')->get(),
             'products' => Product::select('id', 'name', 'price')->with('stocks')->get(),
+            'customers' => Customer::select('id', 'name', 'company')->get(),
         ]);
     }
 
@@ -110,14 +113,14 @@ class DeliveryOrderController extends Controller
     {
         $validated = $request->validate([
             'date' => ['required', 'date'],
-            'buyer' => ['required', 'string'],
+            'buyer_id' => ['required', 'integer'],
             'warehouse_id' => ['required', 'exists:warehouses,id'],
             'items' => ['required', 'array', 'min:1'],
             'items.*.product_id' => ['required', 'exists:products,id'],
             'items.*.quantity' => ['required', 'integer', 'min:1'],
             'items.*.unit_price' => ['required', 'numeric', 'min:0'],
         ]);
-    
+
         DB::transaction(function () use ($deliveryOrder, $validated) {
             // Restore the previous stock before updating
             foreach ($deliveryOrder->items as $item) {
@@ -125,35 +128,35 @@ class DeliveryOrderController extends Controller
                     ->where('warehouse_id', $deliveryOrder->warehouse_id)
                     ->increment('quantity', $item->quantity);
             }
-    
+
             // Update Delivery Order
             $deliveryOrder->update([
                 'date' => $validated['date'],
-                'buyer' => $validated['buyer'],
+                'buyer_id' => $validated['buyer_id'],
                 'warehouse_id' => $validated['warehouse_id'],
             ]);
-    
+
             // Remove old items
             $deliveryOrder->items()->delete();
-    
+
             // Insert new items & deduct stock
             foreach ($validated['items'] as $item) {
                 $deliveryOrder->items()->create([
                     'product_id' => $item['product_id'],
                     'quantity' => $item['quantity'],
                     'unit_price' => $item['unit_price'],
-                    'total_price' => $item['unit_price']*$item['quantity'],
+                    'total_price' => $item['unit_price'] * $item['quantity'],
                 ]);
-    
+
                 // Deduct stock from the correct warehouse
                 Stock::where('product_id', $item['product_id'])
                     ->where('warehouse_id', $validated['warehouse_id'])
                     ->decrement('quantity', $item['quantity']);
             }
         });
-    
+
         return redirect()->route('delivery-orders.index')->with('success', 'Delivery Order updated successfully!');
-    }    
+    }
 
     /**
      * Generate a unique order number.
@@ -167,10 +170,18 @@ class DeliveryOrderController extends Controller
 
 
     public function print(DeliveryOrder $deliveryOrder)
-{
-    return Inertia::render('delivery-orders/Print', [
-        'deliveryOrder' => $deliveryOrder->load('items.product')
-    ]);
-}
-
+    {
+        return Inertia::render('delivery-orders/Print', [
+            'deliveryOrder' => $deliveryOrder->load('items.product')
+        ]);
+    }
+    public function destroy(DeliveryOrder $deliveryOrder)
+    {
+        try {
+            $deliveryOrder->delete();
+            return redirect()->route('delivery-orders.index')->with('success', 'Delivery Order deleted successfully.');
+        } catch (\Exception $e) {
+            return back()->withErrors(['error' => 'Failed to delete Delivery Order: ' . $e->getMessage()]);
+        }
+    }
 }

@@ -12,7 +12,7 @@ class DeliveryOrder extends Model
     protected $fillable = [
         'order_number',
         'date',
-        'buyer',
+        'buyer_id',
         'warehouse_id',
         'created_by',
         'status',
@@ -26,6 +26,10 @@ class DeliveryOrder extends Model
     public function creator()
     {
         return $this->belongsTo(User::class, 'created_by');
+    }
+    public function buyer()
+    {
+        return $this->belongsTo(Customer::class, 'buyer');
     }
 
     public function items()

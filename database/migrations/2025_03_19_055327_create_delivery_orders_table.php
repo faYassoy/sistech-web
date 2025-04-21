@@ -15,9 +15,9 @@ return new class extends Migration
             $table->id();
             $table->string('order_number')->unique();
             $table->date('date');
-            $table->string('buyer');
             $table->foreignId('warehouse_id')->constrained()->cascadeOnDelete();
             $table->foreignId('created_by')->constrained('users')->cascadeOnDelete();
+            $table->foreignId('buyer_id')->constrained('customers')->cascadeOnDelete();
             $table->enum('status', ['pending', 'in_progress', 'delivered', 'canceled'])->default('pending');
             $table->timestamps();
         });

@@ -7,17 +7,20 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import AppLayout from '@/layouts/app-layout';
 import { useForm, usePage } from '@inertiajs/react';
-import { Trash2 } from 'lucide-react';
+import { CommandSeparator } from 'cmdk';
+import { Plus, Trash2 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import DataTable from 'react-data-table-component';
 import { toast } from 'sonner';
+import QuickFormCustomer from '../customers/QuickFormCustomer';
 
 export default function FormDeliveryOrder() {
-    const { warehouses, products, deliveryOrder = null } = usePage().props;
+    const [formOpen, setFormOpen] = useState(false);
+    const { warehouses, products, deliveryOrder, customers } = usePage().props;
     const { data, setData, post, put, processing, errors } = useForm({
         date: deliveryOrder?.date || new Date().toISOString().split('T')[0],
-        buyer: deliveryOrder?.buyer || '',
-        warehouse_id: deliveryOrder?.warehouse_id || '',
+        buyer_id: deliveryOrder?.buyer_id || '',
+        warehouse_id: deliveryOrder?.warehouse_id || 1,
         items: deliveryOrder?.items || [],
     });
 
@@ -39,7 +42,7 @@ export default function FormDeliveryOrder() {
             });
         }
     };
-    console.log(data);
+
     return (
         <AppLayout backTo="delivery-orders.index">
             <form onSubmit={handleSubmit} className="mx-auto max-w-[80%] space-y-4 bg-white pt-4">
@@ -54,9 +57,9 @@ export default function FormDeliveryOrder() {
                     </div>
 
                     <div>
-                        <Label htmlFor="buyer">Buyer</Label>
-                        <Input id="buyer" name="buyer" value={data.buyer} onChange={(e) => setData('buyer', e.target.value)} required />
-                        {errors.buyer && <p className="text-sm text-red-500">{errors.buyer}</p>}
+                        <Label htmlFor="buyer_id">Buyer</Label>
+                        <CustomerCombobox setFormOpen={setFormOpen} customers={customers} data={data} onChange={(e) => setData('buyer_id', e)} value={data.buyer_id} />
+                        {errors.buyer_id && <p className="text-sm text-red-500">{errors.buyer_id}</p>}
                     </div>
 
                     <div>
@@ -87,6 +90,7 @@ export default function FormDeliveryOrder() {
                     {processing ? 'Processing...' : deliveryOrder ? 'Update Delivery Order' : 'Create Delivery Order'}
                 </Button>
             </form>
+            <QuickFormCustomer isOpen={formOpen} onClose={() => setFormOpen(false)} />
         </AppLayout>
     );
 }
@@ -112,6 +116,9 @@ export function InlineDeliveryTable({ products, form, errors, onChange }) {
 
     return (
         <div>
+            <Button onClick={addRow} className="m-2" variant={'outline'} size={'sm'}>
+                + Add Product
+            </Button>
             <div className="max-h-[250px] overflow-y-auto">
                 <DataTable
                     columns={[
@@ -168,7 +175,7 @@ export function InlineDeliveryTable({ products, form, errors, onChange }) {
                                     variant="destructive"
                                     size="icon"
                                     onClick={() => removeRow(row.id)}
-                                    disabled={items.length <2  && index === 0}
+                                    disabled={items.length < 2 && index === 0}
                                 >
                                     <Trash2 className="h-4 w-4" />
                                 </Button>
@@ -179,16 +186,13 @@ export function InlineDeliveryTable({ products, form, errors, onChange }) {
                     noHeader
                 />
             </div>
-            <Button onClick={addRow} className="m-2" variant={'outline'} size={'sm'}>
-                + Add Product
-            </Button>
         </div>
     );
 }
 
 export function ProductCombobox({ products, value, onChange }) {
     const [open, setOpen] = useState(false);
-    const selectedProduct = products.find((p) => p.id === value);
+    const selectedProduct = products?.find((p) => p.id === value);
 
     return (
         <Popover open={open} onOpenChange={setOpen}>
@@ -203,7 +207,7 @@ export function ProductCombobox({ products, value, onChange }) {
                     <CommandInput placeholder="Search product..." />
                     <CommandList>
                         <CommandEmpty>No products found.</CommandEmpty>
-                        {products.map((product) => (
+                        {products?.map((product) => (
                             <CommandItem
                                 key={product.id}
                                 onSelect={() => {
@@ -218,5 +222,48 @@ export function ProductCombobox({ products, value, onChange }) {
                 </Command>
             </PopoverContent>
         </Popover>
+    );
+}
+export function CustomerCombobox({ customers, value, onChange,setFormOpen }) {
+    const [open, setOpen] = useState(false);
+    const selectedProduct = customers?.find((c) => c.id === value);
+
+    return (
+        <>
+            <Popover open={open} onOpenChange={setOpen}>
+                <PopoverTrigger asChild>
+                    <Button variant="outline" className="w-full justify-between">
+                        {selectedProduct ? selectedProduct.name : 'Select product'}
+                        {/* <Check className="ml-2 h-4 w-4 opacity-50" /> */}
+                    </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-[250px] p-0">
+                    <Command>
+                        <CommandInput placeholder="Search product..." />
+                        <CommandList>
+                            <CommandEmpty>No customers found.</CommandEmpty>
+                            {customers.map((customer) => (
+                                <CommandItem
+                                    key={customer.id}
+                                    onSelect={() => {
+                                        onChange(customer.id);
+                                        setOpen(false);
+                                    }}
+                                >
+                                    {customer.name}
+                                </CommandItem>
+                            ))}
+                            <CommandSeparator />
+                            <CommandItem>
+                                <Button onClick={() => setFormOpen(true)} variant={'outline'} size={'sm'}>
+                                    <Plus />
+                                    New Buyer/Customer
+                                </Button>
+                            </CommandItem>
+                        </CommandList>
+                    </Command>
+                </PopoverContent>
+            </Popover>
+        </>
     );
 }
