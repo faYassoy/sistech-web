@@ -1,4 +1,5 @@
-import { Head, useForm } from '@inertiajs/react';
+/* eslint-disable @typescript-eslint/ban-ts-comment */
+import { Head, useForm, usePage } from '@inertiajs/react';
 import { LoaderCircle } from 'lucide-react';
 import { FormEventHandler } from 'react';
 
@@ -21,7 +22,13 @@ interface LoginProps {
     canResetPassword: boolean;
 }
 
+interface PageProps {
+    flash: { sucess?: string; error?: string };
+}
+
 export default function Login({ status, canResetPassword }: LoginProps) {
+    // @ts-ignore
+    const { flash } = usePage<PageProps>().props;
     const { data, setData, post, processing, errors, reset } = useForm<LoginForm>({
         email: '',
         password: '',
@@ -38,6 +45,7 @@ export default function Login({ status, canResetPassword }: LoginProps) {
     return (
         <AuthLayout title="Log in to your account" description="Enter your email and password below to log in">
             <Head title="Log in" />
+            {flash.error && <p className='w-full text-red-500 text-sm text-center'>{flash.error}</p>}
 
             <form className="flex flex-col gap-6" onSubmit={submit}>
                 <div className="grid gap-6">
@@ -80,7 +88,13 @@ export default function Login({ status, canResetPassword }: LoginProps) {
                     </div>
 
                     <div className="flex items-center space-x-3">
-                        <Checkbox id="remember" name="remember" checked={data.remember} onClick={() => setData('remember', !data.remember)} tabIndex={3} />
+                        <Checkbox
+                            id="remember"
+                            name="remember"
+                            checked={data.remember}
+                            onClick={() => setData('remember', !data.remember)}
+                            tabIndex={3}
+                        />
                         <Label htmlFor="remember">Remember me</Label>
                     </div>
 

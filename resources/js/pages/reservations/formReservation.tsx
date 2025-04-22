@@ -4,7 +4,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/u
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { useForm } from '@inertiajs/react';
+import { useForm, usePage } from '@inertiajs/react';
 import { useEffect } from 'react';
 
 interface SalespersonreservationsFormProps {
@@ -23,8 +23,11 @@ interface SalespersonreservationsFormProps {
 }
 
 const FormReservation: React.FC<SalespersonreservationsFormProps> = ({ reservation, salespersons, products, warehouses, isOpen, onClose }) => {
+    const { auth } = usePage().props;
+
     const { data, setData, post, put, processing, errors, reset } = useForm({
-        salesperson_id: '',
+        // @ts-ignore
+        salesperson_id:auth?.user?.roles[0] == 'sales_person' ?`${auth.user.id}` :'',
         product_id: '',
         warehouse_id: '',
         reserved_quantity: '',
@@ -51,7 +54,6 @@ const FormReservation: React.FC<SalespersonreservationsFormProps> = ({ reservati
         }
     };
 
-    console.log(products);
 
     return (
         <Dialog open={isOpen} onOpenChange={onClose}>
@@ -66,7 +68,12 @@ const FormReservation: React.FC<SalespersonreservationsFormProps> = ({ reservati
                         <Label className="pb-1" htmlFor="salesperson_id">
                             Salesperson
                         </Label>
-                        <Select onValueChange={(value) => setData('salesperson_id', value)} value={String(data.salesperson_id) || ''}>
+                        <Select
+                            onValueChange={(value) => setData('salesperson_id', value)}
+                            value={String(data.salesperson_id) || ''}
+                            // @ts-ignore
+                            disabled={auth?.user?.roles[0] == 'sales_person'}
+                        >
                             <SelectTrigger>
                                 <SelectValue placeholder="Select Salesperson" />
                             </SelectTrigger>

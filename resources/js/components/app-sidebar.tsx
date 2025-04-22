@@ -1,65 +1,56 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 import { NavFooter } from '@/components/nav-footer';
 import {  NavMain } from '@/components/nav-main';
 import { NavUser } from '@/components/nav-user';
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
 import { type NavItem } from '@/types';
-import { Link } from '@inertiajs/react';
+import { Link, usePage } from '@inertiajs/react';
 import {  Boxes, Container, LayoutGrid, Users2, Warehouse } from 'lucide-react';
 import AppLogo from './app-logo';
 
-const mainNavItems = [
-    {
+export const mainNavItems = {
+    admin: [
+      {
         colapsableGroup: "Main",
         items: [
-            {
-                title: "Dashboard",
-                url: "/dashboard",
-                icon: LayoutGrid,
-            },
-            {
-                title: "Delivery Order",
-                url: "/delivery-orders",
-                icon: Warehouse,
-            },
+          { title: "Dashboard", url: "/dashboard", icon: LayoutGrid },
+          { title: "Delivery Order", url: "/delivery-orders", icon: Warehouse },
         ],
-    },
-    {
+      },
+      {
         colapsableGroup: "Data Master",
         items: [
-            {
-                title: "Pengguna",
-                url: "/users",
-                icon: Users2,
-            },
-            {
-                title: "Data Barang",
-                url: "/products",
-                icon: Boxes,
-            },
-            {
-                title: "Supplier",
-                url: "/suppliers",
-                icon: Container,
-            },
+          { title: "Pengguna", url: "/users", icon: Users2 },
+          { title: "Data Barang", url: "/products", icon: Boxes },
+          { title: "Supplier", url: "/suppliers", icon: Container },
         ],
-    },
-    {
+      },
+      {
         colapsableGroup: "Stock",
         items: [
-            {
-                title: "Gudang",
-                url: "/warehouses",
-                icon: Warehouse,
-            },
-            {
-                title: "Reservasi",
-                url: "/reservations",
-                icon: Warehouse,
-            },
+          { title: "Gudang", url: "/warehouses", icon: Warehouse },
+          { title: "Reservasi", url: "/reservations", icon: Warehouse },
         ],
-    },
-    
-];
+      },
+    ],
+  
+    sales_person: [
+      {
+        colapsableGroup: "Main",
+        items: [
+          { title: "Dashboard", url: "/dashboard", icon: LayoutGrid },
+          { title: "Delivery Order", url: "/delivery-orders", icon: Warehouse },
+        ],
+      },
+      {
+        colapsableGroup: "Stock",
+        items: [
+          { title: "Data Barang", url: "/products", icon: Boxes },
+          { title: "Reservasi", url: "/reservations", icon: Warehouse },
+        ],
+      },
+    ],
+  };
 
 
 const footerNavItems: NavItem[] = [
@@ -76,6 +67,11 @@ const footerNavItems: NavItem[] = [
 ];
 
 export function AppSidebar() {
+    const { auth } = usePage().props;
+    // @ts-ignore
+    const role = auth?.user?.roles[0];
+    // @ts-ignore
+    const navItems = mainNavItems[role] ?? [];
     return (
         <Sidebar collapsible="icon" variant="inset">
             <SidebarHeader className='bg-red-50 rounded-lg'>
@@ -91,7 +87,7 @@ export function AppSidebar() {
             </SidebarHeader>
 
             <SidebarContent>
-                <NavMain groups={mainNavItems} />
+                <NavMain groups={navItems} />
             </SidebarContent>
 
             <SidebarFooter>

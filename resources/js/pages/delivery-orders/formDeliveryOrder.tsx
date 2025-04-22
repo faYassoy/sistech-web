@@ -16,7 +16,7 @@ import QuickFormCustomer from '../customers/QuickFormCustomer';
 
 export default function FormDeliveryOrder() {
     const [formOpen, setFormOpen] = useState(false);
-    const { warehouses, products, deliveryOrder, customers } = usePage().props;
+    const { warehouses, products, deliveryOrder, customers, auth } = usePage().props;
     const { data, setData, post, put, processing, errors } = useForm({
         date: deliveryOrder?.date || new Date().toISOString().split('T')[0],
         buyer_id: deliveryOrder?.buyer_id || '',
@@ -58,7 +58,14 @@ export default function FormDeliveryOrder() {
 
                     <div>
                         <Label htmlFor="buyer_id">Buyer</Label>
-                        <CustomerCombobox setFormOpen={setFormOpen} customers={customers} data={data} onChange={(e) => setData('buyer_id', e)} value={data.buyer_id} />
+                        <CustomerCombobox
+                            setFormOpen={setFormOpen}
+                            customers={customers}
+                            data={data}
+                            auth={auth}
+                            onChange={(e) => setData('buyer_id', e)}
+                            value={data.buyer_id}
+                        />
                         {errors.buyer_id && <p className="text-sm text-red-500">{errors.buyer_id}</p>}
                     </div>
 
@@ -224,7 +231,7 @@ export function ProductCombobox({ products, value, onChange }) {
         </Popover>
     );
 }
-export function CustomerCombobox({ customers, value, onChange,setFormOpen }) {
+export function CustomerCombobox({ customers, value, onChange, setFormOpen, auth }) {
     const [open, setOpen] = useState(false);
     const selectedProduct = customers?.find((c) => c.id === value);
 
@@ -255,10 +262,12 @@ export function CustomerCombobox({ customers, value, onChange,setFormOpen }) {
                             ))}
                             <CommandSeparator />
                             <CommandItem>
-                                <Button onClick={() => setFormOpen(true)} variant={'outline'} size={'sm'}>
-                                    <Plus />
-                                    New Buyer/Customer
-                                </Button>
+                                {auth?.user?.roles[0] == 'admin' && (
+                                    <Button onClick={() => setFormOpen(true)} variant={'outline'} size={'sm'}>
+                                        <Plus />
+                                        New Buyer/Customer
+                                    </Button>
+                                )}
                             </CommandItem>
                         </CommandList>
                     </Command>

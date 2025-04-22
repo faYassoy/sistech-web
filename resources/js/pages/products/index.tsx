@@ -40,7 +40,7 @@ interface PageProps {
 const ProductsIndex: React.FC = () => {
     const props = usePage<PageProps>().props;
     const breadcrumbs: BreadcrumbItem[] = extractBreadcrumbs(window.location.pathname);
-    const { products, suppliers } = props;
+    const { products, suppliers, auth } = props;
     const [productModal, setProductModal] = useState(false);
     const [selected, setSelected] = useState<Product | null>(null);
 
@@ -66,35 +66,36 @@ const ProductsIndex: React.FC = () => {
         },
         {
             name: '',
-            cell: (row: Product) => (
-                <div className="grid grid-cols-2 gap-4">
-                    <Button
-                    variant="outline"
-                    size={'sm'}
-                        onClick={() => {
-                            setSelected(row);
-                            setProductModal(true);
-                        }}
-                    >
-                        Edit
-                    </Button>
+            cell: (row: Product) =>
+                auth?.user?.roles[0] == 'admin' ? (
+                    <div className="grid grid-cols-2 gap-4">
+                        <Button
+                            variant="outline"
+                            size={'sm'}
+                            onClick={() => {
+                                setSelected(row);
+                                setProductModal(true);
+                            }}
+                        >
+                            Edit
+                        </Button>
 
-                    <Button
-                        variant="destructive"
-                        size={'sm'}
-                        onClick={() => {
-                            if (confirm('Are you sure you want to delete this product?')) {
-                                router.delete(route('products.destroy', row.id), {
-                                    // onSuccess: () => alert('Product deleted successfully!'),
-                                    onError: (err) => alert(err.message),
-                                });
-                            }
-                        }}
-                    >
-                        Delete
-                    </Button>
-                </div>
-            ),
+                        <Button
+                            variant="destructive"
+                            size={'sm'}
+                            onClick={() => {
+                                if (confirm('Are you sure you want to delete this product?')) {
+                                    router.delete(route('products.destroy', row.id), {
+                                        // onSuccess: () => alert('Product deleted successfully!'),
+                                        onError: (err) => alert(err.message),
+                                    });
+                                }
+                            }}
+                        >
+                            Delete
+                        </Button>
+                    </div>
+                ) : null,
         },
     ];
 
@@ -103,7 +104,7 @@ const ProductsIndex: React.FC = () => {
             <div className="container mx-auto p-4">
                 <div className="mb-4 flex items-center justify-between">
                     <h1 className="text-2xl font-bold">Products</h1>
-                    <Button onClick={() => setProductModal(true)}>Create New Product</Button>
+                    { auth?.user?.roles[0] == 'admin' &&<Button onClick={() => setProductModal(true)}>Create New Product</Button>}
                 </div>
 
                 <CommonDataTable

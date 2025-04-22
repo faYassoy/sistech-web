@@ -6,6 +6,7 @@ use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 use App\Models\User;
 
+
 class UserSeeder extends Seeder
 {
     /**
@@ -17,18 +18,17 @@ class UserSeeder extends Seeder
             'name' => 'Admin User',
             'email' => 'admin@gmail.com',
             'password' => Hash::make('password'),
-            'role' => 'admin',
             'is_active' => true,
-        ]);
+        ])->assignRole('admin');;
 
         User::create([
             'name' => 'Sales Person',
             'email' => 'sales@gmail.com',
             'password' => Hash::make('password'),
-            'role' => 'sales_person',
             'is_active' => true,
-        ]);
+        ])->assignRole('sales_person');
 
         User::factory(10)->create(); // Generate 10 random users
+       
     }
 }
