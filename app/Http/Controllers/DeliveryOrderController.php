@@ -72,7 +72,7 @@ class DeliveryOrderController extends Controller
             foreach ($validated['items'] as $item) {
                 $product = Product::findOrFail($item['product_id']);
 
-                // Check stock availability
+                // Sum all reserved for this product
                 $reservedStock = $product->reservations()->sum('reserved_quantity');
                 $availableStock = $product->stocks()->sum('quantity') - $reservedStock;
 
@@ -80,8 +80,28 @@ class DeliveryOrderController extends Controller
                     throw new \Exception("Not enough stock for {$product->name}");
                 }
 
-                // Deduct stock
-                $product->stocks()->decrement('quantity', $item['quantity']);
+                //  Deduct from reservation first (if exists)
+                $remainingToDeduct = $item['quantity'];
+
+                $reservations = $product->reservations()
+                    ->where('sales_person_id', auth()->id()) // Only from current user
+                    ->orderBy('id')
+                    ->get();
+
+                foreach ($reservations as $reservation) {
+                    if ($remainingToDeduct <= 0) break;
+
+                    $deduct = min($reservation->reserved_quantity, $remainingToDeduct);
+                    $reservation->reserved_quantity -= $deduct;
+                    $reservation->save();
+
+                    $remainingToDeduct -= $deduct;
+                }
+
+                // If still need more, reduce from actual warehouse stock
+                if ($remainingToDeduct > 0) {
+                    $product->stocks()->decrement('quantity', $remainingToDeduct);
+                }
 
                 DeliveryItem::create([
                     'delivery_order_id' => $order->id,

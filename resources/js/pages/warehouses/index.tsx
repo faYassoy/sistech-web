@@ -5,6 +5,8 @@ import AppLayout from '@/layouts/app-layout';
 import { router, usePage } from '@inertiajs/react';
 import React, { useState } from 'react';
 import FormWarehouse from './formWarehouse';
+import ComplementaryDrawer from '@/components/Drawer';
+
 
 export interface Warehouse {
     id: number;
@@ -28,6 +30,7 @@ const WarehouseIndex: React.FC = () => {
     const props = usePage<PageProps>().props;
     const { warehouses } = props;
     const [modalOpen, setModalOpen] = useState(false);
+    const [drawerOpen, setDrawerOpen] = useState(false);
     const [selectedWarehouse, setSelectedWarehouse] = useState<Warehouse | null>(null);
 
     // Define columns
@@ -46,8 +49,19 @@ const WarehouseIndex: React.FC = () => {
         },
         {
             name: 'Actions',
+            width:'400px',
             cell: (row: Warehouse) => (
-                <div className="grid grid-cols-2 gap-2">
+                <div className="grid grid-cols-3 gap-2">
+                    <Button
+                        // variant="outline"
+                        size="sm"
+                        onClick={() => {
+                            setDrawerOpen(true);
+                            setSelectedWarehouse(row);
+                        }}
+                    >
+                        Kelola Stok
+                    </Button>
                     <Button
                         variant="outline"
                         size="sm"
@@ -101,6 +115,11 @@ const WarehouseIndex: React.FC = () => {
                 }}
                 warehouse={selectedWarehouse}
             />
+            <ComplementaryDrawer isOpen={drawerOpen} onClose={()=>setDrawerOpen(false)}>
+            <div className="max-h-[80vh] overflow-y-scroll">
+               <p>test</p>
+            </div>
+            </ComplementaryDrawer>
         </AppLayout>
     );
 };
