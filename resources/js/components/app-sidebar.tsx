@@ -5,7 +5,7 @@ import { NavUser } from '@/components/nav-user';
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
 import { type NavItem } from '@/types';
 import { Link, usePage } from '@inertiajs/react';
-import {  Boxes, Container, LayoutGrid, Users2, Warehouse } from 'lucide-react';
+import {  BookUser, Boxes, Container, LayoutGrid, Users2, Warehouse } from 'lucide-react';
 import AppLogo from './app-logo';
 
 export const mainNavItems = {
@@ -21,6 +21,7 @@ export const mainNavItems = {
         colapsableGroup: "Data Master",
         items: [
           { title: "Pengguna", url: "/users", icon: Users2 },
+          { title: "Customer", url: "/customers", icon: BookUser },
           { title: "Data Barang", url: "/products", icon: Boxes },
           { title: "Supplier", url: "/suppliers", icon: Container },
         ],

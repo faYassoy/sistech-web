@@ -22,7 +22,7 @@ class UserSeeder extends Seeder
         ])->assignRole('admin');;
 
         User::create([
-            'name' => 'Sales Person',
+            'name' => 'Salma Putri',
             'email' => 'sales@gmail.com',
             'password' => Hash::make('password'),
             'is_active' => true,

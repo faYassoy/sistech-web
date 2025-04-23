@@ -83,7 +83,7 @@ const CustomerIndex: React.FC = () => {
         <AppLayout>
             <div className="container mx-auto p-4">
                 <div className="mb-4 flex items-center justify-between">
-                    <h1 className="text-2xl font-bold">Warehouses</h1>
+                    <h1 className="text-2xl font-bold">Customer</h1>
                     <Button onClick={() => setModalOpen(true)}>Create New Customer</Button>
                 </div>
 
