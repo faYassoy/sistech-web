@@ -6,6 +6,7 @@ import { router, usePage } from '@inertiajs/react';
 import React, { useState } from 'react';
 import FormWarehouse from './formWarehouse';
 import ComplementaryDrawer from '@/components/Drawer';
+import StockModal from '@/components/StockModal';
 
 
 export interface Warehouse {
@@ -117,7 +118,7 @@ const WarehouseIndex: React.FC = () => {
             />
             <ComplementaryDrawer isOpen={drawerOpen} onClose={()=>setDrawerOpen(false)}>
             <div className="max-h-[80vh] overflow-y-scroll">
-               <p>test</p>
+               <StockModal isOpen={drawerOpen} warehouseId={selectedWarehouse?.id||''}/>
             </div>
             </ComplementaryDrawer>
         </AppLayout>

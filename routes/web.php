@@ -5,6 +5,7 @@ use App\Http\Controllers\DeliveryOrderController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ReservationController;
 use App\Http\Controllers\SalespersonInventoryController;
+use App\Http\Controllers\StockPeekController;
 use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\WarehouseController;
@@ -63,6 +64,12 @@ Route::group(['middleware' => ['role:admin','auth']],function () {
       'update','destroy'
     ]);
     Route::get('/delivery-orders/{deliveryOrder}/print', [DeliveryOrderController::class, 'print'])->name('delivery-orders.print');
+
+    Route::prefix('warehouses/{warehouse}')->group(function () {
+        Route::get('stocks/peek', [StockPeekController::class, 'index'])->name('warehouses.stocks.peek');
+        Route::post('stocks/adjust', [StockPeekController::class, 'adjust'])->name('warehouses.stocks.adjust');
+    });
+    
 });
 
 

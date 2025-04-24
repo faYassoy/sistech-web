@@ -9,7 +9,7 @@ import { extractBreadcrumbs } from '@/lib/utils';
 import { BreadcrumbItem } from '@/types';
 import ProductForm from './formProduct';
 
-interface Product {
+export interface Product {
     id: number;
     name: string;
     description?: string | null;
