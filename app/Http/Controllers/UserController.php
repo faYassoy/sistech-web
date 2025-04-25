@@ -15,19 +15,22 @@ class UserController extends Controller
      * Display a listing of the resource.
      */
     public function index(Request $request)
-{
-    $search = $request->query('search');
+    {
+        $search = $request->query('search');
 
-    $users = User::query()
-        ->when($search, fn($query) => 
-            $query->where('name', 'like', "%{$search}%")
-                  ->orWhere('email', 'like', "%{$search}%")
-        )
-        ->paginate(10)
-        ->withQueryString();
+        $users = User::query()
+            ->when(
+                $search,
+                fn($query) =>
+                $query->where('name', 'like', "%{$search}%")
+                    ->orWhere('email', 'like', "%{$search}%")
+            )
+            ->orderBy('is_active','desc')
+            ->paginate(10)
+            ->withQueryString();
 
-    return Inertia::render('users/index', ['users' => $users, 'search' => $search]);
-}
+        return Inertia::render('users/index', ['users' => $users, 'search' => $search]);
+    }
 
     /**
      * Show the form for creating a new resource.
@@ -55,9 +58,11 @@ class UserController extends Controller
                 'name' => $validated['name'],
                 'email' => $validated['email'],
                 'password' => Hash::make($validated['password']),
-                'role' => $validated['role'],
                 'is_active' => $validated['is_active'] ?? false,
             ]);
+
+            // Assign Spatie role
+            $user->assignRole($validated['role']);
 
             return redirect()->route('users.index')->with('success', 'User created successfully.');
         } catch (\Exception $e) {
@@ -80,8 +85,7 @@ class UserController extends Controller
     {
         //
         $data['user'] = User::find($id);
-        return Inertia::render('users/formUsers',$data);
-
+        return Inertia::render('users/formUsers', $data);
     }
 
     /**
@@ -104,10 +108,9 @@ class UserController extends Controller
                 'password' => array_key_exists('password', $validated) && $validated['password']
                     ? Hash::make($validated['password'])
                     : $user->password,
-                'role' => $validated['role'] ?? $user->role,
                 'is_active' => $validated['is_active'] ?? $user->is_active,
             ]);
-
+            $user->assignRole($validated['role']);
             return redirect()->route('users.index')->with('success', 'User updated successfully.');
         } catch (\Exception $e) {
             return back()->withErrors(['error' => 'Failed to update user: ' . $e->getMessage()]);
