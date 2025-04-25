@@ -5,6 +5,7 @@ use App\Http\Controllers\DeliveryOrderController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ReservationController;
 use App\Http\Controllers\SalespersonInventoryController;
+
 use App\Http\Controllers\StockPeekController;
 use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\UserController;
@@ -61,7 +62,7 @@ Route::group(['middleware' => ['role:admin','auth']],function () {
     ]);
 
     Route::resource('delivery-orders', DeliveryOrderController::class)->only([
-      'update','destroy'
+      'edit','update','destroy'
     ]);
     Route::get('/delivery-orders/{deliveryOrder}/print', [DeliveryOrderController::class, 'print'])->name('delivery-orders.print');
 

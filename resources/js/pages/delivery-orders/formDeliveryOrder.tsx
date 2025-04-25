@@ -21,6 +21,7 @@ export default function FormDeliveryOrder() {
         date: deliveryOrder?.date || new Date().toISOString().split('T')[0],
         buyer_id: deliveryOrder?.buyer_id || '',
         warehouse_id: deliveryOrder?.warehouse_id || 1,
+        status: deliveryOrder?.status || 'pending',
         items: deliveryOrder?.items || [],
     });
 
@@ -49,7 +50,7 @@ export default function FormDeliveryOrder() {
                 <h1 className="mb-4 text-2xl font-bold">{deliveryOrder ? 'Edit' : 'Create'} Delivery Order</h1>
 
                 {/* Form Fields */}
-                <div className="grid grid-cols-3 gap-4">
+                <div className="grid grid-cols-2 gap-4">
                     <div>
                         <Label htmlFor="date">Order Date</Label>
                         <Input id="date" type="date" name="date" value={data.date} onChange={(e) => setData('date', e.target.value)} required />
@@ -85,6 +86,24 @@ export default function FormDeliveryOrder() {
                         </Select>
                         {errors.warehouse_id && <p className="text-sm text-red-500">{errors.warehouse_id}</p>}
                     </div>
+                    <div>
+                            <Label className="pb-1" htmlFor="supplier">
+                                Status
+                            </Label>
+                            <Select onValueChange={(value) => setData('status', value)} value={data.status ? String(data.status) : ''}>
+                                <SelectTrigger>
+                                    <SelectValue placeholder="Select Status" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    {['pending', 'in_progress', 'delivered', 'canceled'].map((status) => (
+                                        <SelectItem key={status} value={status}>
+                                            {status.toLocaleUpperCase()}
+                                        </SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
+                            {errors.status && <p className="text-sm text-red-500">{errors.status}</p>}
+                        </div>
                 </div>
 
                 {/* Delivery Items Table */}
@@ -244,7 +263,7 @@ export function CustomerCombobox({ customers, value, onChange, setFormOpen, auth
                         {/* <Check className="ml-2 h-4 w-4 opacity-50" /> */}
                     </Button>
                 </PopoverTrigger>
-                <PopoverContent className="w-[250px] p-0">
+                <PopoverContent className="p-0">
                     <Command>
                         <CommandInput placeholder="Search product..." />
                         <CommandList>

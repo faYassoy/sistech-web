@@ -10,6 +10,7 @@ use App\Models\Stock;
 use App\Models\Warehouse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\Rule;
 use Inertia\Inertia;
 
 class DeliveryOrderController extends Controller
@@ -21,7 +22,7 @@ class DeliveryOrderController extends Controller
     {
         $search = $request->query('search');
 
-        $deliveryOrders = DeliveryOrder::with('warehouse', 'creator')
+        $deliveryOrders = DeliveryOrder::with('warehouse', 'creator','buyer')
             ->when($search, function ($query) use ($search) {
                 $query->where('order_number', 'like', "%{$search}%")
                     ->orWhere('buyer', 'like', "%{$search}%");
@@ -84,7 +85,7 @@ class DeliveryOrderController extends Controller
                 $remainingToDeduct = $item['quantity'];
 
                 $reservations = $product->reservations()
-                    ->where('sales_person_id', auth()->id()) // Only from current user
+                    ->where('salesperson_id', auth()->id()) // Only from current user
                     ->orderBy('id')
                     ->get();
 
@@ -139,6 +140,7 @@ class DeliveryOrderController extends Controller
             'items.*.product_id' => ['required', 'exists:products,id'],
             'items.*.quantity' => ['required', 'integer', 'min:1'],
             'items.*.unit_price' => ['required', 'numeric', 'min:0'],
+            'status' => ['nullable', 'string', Rule::in(['pending', 'in_progress', 'delivered', 'canceled'])],
         ]);
 
         DB::transaction(function () use ($deliveryOrder, $validated) {
@@ -154,6 +156,7 @@ class DeliveryOrderController extends Controller
                 'date' => $validated['date'],
                 'buyer_id' => $validated['buyer_id'],
                 'warehouse_id' => $validated['warehouse_id'],
+                'status' => $validated['status'],
             ]);
 
             // Remove old items

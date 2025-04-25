@@ -29,7 +29,7 @@ class DeliveryOrder extends Model
     }
     public function buyer()
     {
-        return $this->belongsTo(Customer::class, 'buyer');
+        return $this->belongsTo(Customer::class, 'buyer_id');
     }
 
     public function items()
