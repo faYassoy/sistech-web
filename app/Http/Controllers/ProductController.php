@@ -25,6 +25,7 @@ class ProductController extends Controller
         ->when($search, fn($query) => 
             $query->where('name', 'like', "%{$search}%")
                   ->orWhere('part_number', 'like', "%{$search}%")
+                  ->orWhere('brand', 'like', "%{$search}%")
         )
         ->when($supplierId, fn($query) => 
             $query->where('supplier_id', $supplierId)
@@ -59,6 +60,7 @@ class ProductController extends Controller
 {
     $validated = $request->validate([
         'name' => 'required|string|max:255',
+        'brand' => 'nullable|string',
         'part_number' => 'required|string|max:255',
         'serial_number' => 'required|string|max:255',
         'price' => 'required|numeric|min:0',
@@ -72,6 +74,7 @@ class ProductController extends Controller
         DB::transaction(function () use ($validated) {
             $product = Product::create([
                 'name' => $validated['name'],
+                'brand' => $validated['brand'],
                 'part_number' => $validated['part_number'],
                 'serial_number' => $validated['serial_number'],
                 'price' => $validated['price'],
@@ -121,6 +124,7 @@ class ProductController extends Controller
     $validated = $request->validate([
         'name' => 'required|string|max:255',
         'description' => 'nullable|string',
+        'brand' => 'nullable|string',
         'price' => 'required|numeric|min:0',
         'part_number' => 'nullable|string|max:255',
         'serial_number' => 'required|string|max:255',

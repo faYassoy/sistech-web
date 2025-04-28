@@ -28,6 +28,7 @@ interface ProductFormProps {
 const ProductForm: React.FC<ProductFormProps> = ({ product, suppliers, isOpen, onClose }) => {
     const { data, setData, post, put, processing, errors,reset } = useForm({
         name: '',
+        brand: '',
         description: '',
         price: '',
         part_number: '',
@@ -68,11 +69,12 @@ const ProductForm: React.FC<ProductFormProps> = ({ product, suppliers, isOpen, o
                     <form onSubmit={handleSubmit} className="h-[400px] space-y-3 overflow-y-scroll">
                         <div>
                             <Label className="pb-1" htmlFor="name">
-                                Product Name
+                                Nama Product
                             </Label>
                             <Input
                                 id="name"
                                 name="name"
+                                placeholder='Nama Product...'
                                 value={data.name}
                                 onChange={(e) => setData('name', e.target.value)}
                                 required
@@ -80,14 +82,30 @@ const ProductForm: React.FC<ProductFormProps> = ({ product, suppliers, isOpen, o
                             />
                             {errors.name && <p className="text-sm text-red-500">{errors.name}</p>}
                         </div>
+                        <div>
+                            <Label className="pb-1" htmlFor="brand">
+                                Brand
+                            </Label>
+                            <Input
+                                id="name"
+                                name="brand"
+                                placeholder='Brand...'
+                                value={data.brand}
+                                onChange={(e) => setData('brand', e.target.value)}
+                                required
+                                defaultValue={data.brand}
+                            />
+                            {errors.brand && <p className="text-sm text-red-500">{errors.brand}</p>}
+                        </div>
 
                         <div>
                             <Label className="pb-1" htmlFor="description">
-                                Description
+                                Deskripsi
                             </Label>
                             <Textarea
                                 id="description"
                                 name="description"
+                                placeholder='Deskripsi Product...'
                                 value={data.description}
                                 onChange={(e) => setData('description', e.target.value)}
                                 defaultValue={data.description}
@@ -97,16 +115,15 @@ const ProductForm: React.FC<ProductFormProps> = ({ product, suppliers, isOpen, o
 
                         <div>
                             <Label className="pb-1" htmlFor="price">
-                                Price
+                                Harga
                             </Label>
                             <InputCurrency
                                 id="price"
                                 name="price"
+                                placeholder='Harga Product...'
                                 value={data.price}
                                 onChange={(e) => setData('price', e.target.value)}
                                 required
-                                // @ts-ignore
-                                value={data.price}
                             />
                             {errors.price && <p className="text-sm text-red-500">{errors.price}</p>}
                         </div>
@@ -118,6 +135,7 @@ const ProductForm: React.FC<ProductFormProps> = ({ product, suppliers, isOpen, o
                             <Input
                                 id="serial_number"
                                 name="serial_number"
+                                placeholder='Serial Number...'
                                 value={data.serial_number}
                                 onChange={(e) => setData('serial_number', e.target.value)}
                                 required
@@ -133,6 +151,7 @@ const ProductForm: React.FC<ProductFormProps> = ({ product, suppliers, isOpen, o
                             <Input
                                 id="part_number"
                                 name="part_number"
+                                placeholder='Part Number...'
                                 value={data.part_number}
                                 onChange={(e) => setData('part_number', e.target.value)}
                                 defaultValue={data.part_number}
@@ -146,7 +165,7 @@ const ProductForm: React.FC<ProductFormProps> = ({ product, suppliers, isOpen, o
                             </Label>
                             <Select onValueChange={(value) => setData('supplier_id', value)} value={data.supplier_id ? String(data.supplier_id) : ''}>
                                 <SelectTrigger>
-                                    <SelectValue placeholder="Select Supplier" />
+                                    <SelectValue placeholder="Pilih Supplier" />
                                 </SelectTrigger>
                                 <SelectContent>
                                     {suppliers.map((supplier) => (
@@ -161,11 +180,12 @@ const ProductForm: React.FC<ProductFormProps> = ({ product, suppliers, isOpen, o
 
                         <div>
                             <Label className="pb-1" htmlFor="initial_stock">
-                                Initial Stock
+                                Stock Awal
                             </Label>
                             <Input
                                 id="initial_stock"
                                 name="initial_stock"
+                                placeholder='Stock Awal...'
                                 type="number"
                                 value={data.initial_stock}
                                 onChange={(e) => setData('initial_stock', e.target.value)}

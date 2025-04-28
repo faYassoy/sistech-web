@@ -12,9 +12,10 @@ export interface Supplier {
     email: string;
     phone: string;
     address: string;
-    brand: string;
+    // brand: string;
     created_at: string;
     updated_at: string;
+    [key: string]: unknown;
 }
 interface PageProps {
     suppliers: {
@@ -37,8 +38,8 @@ const SupplierIndex: React.FC = () => {
             selector: (_: Supplier, index: number) => (suppliers.current_page - 1) * suppliers.per_page + index + 1,
             width: "50px",
         },
-        { name: "Name", selector: (row: Supplier) => row.name, sortable: true },
-        { name: "Brand", selector: (row: Supplier) => row.brand || "N/A", sortable: true },
+        { name: "Nama", selector: (row: Supplier) => row.name, sortable: true },
+        { name: "Kontak", selector: (row: Supplier) => row.contact_number || "N/A", sortable: true },
         {
             name: "Created At",
             selector: (row: Supplier) => new Date(row.created_at).toLocaleDateString(),

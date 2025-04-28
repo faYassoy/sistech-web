@@ -61,25 +61,21 @@ const FormSupplier: React.FC<SupplierFormProps> = ({ isOpen, onClose, supplier }
                 </DialogHeader>
                 <form onSubmit={handleSubmit} className="space-y-4">
                     <div>
-                        <Label>Name</Label>
-                        <Input value={data.name} onChange={(e) => setData('name', e.target.value)} placeholder="Supplier Name" />
+                        <Label>Nama</Label>
+                        <Input value={data.name} onChange={(e) => setData('name', e.target.value)} placeholder="Nama supplier..." />
                         {errors.name && <p className="text-sm text-red-500">{errors.name}</p>}
                     </div>
                     <div>
-                        <Label>Address</Label>
-                        <Input value={data.address} onChange={(e) => setData('address', e.target.value)} placeholder="Supplier Address" />
+                        <Label>Alamat</Label>
+                        <Input value={data.address} onChange={(e) => setData('address', e.target.value)} placeholder="Alamat Supplier..." />
                     </div>
                     <div>
-                        <Label>Brand</Label>
-                        <Input value={data.brand} onChange={(e) => setData('brand', e.target.value)} placeholder="Brand Name" />
-                    </div>
-                    <div>
-                        <Label>Contact Number</Label>
-                        <Input value={data.contact_number} onChange={(e) => setData('contact_number', e.target.value)} placeholder="Contact Number" />
+                        <Label>Kontak</Label>
+                        <Input value={data.contact_number} onChange={(e) => setData('contact_number', e.target.value)} placeholder="Kontak supplier..." />
                     </div>
                     <div>
                         <Label>Email</Label>
-                        <Input type="email" value={data.email} onChange={(e) => setData('email', e.target.value)} placeholder="Email Address" />
+                        <Input type="email" value={data.email} onChange={(e) => setData('email', e.target.value)} placeholder="Email Supplier" />
                         {errors.email && <p className="text-sm text-red-500">{errors.email}</p>}
                     </div>
                     <div className="flex justify-end space-x-2">

@@ -54,8 +54,8 @@ const ProductsIndex: React.FC = () => {
         { name: 'Name', selector: (row: Product) => row.name, sortable: true },
         { name: 'Part Number', selector: (row: Product) => row.part_number, sortable: true },
         {
-            name: 'Supplier',
-            selector: (row: Product) => suppliers.find((s) => s.id === row.supplier_id)?.name || 'N/A',
+            name: 'Brand',
+            selector: (row: Product) => row.brand || 'N/A',
             sortable: true,
         },
         { name: 'Stock', selector: (row: Product) => row.stocks_sum_quantity || 0, sortable: true },

@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('part_number')->nullable();
+            $table->string('brand')->nullable();
             $table->string('serial_number');
             $table->string('price');
             $table->text('description')->nullable();

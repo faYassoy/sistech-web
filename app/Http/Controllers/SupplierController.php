@@ -18,8 +18,7 @@ class SupplierController extends Controller
 
         $suppliers = Supplier::query()
             ->when($search, function ($query, $search) {
-                $query->where('name', 'like', "%{$search}%")
-                    ->orWhere('brand', 'like', "%{$search}%");
+                $query->where('name', 'like', "%{$search}%");
             })
             ->orderBy('created_at', 'desc')
             ->paginate(10)
@@ -46,7 +45,7 @@ class SupplierController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255|unique:suppliers,name',
             'address' => 'nullable|string|max:255',
-            'brand' => 'nullable|string|max:255',
+            // 'brand' => 'nullable|string|max:255',
             'contact_number' => 'nullable|string|max:20',
             'email' => 'nullable|string|email|max:255|unique:suppliers,email',
         ]);
@@ -79,7 +78,7 @@ class SupplierController extends Controller
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:255', Rule::unique('suppliers')->ignore($supplier->id)],
             'address' => 'nullable|string|max:255',
-            'brand' => 'nullable|string|max:255',
+            // 'brand' => 'nullable|string|max:255',
             'contact_number' => 'nullable|string|max:20',
             'email' => ['nullable', 'string', 'email', 'max:255', Rule::unique('suppliers')->ignore($supplier->id)],
         ]);
