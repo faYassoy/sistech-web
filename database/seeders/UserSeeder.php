@@ -28,7 +28,7 @@ class UserSeeder extends Seeder
             'is_active' => true,
         ])->assignRole('sales_person');
 
-        User::factory(10)->create(); // Generate 10 random users
+        // User::factory(10)->create(); // Generate 10 random users
        
     }
 }
