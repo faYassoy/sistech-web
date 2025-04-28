@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
@@ -29,7 +30,7 @@ const FormReservation: React.FC<SalespersonreservationsFormProps> = ({ reservati
         // @ts-ignore
         salesperson_id:auth?.user?.roles[0] == 'sales_person' ?`${auth.user.id}` :'',
         product_id: '',
-        warehouse_id: '',
+        warehouse_id: 1,
         reserved_quantity: '',
     });
 
@@ -75,7 +76,7 @@ const FormReservation: React.FC<SalespersonreservationsFormProps> = ({ reservati
                             disabled={auth?.user?.roles[0] == 'sales_person'}
                         >
                             <SelectTrigger>
-                                <SelectValue placeholder="Select Salesperson" />
+                                <SelectValue placeholder="Pilih Salesperson" />
                             </SelectTrigger>
                             <SelectContent>
                                 {salespersons.map((sp) => (
@@ -95,9 +96,9 @@ const FormReservation: React.FC<SalespersonreservationsFormProps> = ({ reservati
                         </Label>
                         <Select onValueChange={(value) => setData('product_id', value)} value={String(data.product_id) || ''}>
                             <SelectTrigger>
-                                <SelectValue placeholder="Select Product" />
+                                <SelectValue placeholder="Pilih Product" />
                             </SelectTrigger>
-                            <SelectContent>
+                            <SelectContent className='h-64'>
                                 {products.map((product) => {
                                     const available_stock = Number(product.stocks_sum_quantity) - Number(product.reservations_sum_reserved_quantity);
 
@@ -113,7 +114,7 @@ const FormReservation: React.FC<SalespersonreservationsFormProps> = ({ reservati
                     </div>
 
                     {/* Warehouse Selection */}
-                    <div>
+                    {/* <div>
                         <Label className="pb-1" htmlFor="warehouse_id">
                             Warehouse
                         </Label>
@@ -130,16 +131,17 @@ const FormReservation: React.FC<SalespersonreservationsFormProps> = ({ reservati
                             </SelectContent>
                         </Select>
                         {errors.warehouse_id && <p className="text-sm text-red-500">{errors.warehouse_id}</p>}
-                    </div>
+                    </div> */}
 
                     {/* Reserved Quantity Input */}
                     <div>
                         <Label className="pb-1" htmlFor="reserved_quantity">
-                            Reserved Quantity
+                            Jumlah
                         </Label>
                         <Input
                             id="reserved_quantity"
                             name="reserved_quantity"
+                            placeholder='Jumlah...'
                             type="number"
                             min="1"
                             value={data.reserved_quantity}

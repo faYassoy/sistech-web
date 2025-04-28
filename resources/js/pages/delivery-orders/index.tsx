@@ -46,11 +46,11 @@ const DeliveryOrdersIndex: React.FC = () => {
 
             cell: (row: any) => (
                 <div className="w-full">
-                    {row.status == 'delivered' &&
-                    <Button className="float-right" variant="secondary" onClick={() => router.get(route('delivery-orders.print', row.id))}>
-                        <Printer />
-                    </Button>
-                    }
+                    {row.status != 'pending' && (
+                        <Button className="float-right" variant="secondary" onClick={() => router.get(route('delivery-orders.print', row.id))}>
+                            <Printer />
+                        </Button>
+                    )}
                 </div>
             ),
         },
@@ -92,7 +92,7 @@ const DeliveryOrdersIndex: React.FC = () => {
             <div className="container mx-auto p-4">
                 <div className="mb-4 flex items-center justify-between">
                     <h1 className="text-2xl font-bold">Delivery Orders</h1>
-                    <Button onClick={() => router.get(route('delivery-orders.create'))}>Create New Order</Button>
+                    {auth?.user?.roles[0] == 'admin' && <Button onClick={() => router.get(route('delivery-orders.create'))}>Create New Order</Button>}
                 </div>
 
                 <CommonDataTable

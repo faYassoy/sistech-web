@@ -97,7 +97,7 @@ const WarehouseIndex: React.FC = () => {
             <div className="container mx-auto p-4">
                 <div className="mb-4 flex items-center justify-between">
                     <h1 className="text-2xl font-bold">Warehouses</h1>
-                    <Button onClick={() => setModalOpen(true)}>Create New Warehouse</Button>
+                    {/* <Button onClick={() => setModalOpen(true)}>Create New Warehouse</Button> */}
                 </div>
 
                 <CommonDataTable

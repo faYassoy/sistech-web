@@ -29,7 +29,7 @@ export const mainNavItems = {
       {
         colapsableGroup: "Stock",
         items: [
-          { title: "Gudang", url: "/warehouses", icon: Warehouse },
+          // { title: "Gudang", url: "/warehouses", icon: Warehouse },
           { title: "Reservasi", url: "/reservations", icon: Warehouse },
         ],
       },

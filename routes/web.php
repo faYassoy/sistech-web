@@ -27,10 +27,7 @@ Route::group(['middleware' => ['auth']],function () {
         'index', 'show'
     ]);
 
-    Route::resource('reservations', ReservationController::class)->only([
-        'index', 'create', 'store'
-    ]);
-
+    Route::resource('reservations', ReservationController::class);
     Route::resource('delivery-orders', DeliveryOrderController::class)->only([
         'index', 'create', 'store', 'show'
     ]);
@@ -57,9 +54,9 @@ Route::group(['middleware' => ['role:admin','auth']],function () {
     Route::resource('customers', CustomerController::class);
     Route::post('customers/quick', [CustomerController::class, 'quick_store'])->name('customers.quick');
 
-    Route::resource('reservations', ReservationController::class)->only([
-        'create', 'store', 'update','destroy'
-    ]);
+    // Route::resource('reservations', ReservationController::class)->only([
+    //     'create', 'store', 'update','destroy'
+    // ]);
 
     Route::resource('delivery-orders', DeliveryOrderController::class)->only([
       'edit','update','destroy'

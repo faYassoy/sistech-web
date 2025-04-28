@@ -35,6 +35,7 @@ const ProductForm: React.FC<ProductFormProps> = ({ product, suppliers, isOpen, o
         serial_number: '',
         supplier_id: '' ,
         initial_stock: '',
+        warehouse_id:1
     });
 
     useEffect(() => {
