@@ -54,20 +54,20 @@ console.log('quickCustomer called');
 
                 <form onSubmit={quickcustomer} className="space-y-4">
                     <div>
-                        <Label htmlFor="name">Name</Label>
+                        <Label htmlFor="name">Nama</Label>
                         <Input id="name" value={cust_data.name} onChange={(e) => cust_setData('name', e.target.value)} required />
                     </div>
 
                     <div>
-                        <Label htmlFor="company">Company</Label>
+                        <Label htmlFor="company">Perusahaan</Label>
                         <Input id="company" value={cust_data.company} onChange={(e) => cust_setData('company', e.target.value)} />
                     </div>
                     <div>
-                        <Label htmlFor="address">Address</Label>
+                        <Label htmlFor="address">Alamat</Label>
                         <Input id="address" value={cust_data.address} onChange={(e) => cust_setData('address', e.target.value)} />
                     </div>
                     <div>
-                        <Label htmlFor="phone">Phone</Label>
+                        <Label htmlFor="phone">Telepon</Label>
                         <Input id="phone" value={cust_data.phone} onChange={(e) => cust_setData('phone', e.target.value)} />
                     </div>
 

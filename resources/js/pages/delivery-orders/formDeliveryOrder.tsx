@@ -52,13 +52,13 @@ export default function FormDeliveryOrder() {
                 {/* Form Fields */}
                 <div className="grid grid-cols-2 gap-4">
                     <div>
-                        <Label htmlFor="date">Order Date</Label>
+                        <Label htmlFor="date">Tanggal</Label>
                         <Input id="date" type="date" name="date" value={data.date} onChange={(e) => setData('date', e.target.value)} required />
                         {errors.date && <p className="text-sm text-red-500">{errors.date}</p>}
                     </div>
 
                     <div>
-                        <Label htmlFor="buyer_id">Buyer</Label>
+                        <Label htmlFor="buyer_id">Customer</Label>
                         <CustomerCombobox
                             setFormOpen={setFormOpen}
                             customers={customers}
@@ -71,7 +71,7 @@ export default function FormDeliveryOrder() {
                     </div>
 
                     <div>
-                        <Label>Warehouse</Label>
+                        <Label>Gudang</Label>
                         <Select onValueChange={(value) => setData('warehouse_id', value)} value={data.warehouse_id.toString()}>
                             <SelectTrigger>
                                 <SelectValue placeholder="Select a warehouse" />
@@ -143,7 +143,7 @@ export function InlineDeliveryTable({ products, form, errors, onChange }) {
     return (
         <div>
             <Button onClick={addRow} className="m-2" variant={'outline'} size={'sm'}>
-                + Add Product
+                + Tambahkan
             </Button>
             <div className="max-h-[250px] overflow-y-auto">
                 <DataTable
@@ -174,7 +174,7 @@ export function InlineDeliveryTable({ products, form, errors, onChange }) {
                                         required
                                     />
                                 ) : (
-                                    <span className="text-red-500">Please Remove If Product Not Selected!</span>
+                                    <span className="text-red-500">Product Belum Di Pilih!</span>
                                 ),
                         },
                         {

@@ -51,7 +51,7 @@ const FormCustomer: React.FC<FormCusomerProps> = ({ isOpen, onClose, customer })
 
                 <form onSubmit={handleSubmit} className="space-y-4">
                     <div>
-                        <Label htmlFor="name">Name</Label>
+                        <Label htmlFor="name">Nama</Label>
                         <Input
                             id="name"
                             value={data.name}
@@ -61,7 +61,7 @@ const FormCustomer: React.FC<FormCusomerProps> = ({ isOpen, onClose, customer })
                     </div>
 
                     <div>
-                        <Label htmlFor="company">Company</Label>
+                        <Label htmlFor="company">Peusahaan</Label>
                         <Input
                             id="company"
                             value={data.company}
@@ -70,7 +70,7 @@ const FormCustomer: React.FC<FormCusomerProps> = ({ isOpen, onClose, customer })
                         />
                     </div>
                     <div>
-                        <Label htmlFor="address">Address</Label>
+                        <Label htmlFor="address">Alamat</Label>
                         <Input
                             id="address"
                             value={data.address}
@@ -79,7 +79,7 @@ const FormCustomer: React.FC<FormCusomerProps> = ({ isOpen, onClose, customer })
                         />
                     </div>
                     <div>
-                        <Label htmlFor="phone">Phone</Label>
+                        <Label htmlFor="phone">Telepon</Label>
                         <Input
                             id="phone"
                             value={data.phone}
