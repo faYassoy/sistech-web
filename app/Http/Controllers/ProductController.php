@@ -163,4 +163,24 @@ class ProductController extends Controller
 
     return back()->with('success', 'Product deleted successfully.');
 }
+public function list(Request $request)
+{
+    $search = $request->query('search');
+
+    $products = Product::query()
+    ->withSum('stocks', 'quantity') // Get total stock quantity
+    ->when($search, fn($query) => 
+        $query->where('name', 'like', "%{$search}%")
+              ->orWhere('part_number', 'like', "%{$search}%")
+              ->orWhere('brand', 'like', "%{$search}%")
+    )
+    ->paginate(10)
+    ->withQueryString();
+
+
+    return Inertia::render('price-list/index', [
+        'products' => $products,
+        'search' => $search,
+    ]);
+}
 }

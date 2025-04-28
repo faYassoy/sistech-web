@@ -26,6 +26,8 @@ Route::group(['middleware' => ['auth']],function () {
     Route::resource('products', ProductController::class)->only([
         'index', 'show'
     ]);
+    
+    Route::get('price-list', [ProductController::class,'list']);
 
     Route::resource('reservations', ReservationController::class);
     Route::resource('delivery-orders', DeliveryOrderController::class)->only([

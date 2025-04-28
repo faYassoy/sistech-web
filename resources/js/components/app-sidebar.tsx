@@ -5,7 +5,7 @@ import { NavUser } from '@/components/nav-user';
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
 import { type NavItem } from '@/types';
 import { Link, usePage } from '@inertiajs/react';
-import {  BookUser, Boxes, Container, LayoutGrid, Users2, Warehouse } from 'lucide-react';
+import {  BookUser, Boxes, Container, LayoutGrid, ScrollText, Users2, Warehouse } from 'lucide-react';
 import AppLogo from './app-logo';
 
 export const mainNavItems = {
@@ -15,6 +15,7 @@ export const mainNavItems = {
         items: [
           { title: "Dashboard", url: "/dashboard", icon: LayoutGrid },
           { title: "Delivery Order", url: "/delivery-orders", icon: Warehouse },
+          { title: "Price List", url: "/price-list", icon: ScrollText },
         ],
       },
       {
