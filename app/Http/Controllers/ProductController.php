@@ -22,6 +22,7 @@ class ProductController extends Controller
         $products = Product::query()
         ->with('supplier') // Include supplier details
         ->withSum('stocks', 'quantity') // Get total stock quantity
+        ->withSum('reservations', 'reserved_quantity') // Get total reserved quantity
         ->when($search, fn($query) => 
             $query->where('name', 'like', "%{$search}%")
                   ->orWhere('part_number', 'like', "%{$search}%")

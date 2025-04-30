@@ -5,7 +5,7 @@ use App\Http\Controllers\DeliveryOrderController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ReservationController;
 use App\Http\Controllers\SalespersonInventoryController;
-
+use App\Http\Controllers\StockController;
 use App\Http\Controllers\StockPeekController;
 use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\UserController;
@@ -54,6 +54,7 @@ Route::group(['middleware' => ['role:admin','auth']],function () {
     Route::resource('suppliers', SupplierController::class);
 
     Route::resource('customers', CustomerController::class);
+    Route::resource('stocks', StockController::class);
     Route::post('customers/quick', [CustomerController::class, 'quick_store'])->name('customers.quick');
 
     // Route::resource('reservations', ReservationController::class)->only([

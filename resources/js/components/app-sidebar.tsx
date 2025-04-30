@@ -31,6 +31,7 @@ export const mainNavItems = {
         colapsableGroup: "Stock",
         items: [
           // { title: "Gudang", url: "/warehouses", icon: Warehouse },
+          { title: "Kelola Stock", url: "/stocks", icon: Boxes },
           { title: "Reservasi", url: "/reservations", icon: Warehouse },
         ],
       },
@@ -42,6 +43,7 @@ export const mainNavItems = {
         items: [
           { title: "Dashboard", url: "/dashboard", icon: LayoutGrid },
           { title: "Delivery Order", url: "/delivery-orders", icon: Warehouse },
+          { title: "Price List", url: "/price-list", icon: ScrollText },
         ],
       },
       {
