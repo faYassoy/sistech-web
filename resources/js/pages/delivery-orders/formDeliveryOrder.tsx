@@ -86,24 +86,29 @@ export default function FormDeliveryOrder() {
                         </Select>
                         {errors.warehouse_id && <p className="text-sm text-red-500">{errors.warehouse_id}</p>}
                     </div>
-                    <div>
-                            <Label className="pb-1" htmlFor="supplier">
-                                Status
-                            </Label>
-                            <Select onValueChange={(value) => setData('status', value)} value={data.status ? String(data.status) : ''}>
-                                <SelectTrigger>
-                                    <SelectValue placeholder="Select Status" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    {['pending', 'in_progress', 'delivered', 'canceled'].map((status) => (
-                                        <SelectItem key={status} value={status}>
-                                            {status.toLocaleUpperCase()}
-                                        </SelectItem>
-                                    ))}
-                                </SelectContent>
-                            </Select>
-                            {errors.status && <p className="text-sm text-red-500">{errors.status}</p>}
-                        </div>
+                    {
+                        // @ts-ignore
+                        auth?.user?.roles[0] == 'admin' && (
+                            <div>
+                                <Label className="pb-1" htmlFor="supplier">
+                                    Status
+                                </Label>
+                                <Select onValueChange={(value) => setData('status', value)} value={data.status ? String(data.status) : ''}>
+                                    <SelectTrigger>
+                                        <SelectValue placeholder="Select Status" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        {['pending', 'in_progress', 'delivered', 'canceled'].map((status) => (
+                                            <SelectItem key={status} value={status}>
+                                                {status.toLocaleUpperCase()}
+                                            </SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
+                                {errors.status && <p className="text-sm text-red-500">{errors.status}</p>}
+                            </div>
+                        )
+                    }
                 </div>
 
                 {/* Delivery Items Table */}
@@ -123,6 +128,14 @@ export default function FormDeliveryOrder() {
 
 export function InlineDeliveryTable({ products, form, errors, onChange }) {
     const [items, setItems] = useState(form.items.length ? form.items : [{ id: Date.now(), product_id: '', quantity: 1, unit_price: 0 }]);
+
+    useEffect(() => {
+        const urlSearchParams = new URLSearchParams(window.location.search);
+
+        if (urlSearchParams.has('items')) {
+            setItems(JSON.parse(urlSearchParams.get('items') || ''));
+        }
+    }, []);
 
     useEffect(() => {
         onChange(items);
@@ -190,7 +203,7 @@ export function InlineDeliveryTable({ products, form, errors, onChange }) {
                                 ),
                         },
                         {
-                            name: 'Unit Price',
+                            name: 'total Price',
                             cell: (row) => row.product_id && <Input type="number" value={row.unit_price * row.quantity} disabled />,
                         },
                         {

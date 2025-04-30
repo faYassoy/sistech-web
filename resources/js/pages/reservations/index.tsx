@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import AppLayout from '@/layouts/app-layout';
 import { extractBreadcrumbs } from '@/lib/utils';
 import { BreadcrumbItem } from '@/types';
+import FormOrderConversion from './FormOrderConversion';
 import FormReservation from './formReservation';
 
 interface SalespersonInventory {
@@ -36,6 +37,7 @@ const SalespersonInventoryIndex: React.FC = () => {
     const { reservations, products, salespersons, warehouses } = props;
     const [selected, setSelected] = useState<SalespersonInventory | null>(null);
     const [reservationModal, setReservationModal] = useState(false);
+    const [convertModal, setConvertModal] = useState(false);
     console.log(reservations);
 
     const columns = [
@@ -45,7 +47,16 @@ const SalespersonInventoryIndex: React.FC = () => {
             width: '50px',
         },
         { name: 'Salesperson', selector: (row: SalespersonInventory) => row.salesperson.name, sortable: true },
-        { name: 'Product', selector: (row: SalespersonInventory) => row.product.name, sortable: true },
+        {
+            name: 'Product',
+            selector: (row: SalespersonInventory) => row.product.name,
+            sortable: true,
+            cell: (row: SalespersonInventory) => (
+                <div className="w-full truncate" title={row.product.name}>
+                    {row.product.name}
+                </div>
+            ),
+        },
         { name: 'Reserved Quantity', selector: (row: SalespersonInventory) => row.reserved_quantity, sortable: true },
         { name: 'Total Stock', selector: (row: SalespersonInventory) => row.product.stocks_sum_quantity, sortable: true },
         {
@@ -91,7 +102,11 @@ const SalespersonInventoryIndex: React.FC = () => {
             <div className="container mx-auto p-4">
                 <div className="mb-4 flex items-center justify-between">
                     <h1 className="text-2xl font-bold">Salesperson Inventory</h1>
-                    <Button onClick={() => setReservationModal(true)}>New Reservation</Button>
+
+                    <div className='flex gap-4'>
+                        <Button onClick={() => setReservationModal(true)}>New Reservation</Button>
+                        <Button onClick={() => setConvertModal(true)}>Order Conversion</Button>
+                    </div>
                 </div>
 
                 <CommonDataTable
@@ -114,6 +129,7 @@ const SalespersonInventoryIndex: React.FC = () => {
                 salespersons={salespersons}
                 warehouses={warehouses}
             />
+            <FormOrderConversion isOpen={convertModal} onClose={() => setConvertModal(false)} reservations={reservations.data} />
         </AppLayout>
     );
 };

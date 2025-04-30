@@ -7,6 +7,7 @@ use App\Models\Product;
 use App\Models\User;
 use App\Models\Warehouse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 
 class ReservationController extends Controller
@@ -22,15 +23,18 @@ class ReservationController extends Controller
             $query->withSum('stocks', 'quantity') // Total stock across warehouses
                 ->withSum('reservations', 'reserved_quantity'); // Total reserved stock
         }])
-            ->when($search, function ($query) use ($search) {
-                $query->whereHas('salesperson', function ($q) use ($search) {
-                    $q->where('name', 'like', "%{$search}%");
-                })->orWhereHas('product', function ($q) use ($search) {
-                    $q->where('name', 'like', "%{$search}%");
-                });
-            })
-            ->paginate(10)
-            ->withQueryString();
+        ->when(Auth::check() && Auth::user()->role === 'salesperson', function ($query) {
+            $query->where('salesperson_id', Auth::id());
+        })
+        ->when($search, function ($query) use ($search) {
+            $query->whereHas('salesperson', function ($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%");
+            })->orWhereHas('product', function ($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%");
+            });
+        })
+        ->paginate(10)
+        ->withQueryString();
 
         $salespersons = User::select('id', 'name')->get();
         $products = Product::select('id', 'name')->withSum('stocks', 'quantity')->withSum('reservations', 'reserved_quantity')->get();
