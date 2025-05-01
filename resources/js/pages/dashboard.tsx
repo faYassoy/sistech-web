@@ -28,7 +28,7 @@ export default function Dashboard() {
                         </h1>
                         <div className="h-[90%] w-full overflow-hidden">
                             {deliveryOrders.length == 0 ? (
-                                <div className="grid h-full items-center px-4">
+                                <div className="grid h-2/3 items-center px-4">
                                     <p className="mb-8 w-full text-center">Belum Ada Delivery Order</p>
                                     <Button
                                         type="button"
@@ -63,7 +63,7 @@ export default function Dashboard() {
                         <h1 className="my-4 px-4 text-xl font-semibold">{isAdmin ? 'Reservasi Terbaru' : 'Reservasi ' + auth.user.name}</h1>
                         <div className="h-[90%] w-full space-y-2 overflow-hidden">
                             {reservations.length == 0 ? (
-                                <div className="grid h-full items-center px-4">
+                                <div className="grid h-2/3 items-center px-4">
                                     <p className="mb-8 w-full text-center">Belum Ada Reservasi</p>
                                     <Button
                                         type="button"

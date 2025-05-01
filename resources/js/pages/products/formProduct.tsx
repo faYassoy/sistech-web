@@ -198,7 +198,7 @@ console.log(data);
                         {errors.supplier_id && <p className="text-sm text-red-500">{errors.supplier_id}</p>}
                     </div>
 
-                    <div>
+                   {!product && <div>
                         <Label className="pb-1" htmlFor="initial_stock">
                             Stock Awal
                         </Label>
@@ -211,7 +211,7 @@ console.log(data);
                             onChange={(e) => setData('initial_stock', e.target.value)}
                         />
                         {errors.initial_stock && <p className="text-sm text-red-500">{errors.initial_stock}</p>}
-                    </div>
+                    </div>}
 
                     <div className="flex justify-end space-x-2">
                         <Button type="button" variant="outline" onClick={onClose}>
