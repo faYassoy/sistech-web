@@ -41,7 +41,12 @@ class DeliveryOrderController extends Controller
     {
         return Inertia::render('delivery-orders/formDeliveryOrder', [
             'warehouses' => Warehouse::select('id', 'name')->get(),
-            'products' => Product::select('id', 'name', 'price')->with('stocks')->get(),
+            'products' => Product::select('id', 'name', 'price')
+            ->whereHas('stocks', function ($query) {
+                // Filter the products where the sum of related stock quantities is greater than 0
+                $query->havingRaw('SUM(quantity) > 0');
+            })
+            ->get(),
             'customers' => Customer::select('id', 'name', 'company')->get(),
         ]);
     }

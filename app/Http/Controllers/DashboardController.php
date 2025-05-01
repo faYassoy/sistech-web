@@ -17,11 +17,11 @@ class DashboardController extends Controller
     {
         $user = Auth::user();
 
-        // Cek apakah user admin (asumsi pakai Spatie Role)
+        
         $isAdmin = $user->hasRole('admin');
 
-        // Ambil reservasi
-        $reservations = Reservation::with(['product', 'warehouse'])
+    
+        $reservations = Reservation::with(['product', 'salesperson'])
             ->when(!$isAdmin, function ($query) use ($user) {
                 $query->where('salesperson_id', $user->id);
             })
@@ -29,7 +29,7 @@ class DashboardController extends Controller
             ->take(5)
             ->get();
 
-        // Ambil surat jalan
+        
         $deliveryOrders = DeliveryOrder::with(['warehouse', 'buyer'])
             ->when(!$isAdmin, function ($query) use ($user) {
                 $query->where('created_by', $user->id);
@@ -39,9 +39,11 @@ class DashboardController extends Controller
             ->get();
 
         // Ambil produk terbaru
-        $products = Product::select('id', 'name', 'price')
+        $products = Product::select('id', 'name', 'brand')
             ->latest()
-            ->take(10)
+            ->take(5)
+            ->withSum('stocks', 'quantity') // Get total stock quantity
+            ->withSum('reservations', 'reserved_quantity') // Get total reserved quantity
             ->get();
 
         return inertia('dashboard', [
