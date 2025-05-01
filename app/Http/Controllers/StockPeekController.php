@@ -13,12 +13,14 @@ class StockPeekController extends Controller
         $search = $request->query('search');
 
         $products = Product::query()
-            ->withSum(['stocks as stocks_sum_quantity' => function ($query) use ($warehouseId) {
+            ->withSum(['stocks' => function ($query) use ($warehouseId) {
                 $query->where('warehouse_id', $warehouseId);
             }], 'quantity')
-            ->when($search, fn ($q) =>
-                $q->where('name', 'like', "%{$search}%")
-                  ->orWhere('part_number', 'like', "%{$search}%"))
+            ->withSum('reservations', 'reserved_quantity')
+            ->when($search, fn($q) =>
+            $q->where('name', 'like', "%{$search}%")
+                ->orWhere('part_number', 'like', "%{$search}%"))
+            ->latest()
             ->paginate(10);
 
         return response()->json($products);

@@ -69,7 +69,7 @@ const DeliveryOrdersIndex: React.FC = () => {
                             Edit
                         </Button>
 
-                        <Button
+                        {/* <Button
                             variant="destructive"
                             size={'sm'}
                             onClick={() => {
@@ -81,6 +81,17 @@ const DeliveryOrdersIndex: React.FC = () => {
                             }}
                         >
                             Delete
+                        </Button> */}
+                        <Button
+                            variant="destructive"
+                            size={'sm'}
+                            onClick={() => {
+                                if (confirm('Are you sure you want to cancle this order?')) {
+                                    router.post(route('delivery-orders.cancel', row.id));
+                                }
+                            }}
+                        >
+                            Cancel Order
                         </Button>
                     </div>
                 ),

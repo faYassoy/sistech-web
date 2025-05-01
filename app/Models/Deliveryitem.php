@@ -26,4 +26,8 @@ class DeliveryItem extends Model
     {
         return $this->belongsTo(Product::class);
     }
+    public function reservationDeliveries()
+    {
+        return $this->hasMany(ReservationDelivery::class);
+    }
 }

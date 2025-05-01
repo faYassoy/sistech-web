@@ -102,16 +102,16 @@ class ProductSeeder extends Seeder
         }
 
         // You can add more products with Faker for more realistic data
-        for ($i = 0; $i < 50; $i++) {
-            $productName = $faker->word . ' ' . $faker->word . ' Electronic';
-            Product::create([
-                'name' => $productName,
-                'part_number' => strtoupper('PN-' . $faker->unique()->randomNumber(5)),
-                'serial_number' => strtoupper('SN-' . $faker->unique()->bothify('???-###')),
-                'price' => $faker->numberBetween(500000, 20000000),
-                'description' => $faker->sentence(10),
-                'supplier_id' => $suppliers ? $faker->randomElement($suppliers) : null,
-            ]);
-        }
+        // for ($i = 0; $i < 50; $i++) {
+        //     $productName = $faker->word . ' ' . $faker->word . ' Electronic';
+        //     Product::create([
+        //         'name' => $productName,
+        //         'part_number' => strtoupper('PN-' . $faker->unique()->randomNumber(5)),
+        //         'serial_number' => strtoupper('SN-' . $faker->unique()->bothify('???-###')),
+        //         'price' => $faker->numberBetween(500000, 20000000),
+        //         'description' => $faker->sentence(10),
+        //         'supplier_id' => $suppliers ? $faker->randomElement($suppliers) : null,
+        //     ]);
+        // }
     }
 }

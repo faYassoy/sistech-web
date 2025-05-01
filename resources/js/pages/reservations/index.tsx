@@ -7,13 +7,13 @@ import { Button } from '@/components/ui/button';
 import AppLayout from '@/layouts/app-layout';
 import { extractBreadcrumbs } from '@/lib/utils';
 import { BreadcrumbItem } from '@/types';
-import FormOrderConversion from './FormOrderConversion';
 import FormReservation from './formReservation';
+import FormOrderConversion from './formOrderConversion';
 
 interface SalespersonInventory {
     id: number;
     salesperson: { name: string };
-    product: { name: string; stocks_sum_quantity: string };
+    product: { name: string; stocks_sum_quantity: string;reservations_sum_reserved_quantity:string };
     total_stock: number;
     reserved_quantity: number;
     created_at: string;
@@ -34,11 +34,11 @@ interface PageProps {
 const SalespersonInventoryIndex: React.FC = () => {
     const props = usePage<PageProps>().props;
     const breadcrumbs: BreadcrumbItem[] = extractBreadcrumbs(window.location.pathname);
-    const { reservations, products, salespersons, warehouses } = props;
+    const { auth,reservations, products, salespersons, warehouses } = props;
     const [selected, setSelected] = useState<SalespersonInventory | null>(null);
     const [reservationModal, setReservationModal] = useState(false);
     const [convertModal, setConvertModal] = useState(false);
-    console.log(reservations);
+    // console.log(reservations);
 
     const columns = [
         {
@@ -58,7 +58,7 @@ const SalespersonInventoryIndex: React.FC = () => {
             ),
         },
         { name: 'Reserved Quantity', selector: (row: SalespersonInventory) => row.reserved_quantity, sortable: true },
-        { name: 'Total Stock', selector: (row: SalespersonInventory) => row.product.stocks_sum_quantity, sortable: true },
+        { name: 'Total Stock', selector: (row: SalespersonInventory) => `${Number(row.product.stocks_sum_quantity)-Number(row.product.reservations_sum_reserved_quantity)}`, sortable: true },
         {
             name: 'Created At',
             selector: (row: SalespersonInventory) => new Date(row.created_at).toLocaleDateString(),
@@ -105,7 +105,7 @@ const SalespersonInventoryIndex: React.FC = () => {
 
                     <div className='flex gap-4'>
                         <Button onClick={() => setReservationModal(true)}>New Reservation</Button>
-                        <Button onClick={() => setConvertModal(true)}>Order Conversion</Button>
+                        {auth?.user?.roles[0] == 'sales_person' &&<Button onClick={() => setConvertModal(true)}>Order Conversion</Button>}
                     </div>
                 </div>
 

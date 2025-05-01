@@ -6,6 +6,7 @@ use App\Models\Customer;
 use App\Models\DeliveryOrder;
 use App\Models\DeliveryItem;
 use App\Models\Product;
+use App\Models\ReservationDelivery;
 use App\Models\Stock;
 use App\Models\Warehouse;
 use Illuminate\Http\Request;
@@ -22,7 +23,7 @@ class DeliveryOrderController extends Controller
     {
         $search = $request->query('search');
 
-        $deliveryOrders = DeliveryOrder::with('warehouse', 'creator','buyer')
+        $deliveryOrders = DeliveryOrder::with('warehouse', 'creator', 'buyer')
             ->when($search, function ($query) use ($search) {
                 $query->where('order_number', 'like', "%{$search}%")
                     ->orWhere('buyer', 'like', "%{$search}%");
@@ -42,11 +43,11 @@ class DeliveryOrderController extends Controller
         return Inertia::render('delivery-orders/formDeliveryOrder', [
             'warehouses' => Warehouse::select('id', 'name')->get(),
             'products' => Product::select('id', 'name', 'price')
-            ->whereHas('stocks', function ($query) {
-                // Filter the products where the sum of related stock quantities is greater than 0
-                $query->havingRaw('SUM(quantity) > 0');
-            })
-            ->get(),
+                ->whereHas('stocks', function ($query) {
+                    // Filter the products where the sum of related stock quantities is greater than 0
+                    $query->havingRaw('SUM(quantity) > 0');
+                })
+                ->get(),
             'customers' => Customer::select('id', 'name', 'company')->get(),
         ]);
     }
@@ -57,7 +58,7 @@ class DeliveryOrderController extends Controller
     {
         $validated = $request->validate([
             'date' => 'required|date',
-            'buyer_id' => 'required|integer|max:255',
+            'buyer_id' => 'required|integer|exists:customers,id',
             'warehouse_id' => 'required|exists:warehouses,id',
             'items' => 'required|array|min:1',
             'items.*.product_id' => 'required|exists:products,id',
@@ -66,31 +67,41 @@ class DeliveryOrderController extends Controller
         ]);
 
         DB::transaction(function () use ($validated) {
+            // Step 1: Create the delivery order
             $order = DeliveryOrder::create([
                 'order_number' => $this->generateOrderNumber(),
                 'date' => $validated['date'],
                 'buyer_id' => $validated['buyer_id'],
                 'warehouse_id' => $validated['warehouse_id'],
                 'created_by' => auth()->id(),
-                'status' => 'pending', // Default status
+                'status' => 'pending',
             ]);
 
             foreach ($validated['items'] as $item) {
                 $product = Product::findOrFail($item['product_id']);
 
-                // Sum all reserved for this product
+                // Step 2: Check stock availability
                 $reservedStock = $product->reservations()->sum('reserved_quantity');
                 $availableStock = $product->stocks()->sum('quantity') - $reservedStock;
 
-                if ($item['quantity'] > $availableStock) {
-                    throw new \Exception("Not enough stock for {$product->name}");
+                if ($item['quantity'] > ($reservedStock + $availableStock)) {
+                    throw new \Exception("Not enough total stock for {$product->name}");
                 }
 
-                //  Deduct from reservation first (if exists)
+                // Step 3: Create delivery item
+                $deliveryItem = DeliveryItem::create([
+                    'delivery_order_id' => $order->id,
+                    'product_id' => $item['product_id'],
+                    'quantity' => $item['quantity'],
+                    'unit_price' => $item['unit_price'],
+                    'total_price' => $item['quantity'] * $item['unit_price'],
+                ]);
+
+                // Step 4: Deduct from reservation first (if available)
                 $remainingToDeduct = $item['quantity'];
 
                 $reservations = $product->reservations()
-                    ->where('salesperson_id', auth()->id()) // Only from current user
+                    ->where('salesperson_id', auth()->id())
                     ->orderBy('id')
                     ->get();
 
@@ -98,24 +109,30 @@ class DeliveryOrderController extends Controller
                     if ($remainingToDeduct <= 0) break;
 
                     $deduct = min($reservation->reserved_quantity, $remainingToDeduct);
-                    $reservation->reserved_quantity -= $deduct;
-                    $reservation->save();
+
+                    // Log reservation usage in pivot
+                    ReservationDelivery::create([
+                        'delivery_item_id' => $deliveryItem->id,
+                        'reservation_id' => $reservation->id,
+                        'deducted_quantity' => $deduct,
+                        'source' => 'reservation',
+                    ]);
 
                     $remainingToDeduct -= $deduct;
                 }
 
-                // If still need more, reduce from actual warehouse stock
+                // Step 5: Deduct remaining from warehouse if needed
                 if ($remainingToDeduct > 0) {
                     $product->stocks()->decrement('quantity', $remainingToDeduct);
-                }
 
-                DeliveryItem::create([
-                    'delivery_order_id' => $order->id,
-                    'product_id' => $item['product_id'],
-                    'quantity' => $item['quantity'],
-                    'unit_price' => $item['unit_price'],
-                    'total_price' => $item['quantity'] * $item['unit_price'],
-                ]);
+                    // Log warehouse usage in pivot
+                    ReservationDelivery::create([
+                        'delivery_item_id' => $deliveryItem->id,
+                        'reservation_id' => null,
+                        'deducted_quantity' => $remainingToDeduct,
+                        'source' => 'warehouse',
+                    ]);
+                }
             }
         });
 
@@ -212,4 +229,32 @@ class DeliveryOrderController extends Controller
             return back()->withErrors(['error' => 'Failed to delete Delivery Order: ' . $e->getMessage()]);
         }
     }
+    public function cancel(DeliveryOrder $order)
+{
+    if ($order->status === 'canceled') {
+        return redirect()->back()->with('info', 'Order already canceled.');
+    }
+
+    DB::transaction(function () use ($order) {
+        foreach ($order->items as $item) {
+            // Revert warehouse stock only if quantity was directly deducted
+            $directDeducted = $item->reservationDeliveries()
+                ->where('source', 'warehouse')
+                ->sum('deducted_quantity');
+
+            if ($directDeducted > 0) {
+                $item->product->stocks()->increment('quantity', $directDeducted);
+            }
+
+            // Delete all reservation usage logs
+            $item->reservationDeliveries()->delete();
+        }
+
+        $order->status = 'canceled';
+        $order->save();
+    });
+
+    return redirect()->route('delivery-orders.index')->with('success', 'Delivery order canceled and stock reverted.');
+}
+
 }

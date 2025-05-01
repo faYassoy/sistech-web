@@ -63,6 +63,10 @@ Route::group(['middleware' => ['role:admin','auth']],function () {
     Route::resource('delivery-orders', DeliveryOrderController::class)->only([
       'edit','update','destroy'
     ]);
+
+    Route::post('/delivery-orders/{order}/cancel', [DeliveryOrderController::class, 'cancel'])
+    ->name('delivery-orders.cancel');
+
     Route::get('/delivery-orders/{deliveryOrder}/print', [DeliveryOrderController::class, 'print'])->name('delivery-orders.print');
 
     Route::prefix('warehouses/{warehouse}')->group(function () {

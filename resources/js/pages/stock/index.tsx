@@ -56,7 +56,7 @@ const StockModal: React.FC = () => {
         },
         { name: 'Product Name', selector: (row: StockItem) => row.name, sortable: true },
         { name: 'Part Number', selector: (row: StockItem) => row.part_number, sortable: true },
-        { name: 'Stock Qty', width:'100px',selector: (row: StockItem) => row.stocks_sum_quantity ?? 0, sortable: true },
+        { name: 'Stock', width:'100px',selector: (row: StockItem) => Number(row.stocks_sum_quantity)-Number(row.reservations_sum_reserved_quantity), sortable: true },
         { name: 'Created At', selector: (row: StockItem) => new Date(row.created_at).toLocaleDateString() },
         {
             name: 'Adjust',

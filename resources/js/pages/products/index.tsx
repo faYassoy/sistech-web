@@ -58,7 +58,7 @@ const ProductsIndex: React.FC = () => {
             selector: (row: Product) => row.brand || 'N/A',
             sortable: true,
         },
-        { name: 'Stock', selector: (row: Product) => `${Number(row.stocks_sum_quantity)}`, sortable: true },
+        { name: 'Stock', selector: (row: Product) => `${Number(row.stocks_sum_quantity)-Number(row.reservations_sum_reserved_quantity)}`, sortable: true },
         { name: 'Reserved', selector: (row: Product) => ` ${Number(row.reservations_sum_reserved_quantity)}`, sortable: true },
         {
             name: 'Created At',
