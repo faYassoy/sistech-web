@@ -16,6 +16,7 @@ import QuickFormCustomer from '../customers/QuickFormCustomer';
 
 export default function FormDeliveryOrder() {
     const [formOpen, setFormOpen] = useState(false);
+    const [hidePrice, setHidePrice] = useState(false);
     const { warehouses, products, deliveryOrder, customers, auth } = usePage().props;
     const { data, setData, post, put, processing, errors } = useForm({
         date: deliveryOrder?.date || new Date().toISOString().split('T')[0],
@@ -114,7 +115,7 @@ export default function FormDeliveryOrder() {
                 {/* Delivery Items Table */}
 
                 <Label>Delivery Items</Label>
-                <InlineDeliveryTable products={products} form={data} errors={errors} onChange={(items) => setData('items', items)} />
+                <InlineDeliveryTable products={products} form={data} errors={errors} onChange={(items) => setData('items', items)} hidePrice={hidePrice} setHidePrice={setHidePrice} />
 
                 {/* Submit Button */}
                 <Button type="submit" disabled={processing} className="mt-4 w-full">
@@ -126,7 +127,7 @@ export default function FormDeliveryOrder() {
     );
 }
 
-export function InlineDeliveryTable({ products, form, errors, onChange }) {
+export function InlineDeliveryTable({ products, form, errors, onChange, hidePrice,setHidePrice }) {
     const [items, setItems] = useState(form.items.length ? form.items : [{ id: Date.now(), product_id: '', quantity: 1, unit_price: 0 }]);
 
     useEffect(() => {
@@ -155,9 +156,15 @@ export function InlineDeliveryTable({ products, form, errors, onChange }) {
 
     return (
         <div>
-            <Button onClick={addRow} className="m-2" variant={'outline'} size={'sm'}>
+            <div className="flex gap-2">
+
+            <Button type='button' onClick={addRow} className="m-2" variant={'outline'} size={'sm'}>
                 + Tambahkan
             </Button>
+            <Button type='button' onClick={()=>setHidePrice(!hidePrice)} className="m-2" variant={hidePrice?'outline':'destructive'} size={'sm'}>
+                Unit Price
+            </Button>
+            </div>
             <div className="max-h-[250px] overflow-y-auto">
                 <DataTable
                     columns={[
@@ -193,18 +200,20 @@ export function InlineDeliveryTable({ products, form, errors, onChange }) {
                         {
                             name: 'Unit Price',
                             cell: (row) =>
-                                row.product_id && (
+                                row.product_id && !hidePrice ?(
                                     <Input
                                         type="number"
                                         value={row.unit_price}
                                         onChange={(e) => updateItem(row.id, 'unit_price', e.target.value)}
                                         required
                                     />
+                                ):(
+                                    <div className="w-[140px]">-</div>
                                 ),
                         },
                         {
                             name: 'total Price',
-                            cell: (row) => row.product_id && <Input type="number" value={row.unit_price * row.quantity} disabled />,
+                            cell: (row) => row.product_id && `Rp ${Number(row.unit_price * row.quantity).toLocaleString('id-ID')}`,
                         },
                         {
                             name: 'Actions',
@@ -272,7 +281,7 @@ export function CustomerCombobox({ customers, value, onChange, setFormOpen, auth
             <Popover open={open} onOpenChange={setOpen}>
                 <PopoverTrigger asChild>
                     <Button variant="outline" className="w-full justify-between">
-                        {selectedProduct ? selectedProduct.name : 'Select product'}
+                        {selectedProduct ? selectedProduct.name : 'Select Customer'}
                         {/* <Check className="ml-2 h-4 w-4 opacity-50" /> */}
                     </Button>
                 </PopoverTrigger>

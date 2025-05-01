@@ -23,7 +23,7 @@ class ReservationController extends Controller
             $query->withSum('stocks', 'quantity') // Total stock across warehouses
                 ->withSum('reservations', 'reserved_quantity'); // Total reserved stock
         }])
-        ->when(Auth::check() && Auth::user()->role === 'salesperson', function ($query) {
+        ->when(Auth::check() && Auth::user()->roles[0]->name === 'sales_person', function ($query) {
             $query->where('salesperson_id', Auth::id());
         })
         ->when($search, function ($query) use ($search) {
@@ -45,7 +45,7 @@ class ReservationController extends Controller
             'search' => $search,
             'salespersons' => $salespersons,
             'products' => $products,
-            'warehouses' => $warehouses
+            'warehouses' => $warehouses,
         ]);
     }
 

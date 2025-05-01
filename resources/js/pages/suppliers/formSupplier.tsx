@@ -34,7 +34,13 @@ const FormSupplier: React.FC<SupplierFormProps> = ({ isOpen, onClose, supplier }
                 setData(key as keyof typeof data, value || '');
             });
         } else {
-            reset();
+            setData({
+                name: '',
+                address: '',
+                brand:'',
+                contact_number: '',
+                email:'',
+            })
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [supplier]);
@@ -44,11 +50,17 @@ const FormSupplier: React.FC<SupplierFormProps> = ({ isOpen, onClose, supplier }
 
         if (supplier?.id) {
             put(route('suppliers.update', supplier.id), {
-                onSuccess: () => onClose(),
+                onSuccess: () => {
+                    onClose();
+                    reset();
+                },
             });
         } else {
             post(route('suppliers.store'), {
-                onSuccess: () => onClose(),
+                onSuccess: () => {
+                    onClose();
+                    reset();
+                },
             });
         }
     };
@@ -71,7 +83,11 @@ const FormSupplier: React.FC<SupplierFormProps> = ({ isOpen, onClose, supplier }
                     </div>
                     <div>
                         <Label>Kontak</Label>
-                        <Input value={data.contact_number} onChange={(e) => setData('contact_number', e.target.value)} placeholder="Kontak supplier..." />
+                        <Input
+                            value={data.contact_number}
+                            onChange={(e) => setData('contact_number', e.target.value)}
+                            placeholder="Kontak supplier..."
+                        />
                     </div>
                     <div>
                         <Label>Email</Label>

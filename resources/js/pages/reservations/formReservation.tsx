@@ -28,7 +28,7 @@ const FormReservation: React.FC<SalespersonreservationsFormProps> = ({ reservati
 
     const { data, setData, post, put, processing, errors, reset } = useForm({
         // @ts-ignore
-        salesperson_id:auth?.user?.roles[0] == 'sales_person' ?`${auth.user.id}` :'',
+        salesperson_id: auth?.user?.roles[0] == 'sales_person' ? `${auth.user.id}` : '',
         product_id: '',
         warehouse_id: 1,
         reserved_quantity: '',
@@ -41,7 +41,13 @@ const FormReservation: React.FC<SalespersonreservationsFormProps> = ({ reservati
                 setData(key as keyof typeof data, value || '');
             });
         } else {
-            reset();
+            setData({
+                // @ts-ignore
+                salesperson_id: auth?.user?.roles[0] == 'sales_person' ? `${auth.user.id}` : '',
+                product_id: '',
+                warehouse_id: 1,
+                reserved_quantity: '',
+            });;
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [reservation]);
@@ -49,12 +55,21 @@ const FormReservation: React.FC<SalespersonreservationsFormProps> = ({ reservati
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         if (reservation) {
-            put(route('reservations.update', reservation.id), { onSuccess: () => onClose() });
+            put(route('reservations.update', reservation.id), {
+                onSuccess: () => {
+                    onClose();
+                    reset();
+                },
+            });
         } else {
-            post(route('reservations.store'), { onSuccess: () => onClose() });
+            post(route('reservations.store'), {
+                onSuccess: () => {
+                    onClose();
+                    reset();
+                },
+            });
         }
     };
-
 
     return (
         <Dialog open={isOpen} onOpenChange={onClose}>
@@ -98,7 +113,7 @@ const FormReservation: React.FC<SalespersonreservationsFormProps> = ({ reservati
                             <SelectTrigger>
                                 <SelectValue placeholder="Pilih Product" />
                             </SelectTrigger>
-                            <SelectContent className='h-64'>
+                            <SelectContent className="h-64">
                                 {products.map((product) => {
                                     const available_stock = Number(product.stocks_sum_quantity) - Number(product.reservations_sum_reserved_quantity);
 
@@ -141,7 +156,7 @@ const FormReservation: React.FC<SalespersonreservationsFormProps> = ({ reservati
                         <Input
                             id="reserved_quantity"
                             name="reserved_quantity"
-                            placeholder='Jumlah...'
+                            placeholder="Jumlah..."
                             type="number"
                             min="1"
                             value={data.reserved_quantity}

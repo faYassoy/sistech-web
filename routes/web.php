@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\CustomerController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DeliveryOrderController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ReservationController;
@@ -19,9 +20,7 @@ Route::get('/', function () {
 
 Route::group(['middleware' => ['auth']],function () {
 
-    Route::get('dashboard', function () {
-        return Inertia::render('dashboard');
-    })->name('dashboard');
+    Route::get('dashboard', [DashboardController::class,'index'])->name('dashboard');
 
     Route::resource('products', ProductController::class)->only([
         'index', 'show'

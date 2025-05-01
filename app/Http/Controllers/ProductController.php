@@ -31,6 +31,7 @@ class ProductController extends Controller
         ->when($supplierId, fn($query) => 
             $query->where('supplier_id', $supplierId)
         )
+        ->latest()
         ->paginate(10)
         ->withQueryString();
     
