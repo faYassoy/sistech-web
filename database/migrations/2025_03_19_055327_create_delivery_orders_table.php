@@ -18,7 +18,7 @@ return new class extends Migration
             $table->foreignId('warehouse_id')->constrained()->cascadeOnDelete();
             $table->foreignId('created_by')->constrained('users')->cascadeOnDelete();
             $table->foreignId('buyer_id')->constrained('customers')->cascadeOnDelete();
-            $table->enum('status', ['pending', 'in_progress', 'delivered', 'canceled'])->default('pending');
+            $table->enum('status', ['pending', 'approved', 'delivered', 'canceled'])->default('pending');
             $table->timestamps();
         });
     }

@@ -6,6 +6,7 @@ use App\Models\Customer;
 use App\Models\DeliveryOrder;
 use App\Models\DeliveryItem;
 use App\Models\Product;
+use App\Models\Reservation;
 use App\Models\ReservationDelivery;
 use App\Models\Stock;
 use App\Models\Warehouse;
@@ -162,7 +163,7 @@ class DeliveryOrderController extends Controller
             'items.*.product_id' => ['required', 'exists:products,id'],
             'items.*.quantity' => ['required', 'integer', 'min:1'],
             'items.*.unit_price' => ['required', 'numeric', 'min:0'],
-            'status' => ['nullable', 'string', Rule::in(['pending', 'in_progress', 'delivered', 'canceled'])],
+            'status' => ['nullable', 'string', Rule::in(['pending', 'approved', 'delivered', 'canceled'])],
         ]);
 
         DB::transaction(function () use ($deliveryOrder, $validated) {
@@ -203,6 +204,56 @@ class DeliveryOrderController extends Controller
         return redirect()->route('delivery-orders.index')->with('success', 'Delivery Order updated successfully!');
     }
 
+
+    public function approve(DeliveryOrder $deliveryOrder)
+{
+    if ($deliveryOrder->status !== 'pending') {
+        return back()->withErrors(['error' => 'Only pending orders can be approved.']);
+    }
+
+    DB::transaction(function () use ($deliveryOrder) {
+        foreach ($deliveryOrder->items as $item) {
+            $remainingQty = $item->quantity;
+
+            // 1. Try to consume from reservation deliveries (what was deducted from reservation at DO creation)
+            foreach ($item->reservationDeliveries as $resDeliv) {
+                $reservation = $resDeliv->reservation;
+
+                // Prevent going below 0
+                $deduct = min($remainingQty, $resDeliv->deducted_quantity);
+                $remainingQty -= $deduct;
+
+                // Adjust reservation
+                $reservation->decrement('reserved_quantity', $deduct);
+
+                // Clean up record to prevent double use later
+                $resDeliv->delete();
+
+                if ($remainingQty <= 0) break;
+            }
+
+            // 2. Deduct real stock only if there’s still remaining quantity
+            if ($remainingQty > 0) {
+                $stock = $item->product->stocks()
+                    ->where('warehouse_id', $deliveryOrder->warehouse_id)
+                    ->first();
+
+                if (!$stock || $stock->quantity < $remainingQty) {
+                    throw new \Exception("Not enough real stock for {$item->product->name}.");
+                }
+
+                $stock->decrement('quantity', $remainingQty);
+            }
+        }
+
+        $deliveryOrder->update([
+            'status' => 'approved',
+        ]);
+    });
+
+    return back()->with('success', 'Delivery Order approved and stock deducted.');
+}
+
     /**
      * Generate a unique order number.
      */
@@ -229,14 +280,14 @@ class DeliveryOrderController extends Controller
             return back()->withErrors(['error' => 'Failed to delete Delivery Order: ' . $e->getMessage()]);
         }
     }
-    public function cancel(DeliveryOrder $order)
+    public function cancel(DeliveryOrder $deliveryOrder)
 {
-    if ($order->status === 'canceled') {
+    if ($deliveryOrder->status === 'canceled') {
         return redirect()->back()->with('info', 'Order already canceled.');
     }
 
-    DB::transaction(function () use ($order) {
-        foreach ($order->items as $item) {
+    DB::transaction(function () use ($deliveryOrder) {
+        foreach ($deliveryOrder->items as $item) {
             // Revert warehouse stock only if quantity was directly deducted
             $directDeducted = $item->reservationDeliveries()
                 ->where('source', 'warehouse')
@@ -250,8 +301,8 @@ class DeliveryOrderController extends Controller
             $item->reservationDeliveries()->delete();
         }
 
-        $order->status = 'canceled';
-        $order->save();
+        $deliveryOrder->status = 'canceled';
+        $deliveryOrder->save();
     });
 
     return redirect()->route('delivery-orders.index')->with('success', 'Delivery order canceled and stock reverted.');

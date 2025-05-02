@@ -99,7 +99,7 @@ export default function FormDeliveryOrder() {
                                         <SelectValue placeholder="Select Status" />
                                     </SelectTrigger>
                                     <SelectContent>
-                                        {['pending', 'in_progress', 'delivered', 'canceled'].map((status) => (
+                                        {['pending', 'approved', 'delivered'].map((status) => (
                                             <SelectItem key={status} value={status}>
                                                 {status.toLocaleUpperCase()}
                                             </SelectItem>

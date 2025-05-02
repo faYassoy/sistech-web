@@ -19,6 +19,7 @@ const DeliveryOrdersIndex: React.FC = () => {
         },
         {
             name: 'Order Number',
+            width:'200px',
             selector: (row: any) => row.status,
             cell: (row) => (
                 <div>
@@ -28,9 +29,10 @@ const DeliveryOrdersIndex: React.FC = () => {
             ),
             sortable: true,
         },
-        { name: 'Buyer', selector: (row: any) => row.buyer.name, sortable: true },
+        { name: 'Buyer',width:'150px', selector: (row: any) => row.buyer.name, sortable: true },
         {
             name: 'Warehouse',
+            width:'150px',
             selector: (row: any) => warehouses.find((w: any) => w.id === row.warehouse_id)?.name || 'N/A',
             sortable: true,
         },
@@ -57,8 +59,8 @@ const DeliveryOrdersIndex: React.FC = () => {
         {
             name: '',
             cell: (row: any) =>
-                auth?.user?.roles[0] == 'admin' && (
-                    <div className="grid grid-cols-2 gap-4">
+                auth?.user?.roles[0] == 'admin' && row.status =='pending' &&(
+                    <div className="flex gap-2">
                         <Button
                             variant="outline"
                             size={'sm'}
@@ -91,7 +93,18 @@ const DeliveryOrdersIndex: React.FC = () => {
                                 }
                             }}
                         >
-                            Cancel Order
+                            Cancel
+                        </Button>
+                        <Button
+                            variant="default"
+                            size={'sm'}
+                            onClick={() => {
+                                if (confirm('Are you sure you want to approve this order?')) {
+                                    router.patch(route('delivery-orders.approve', row.id));
+                                }
+                            }}
+                        >
+                            Approve
                         </Button>
                     </div>
                 ),

@@ -64,8 +64,11 @@ Route::group(['middleware' => ['role:admin','auth']],function () {
       'edit','update','destroy'
     ]);
 
-    Route::post('/delivery-orders/{order}/cancel', [DeliveryOrderController::class, 'cancel'])
+    Route::post('/delivery-orders/{deliveryOrder}/cancel', [DeliveryOrderController::class, 'cancel'])
     ->name('delivery-orders.cancel');
+
+    Route::patch('/delivery-orders/{deliveryOrder}/approve', [DeliveryOrderController::class, 'approve'])
+    ->name('delivery-orders.approve');
 
     Route::get('/delivery-orders/{deliveryOrder}/print', [DeliveryOrderController::class, 'print'])->name('delivery-orders.print');
 
