@@ -208,50 +208,59 @@ class DeliveryOrderController extends Controller
     public function approve(DeliveryOrder $deliveryOrder)
 {
     if ($deliveryOrder->status !== 'pending') {
-        return back()->withErrors(['error' => 'Only pending orders can be approved.']);
+        return back()->withErrors(['error' => 'Only pending delivery orders can be approved.']);
     }
 
     DB::transaction(function () use ($deliveryOrder) {
         foreach ($deliveryOrder->items as $item) {
             $remainingQty = $item->quantity;
 
-            // 1. Try to consume from reservation deliveries (what was deducted from reservation at DO creation)
-            foreach ($item->reservationDeliveries as $resDeliv) {
-                $reservation = $resDeliv->reservation;
+            // 🔁 Process reservation-based deliveries first (if any)
+            foreach ($item->reservationDeliveries as $resDel) {
+                $reservation = $resDel->reservation;
 
-                // Prevent going below 0
-                $deduct = min($remainingQty, $resDeliv->deducted_quantity);
-                $remainingQty -= $deduct;
+                if (!$reservation) continue;
 
-                // Adjust reservation
-                $reservation->decrement('reserved_quantity', $deduct);
-
-                // Clean up record to prevent double use later
-                $resDeliv->delete();
-
-                if ($remainingQty <= 0) break;
-            }
-
-            // 2. Deduct real stock only if there’s still remaining quantity
-            if ($remainingQty > 0) {
-                $stock = $item->product->stocks()
-                    ->where('warehouse_id', $deliveryOrder->warehouse_id)
+                $warehouseStock = Stock::where('warehouse_id', $deliveryOrder->warehouse_id)
+                    ->where('product_id', $item->product_id)
+                    ->lockForUpdate()
                     ->first();
 
-                if (!$stock || $stock->quantity < $remainingQty) {
-                    throw new \Exception("Not enough real stock for {$item->product->name}.");
-                }
+                $deductQty = min($remainingQty, $resDel->deducted_quantity);
 
-                $stock->decrement('quantity', $remainingQty);
+                if ($deductQty > 0 && $warehouseStock) {
+                    $warehouseStock->decrement('quantity', $deductQty);
+                    $remainingQty -= $deductQty;
+
+                    // Update or delete reservation
+                    $reservation->reserved_quantity -= $deductQty;
+                    if ($reservation->reserved_quantity <= 0) {
+                        $reservation->delete();
+                    } else {
+                        $reservation->save();
+                    }
+                }
+            }
+
+            // 🧾 Fallback: deduct remaining quantity directly if needed
+            if ($remainingQty > 0) {
+                $warehouseStock = Stock::where('warehouse_id', $deliveryOrder->warehouse_id)
+                    ->where('product_id', $item->product_id)
+                    ->lockForUpdate()
+                    ->first();
+
+                if ($warehouseStock && $warehouseStock->quantity >= $remainingQty) {
+                    $warehouseStock->decrement('quantity', $remainingQty);
+                } else {
+                    throw new \Exception("Not enough stock for product {$item->product->name}.");
+                }
             }
         }
 
-        $deliveryOrder->update([
-            'status' => 'approved',
-        ]);
+        $deliveryOrder->update(['status' => 'approved']);
     });
 
-    return back()->with('success', 'Delivery Order approved and stock deducted.');
+    return redirect()->route('delivery-orders.index')->with('success', 'Delivery Order approved and stock deducted!');
 }
 
     /**
