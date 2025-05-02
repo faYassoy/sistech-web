@@ -83,18 +83,18 @@ console.log(data);
         <Dialog open={isOpen} onOpenChange={onClose}>
             <DialogContent>
                 <DialogHeader>
-                    <DialogTitle>{product ? 'Edit Product' : 'Create Product'}</DialogTitle>
+                    <DialogTitle>{product ? 'Ubah Produk' : 'Tambahkan Produk'}</DialogTitle>
                 </DialogHeader>
 
                 <form onSubmit={handleSubmit} className="h-[400px] space-y-3 overflow-y-scroll">
                     <div>
                         <Label className="pb-1" htmlFor="name">
-                            Nama Product
+                            Nama Produk
                         </Label>
                         <Input
                             id="name"
                             name="name"
-                            placeholder="Nama Product..."
+                            placeholder="Nama Produk..."
                             value={data.name}
                             onChange={(e) => setData('name', e.target.value)}
                             required
@@ -125,7 +125,7 @@ console.log(data);
                         <Textarea
                             id="description"
                             name="description"
-                            placeholder="Deskripsi Product..."
+                            placeholder="Deskripsi Produk..."
                             value={data.description}
                             onChange={(e) => setData('description', e.target.value)}
                             defaultValue={data.description}
@@ -140,7 +140,7 @@ console.log(data);
                         <InputCurrency
                             id="price"
                             name="price"
-                            placeholder="Harga Product..."
+                            placeholder="Harga Produk..."
                             value={data.price}
                             onChange={(e) => setData('price', e.target.value)}
                             required
@@ -181,11 +181,11 @@ console.log(data);
 
                     <div>
                         <Label className="pb-1" htmlFor="supplier">
-                            Supplier
+                            Pemasok
                         </Label>
                         <Select onValueChange={(value) => setData('supplier_id', value)} value={data.supplier_id ? String(data.supplier_id) : ''}>
                             <SelectTrigger>
-                                <SelectValue placeholder="Pilih Supplier" />
+                                <SelectValue placeholder="Pilih Pemasok" />
                             </SelectTrigger>
                             <SelectContent>
                                 {suppliers.map((supplier) => (
@@ -218,7 +218,7 @@ console.log(data);
                             Cancel
                         </Button>
                         <Button type="submit" disabled={processing}>
-                            {product ? 'Update' : 'Create'}
+                            {product ? 'Ubah' : 'Tambahkan'}
                         </Button>
                     </div>
                 </form>

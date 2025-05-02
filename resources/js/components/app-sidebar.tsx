@@ -11,27 +11,27 @@ import AppLogo from './app-logo';
 export const mainNavItems = {
     admin: [
       {
-        colapsableGroup: "Main",
+        colapsableGroup: "Beranda",
         items: [
           { title: "Dashboard", url: "/dashboard", icon: LayoutGrid },
-          { title: "Delivery Order", url: "/delivery-orders", icon: Warehouse },
-          { title: "Price List", url: "/price-list", icon: ScrollText },
+          { title: "Surat Jalan", url: "/delivery-orders", icon: Warehouse },
+          { title: "Daftar Harga", url: "/price-list", icon: ScrollText },
         ],
       },
       {
         colapsableGroup: "Data Master",
         items: [
           { title: "Pengguna", url: "/users", icon: Users2 },
-          { title: "Customer", url: "/customers", icon: BookUser },
+          { title: "Konsumen", url: "/customers", icon: BookUser },
           { title: "Data Barang", url: "/products", icon: Boxes },
-          { title: "Supplier", url: "/suppliers", icon: Container },
+          { title: "Pemasok", url: "/suppliers", icon: Container },
         ],
       },
       {
-        colapsableGroup: "Stock",
+        colapsableGroup: "Stok",
         items: [
           // { title: "Gudang", url: "/warehouses", icon: Warehouse },
-          { title: "Kelola Stock", url: "/stocks", icon: Boxes },
+          { title: "Kelola Stok", url: "/stocks", icon: Boxes },
           { title: "Reservasi", url: "/reservations", icon: Warehouse },
         ],
       },
@@ -39,15 +39,15 @@ export const mainNavItems = {
   
     sales_person: [
       {
-        colapsableGroup: "Main",
+        colapsableGroup: "Beranda",
         items: [
           { title: "Dashboard", url: "/dashboard", icon: LayoutGrid },
-          { title: "Delivery Order", url: "/delivery-orders", icon: Warehouse },
-          { title: "Price List", url: "/price-list", icon: ScrollText },
+          { title: "Surat Jalan", url: "/delivery-orders", icon: Warehouse },
+          { title: "Daftar Harga", url: "/price-list", icon: ScrollText },
         ],
       },
       {
-        colapsableGroup: "Stock",
+        colapsableGroup: "Stok",
         items: [
           { title: "Data Barang", url: "/products", icon: Boxes },
           { title: "Reservasi", url: "/reservations", icon: Warehouse },

@@ -46,7 +46,7 @@ const UsersIndex: React.FC = () => {
             width: '50px' 
         },
         {
-            name: 'Name',
+            name: 'Nama',
             sortable: true,
             cell: (row: User) => (
                 <div>
@@ -62,10 +62,10 @@ const UsersIndex: React.FC = () => {
             sortable: true,
         },
         { name: 'Email', selector: (row: User) => row.email, sortable: true },
-        { name: 'Role', selector: (row: User) => row.role, sortable: true },
+        { name: 'Role', selector: (row: User) => row.roles[0].name, sortable: true },
 
         {
-            name: 'Created At',
+            name: 'Dibuat',
             selector: (row: User) => new Date(row.created_at).toLocaleDateString(),
             sortable: true,
         },
@@ -87,7 +87,7 @@ const UsersIndex: React.FC = () => {
             <div className="container mx-auto p-4">
                 <div className="mb-4 flex items-center justify-between">
                     <h1 className="text-2xl font-bold">Users</h1>
-                    <Button onClick={() => router.visit(route('users.create'))}>Create New User</Button>
+                    <Button onClick={() => router.visit(route('users.create'))}>Tambah Pengguna</Button>
                 </div>
                 
                 <CommonDataTable

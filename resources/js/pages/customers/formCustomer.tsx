@@ -61,7 +61,7 @@ const FormCustomer: React.FC<FormCusomerProps> = ({ isOpen, onClose, customer })
         <Dialog open={isOpen} onOpenChange={onClose}>
             <DialogContent>
                 <DialogHeader>
-                    <DialogTitle>{customer ? 'Edit Customer' : 'Create Customer'}</DialogTitle>
+                    <DialogTitle>{customer ? 'Ubah' : 'Tambahkan'}</DialogTitle>
                 </DialogHeader>
 
                 <form onSubmit={handleSubmit} className="space-y-4">
@@ -88,7 +88,7 @@ const FormCustomer: React.FC<FormCusomerProps> = ({ isOpen, onClose, customer })
                             Cancel
                         </Button>
                         <Button type="submit" disabled={processing}>
-                            {customer ? 'Update' : 'Create'}
+                            {customer ? 'Ubah' : 'Tambahkan'}
                         </Button>
                     </div>
                 </form>

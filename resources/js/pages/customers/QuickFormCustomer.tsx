@@ -49,7 +49,7 @@ console.log('quickCustomer called');
         <Dialog open={isOpen} onOpenChange={onClose}>
             <DialogContent>
                 <DialogHeader>
-                    <DialogTitle>{customer ? 'Edit Customer' : 'Create Customer'}</DialogTitle>
+                    <DialogTitle>{customer ? 'Ubah' : 'Tambahkan'}</DialogTitle>
                 </DialogHeader>
 
                 <form onSubmit={quickcustomer} className="space-y-4">

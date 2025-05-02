@@ -48,7 +48,7 @@ export default function FormDeliveryOrder() {
     return (
         <AppLayout backTo="delivery-orders.index">
             <form onSubmit={handleSubmit} className="mx-auto max-w-[80%] space-y-4 bg-white pt-4">
-                <h1 className="mb-4 text-2xl font-bold">{deliveryOrder ? 'Edit' : 'Create'} Delivery Order</h1>
+                <h1 className="mb-4 text-2xl font-bold">{deliveryOrder ? 'Ubah' : 'Buat'} Surat Jalan</h1>
 
                 {/* Form Fields */}
                 <div className="grid grid-cols-2 gap-4">
@@ -59,7 +59,7 @@ export default function FormDeliveryOrder() {
                     </div>
 
                     <div>
-                        <Label htmlFor="buyer_id">Customer</Label>
+                        <Label htmlFor="buyer_id">Konsumen</Label>
                         <CustomerCombobox
                             setFormOpen={setFormOpen}
                             customers={customers}
@@ -99,9 +99,9 @@ export default function FormDeliveryOrder() {
                                         <SelectValue placeholder="Select Status" />
                                     </SelectTrigger>
                                     <SelectContent>
-                                        {['pending', 'approved', 'delivered'].map((status) => (
-                                            <SelectItem key={status} value={status}>
-                                                {status.toLocaleUpperCase()}
+                                        {[{value:'pending',label:'Menunggu'}, {value:'approved',label:'Disetujui'}, {value:'delivered',label:'Dikirim'}].map((status) => (
+                                            <SelectItem key={status.label} value={status.value}>
+                                                {status.label}
                                             </SelectItem>
                                         ))}
                                     </SelectContent>
@@ -162,14 +162,14 @@ export function InlineDeliveryTable({ products, form, errors, onChange, hidePric
                 + Tambahkan
             </Button>
             <Button type='button' onClick={()=>setHidePrice(!hidePrice)} className="m-2" variant={hidePrice?'outline':'destructive'} size={'sm'}>
-                Unit Price
+                Harga Satuan
             </Button>
             </div>
             <div className="max-h-[250px] overflow-y-auto">
                 <DataTable
                     columns={[
                         {
-                            name: 'Product',
+                            name: 'Produk',
                             width: '300px',
                             cell: (row) => (
                                 <ProductCombobox
@@ -183,7 +183,7 @@ export function InlineDeliveryTable({ products, form, errors, onChange, hidePric
                             ),
                         },
                         {
-                            name: 'Quantity',
+                            name: 'Jumlah',
                             cell: (row, index) =>
                                 row.product_id ? (
                                     <Input
@@ -198,7 +198,7 @@ export function InlineDeliveryTable({ products, form, errors, onChange, hidePric
                                 ),
                         },
                         {
-                            name: 'Unit Price',
+                            name: 'Harga Satuan',
                             cell: (row) =>
                                 row.product_id && !hidePrice ?(
                                     <Input
@@ -212,11 +212,11 @@ export function InlineDeliveryTable({ products, form, errors, onChange, hidePric
                                 ),
                         },
                         {
-                            name: 'total Price',
+                            name: 'total',
                             cell: (row) => row.product_id && `Rp ${Number(row.unit_price * row.quantity).toLocaleString('id-ID')}`,
                         },
                         {
-                            name: 'Actions',
+                            name: 'Aksi',
                             width: '80px',
                             cell: (row, index) => (
                                 <Button
@@ -246,13 +246,13 @@ export function ProductCombobox({ products, value, onChange }) {
         <Popover open={open} onOpenChange={setOpen}>
             <PopoverTrigger asChild>
                 <Button variant="outline" className="w-full justify-between">
-                    {selectedProduct ? selectedProduct.name : 'Select product'}
+                    {selectedProduct ? selectedProduct.name : 'Pilih Produk'}
                     {/* <Check className="ml-2 h-4 w-4 opacity-50" /> */}
                 </Button>
             </PopoverTrigger>
             <PopoverContent className="w-[250px] p-0">
                 <Command>
-                    <CommandInput placeholder="Search product..." />
+                    <CommandInput placeholder="Cari Produk..." />
                     <CommandList>
                         <CommandEmpty>No products found.</CommandEmpty>
                         {products?.map((product) => (
@@ -281,13 +281,13 @@ export function CustomerCombobox({ customers, value, onChange, setFormOpen, auth
             <Popover open={open} onOpenChange={setOpen}>
                 <PopoverTrigger asChild>
                     <Button variant="outline" className="w-full justify-between">
-                        {selectedProduct ? selectedProduct.name : 'Select Customer'}
+                        {selectedProduct ? selectedProduct.name : 'Pilih Konsumen'}
                         {/* <Check className="ml-2 h-4 w-4 opacity-50" /> */}
                     </Button>
                 </PopoverTrigger>
                 <PopoverContent className="p-0">
                     <Command>
-                        <CommandInput placeholder="Search product..." />
+                        <CommandInput placeholder="Cari Konsumen..." />
                         <CommandList>
                             <CommandEmpty>No customers found.</CommandEmpty>
                             {customers.map((customer) => (
@@ -306,7 +306,7 @@ export function CustomerCombobox({ customers, value, onChange, setFormOpen, auth
                                 {auth?.user?.roles[0] == 'admin' && (
                                     <Button onClick={() => setFormOpen(true)} variant={'outline'} size={'sm'}>
                                         <Plus />
-                                        New Buyer/Customer
+                                        Konsumen Baru
                                     </Button>
                                 )}
                             </CommandItem>

@@ -26,6 +26,7 @@ class UserController extends Controller
                     ->orWhere('email', 'like', "%{$search}%")
             )
             ->orderBy('is_active','desc')
+            ->with('roles') 
             ->paginate(10)
             ->withQueryString();
 

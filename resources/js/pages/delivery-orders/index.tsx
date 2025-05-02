@@ -18,7 +18,7 @@ const DeliveryOrdersIndex: React.FC = () => {
             width: '50px',
         },
         {
-            name: 'Order Number',
+            name: 'No. Surat Jalan',
             width:'200px',
             selector: (row: any) => row.status,
             cell: (row) => (
@@ -29,15 +29,15 @@ const DeliveryOrdersIndex: React.FC = () => {
             ),
             sortable: true,
         },
-        { name: 'Buyer',width:'150px', selector: (row: any) => row.buyer.name, sortable: true },
+        { name: 'Konsumen',width:'150px', selector: (row: any) => row.buyer.name, sortable: true },
         {
-            name: 'Warehouse',
+            name: 'Gudang',
             width:'150px',
             selector: (row: any) => warehouses.find((w: any) => w.id === row.warehouse_id)?.name || 'N/A',
             sortable: true,
         },
         {
-            name: 'Created At',
+            name: 'Di Buat',
             width: '150px',
             selector: (row: any) => new Date(row.created_at).toLocaleDateString(),
             sortable: true,
@@ -115,8 +115,8 @@ const DeliveryOrdersIndex: React.FC = () => {
         <AppLayout>
             <div className="container mx-auto p-4">
                 <div className="mb-4 flex items-center justify-between">
-                    <h1 className="text-2xl font-bold">Delivery Orders</h1>
-                    {auth?.user?.roles[0] == 'admin' && <Button onClick={() => router.get(route('delivery-orders.create'))}>Create New Order</Button>}
+                    <h1 className="text-2xl font-bold">Surat Jalan</h1>
+                    {auth?.user?.roles[0] == 'admin' && <Button onClick={() => router.get(route('delivery-orders.create'))}>Tambahkan Surat Jalan</Button>}
                 </div>
 
                 <CommonDataTable

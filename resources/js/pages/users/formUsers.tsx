@@ -87,9 +87,9 @@ const FormUsers: React.FC = () => {
                     {/* Name Field */}
                     <div>
                         <Label htmlFor="name" className="mb-1 block">
-                            Name
+                            Nama
                         </Label>
-                        <Input id="name" value={data.name} onChange={(e) => setData('name', e.target.value)} required />
+                        <Input id="name" placeholder='masukan nama pengguna...' value={data.name} onChange={(e) => setData('name', e.target.value)} required />
                         {errors.name && <p className="text-sm text-red-500">{errors.name}</p>}
                     </div>
 
@@ -98,7 +98,7 @@ const FormUsers: React.FC = () => {
                         <Label htmlFor="email" className="mb-1 block">
                             Email
                         </Label>
-                        <Input id="email" type="email" value={data.email} onChange={(e) => setData('email', e.target.value)} required />
+                        <Input id="email" placeholder='masukan email...' type="email" value={data.email} onChange={(e) => setData('email', e.target.value)} required />
                         {errors.email && <p className="text-sm text-red-500">{errors.email}</p>}
                     </div>
 
@@ -109,7 +109,7 @@ const FormUsers: React.FC = () => {
                         </Label>
                         <Select value={data.role as string} onValueChange={(value) => setData('role', value as User['role'])}>
                             <SelectTrigger className="w-full">
-                                <SelectValue placeholder="Select role" />
+                                <SelectValue placeholder="Pilih role" />
                             </SelectTrigger>
                             <SelectContent>
                                 <SelectItem value="admin">Admin</SelectItem>
@@ -122,7 +122,7 @@ const FormUsers: React.FC = () => {
                     {/* Active Checkbox */}
                     <div className="flex items-center space-x-2">
                         <Checkbox checked={data.is_active} onCheckedChange={(checked) => setData('is_active', !!checked)} />
-                        <Label>Active</Label>
+                        <Label>Aktif</Label>
                     </div>
 
                     {/* Auto Generate Password Toggle */}
@@ -130,7 +130,7 @@ const FormUsers: React.FC = () => {
                     <div className="flex items-center space-x-2">
                         {/* @ts-ignore */}
                         <Checkbox checked={autoGenerate} onCheckedChange={setAutoGenerate} />
-                        <Label>Auto Generate Password</Label>
+                        <Label>Rekomendasi Password</Label>
                     </div>
 
                     {/* Password Fields (only when not auto-generating) */}
@@ -150,7 +150,7 @@ const FormUsers: React.FC = () => {
                     </div>
                     <div>
                         <Label htmlFor="password_confirmation" className="mb-1 block">
-                            Confirm Password
+                            Konfirmasi Password
                         </Label>
                         <Input
                             id="password_confirmation"
@@ -166,16 +166,16 @@ const FormUsers: React.FC = () => {
                     {/* Actions */}
                     <div className="mt-4 flex items-center justify-between">
                         <Link href={route('users.index')} className="rounded-md border px-4 py-2 text-gray-600 hover:bg-gray-100">
-                            Cancel
+                            Batal
                         </Link>
                         <div className="space-x-2">
                             {isEditing && (
                                 <Button type="button" variant="destructive" onClick={handleDelete}>
-                                    Delete
+                                    Hapus
                                 </Button>
                             )}
                             <Button type="submit" disabled={processing}>
-                                {isEditing ? 'Update User' : 'Create User'}
+                                {isEditing ? 'Ubah Pengguna' : 'Tambahkan Pengguna'}
                             </Button>
                         </div>
                     </div>

@@ -51,7 +51,7 @@ const CommonDataTable = <T,>({
                     </Button>
                     <Input
                         type="search"
-                        placeholder="Search users..."
+                        placeholder="Cari ..."
                         value={searchTerm}
                         onChange={(e) => {
                             handleSearch(e);

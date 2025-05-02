@@ -54,12 +54,12 @@ const StockModal: React.FC = () => {
             cell: (_: unknown, index: number) => (page - 1) * perPage + index + 1,
             width: '50px',
         },
-        { name: 'Product Name', selector: (row: StockItem) => row.name, sortable: true },
+        { name: 'Produk', selector: (row: StockItem) => row.name, sortable: true },
         { name: 'Part Number', selector: (row: StockItem) => row.part_number, sortable: true },
-        { name: 'Stock', width:'100px',selector: (row: StockItem) => Number(row.stocks_sum_quantity)-Number(row.reservations_sum_reserved_quantity), sortable: true },
-        { name: 'Created At', selector: (row: StockItem) => new Date(row.created_at).toLocaleDateString() },
+        { name: 'Stok', width:'100px',selector: (row: StockItem) => Number(row.stocks_sum_quantity)-Number(row.reservations_sum_reserved_quantity), sortable: true },
+        { name: 'Dibuat', selector: (row: StockItem) => new Date(row.created_at).toLocaleDateString() },
         {
-            name: 'Adjust',
+            name: 'Sesuaikan',
             cell: (row: Product) => (
                 <StockAdjustmentForm
                     //   @ts-ignore
@@ -77,7 +77,7 @@ const StockModal: React.FC = () => {
 
             <div className="mb-4 flex items-center gap-2">
                 <Input
-                    placeholder="Search product..."
+                    placeholder="Cari Produk..."
                     value={search}
                     onChange={(e) => {
                         setSearch(e.target.value);
@@ -155,7 +155,7 @@ const StockAdjustmentForm: React.FC<StockAdjustmentFormProps> = ({ warehouseId, 
                 className="w-32"
             />
             <Button type="submit" disabled={processing}>
-                Adjust
+                Ubah
             </Button>
             {errors.quantity && <p className="text-sm text-red-500">{errors.quantity}</p>}
         </form>

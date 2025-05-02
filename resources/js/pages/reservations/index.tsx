@@ -46,7 +46,7 @@ const SalespersonInventoryIndex: React.FC = () => {
             selector: (row: SalespersonInventory, index: number) => (props.reservations.current_page - 1) * props.reservations.per_page + index + 1,
             width: '50px',
         },
-        { name: 'Salesperson', selector: (row: SalespersonInventory) => row.salesperson.name, sortable: true },
+        { name: 'Sales', selector: (row: SalespersonInventory) => row.salesperson.name, sortable: true },
         {
             name: 'Product',
             selector: (row: SalespersonInventory) => row.product.name,
@@ -57,10 +57,10 @@ const SalespersonInventoryIndex: React.FC = () => {
                 </div>
             ),
         },
-        { name: 'Reserved Quantity', selector: (row: SalespersonInventory) => row.reserved_quantity, sortable: true },
-        { name: 'Total Stock', selector: (row: SalespersonInventory) => `${Number(row.product.stocks_sum_quantity)-Number(row.product.reservations_sum_reserved_quantity)}`, sortable: true },
+        { name: 'Dipesan', selector: (row: SalespersonInventory) => row.reserved_quantity, sortable: true },
+        { name: 'Total Stok', selector: (row: SalespersonInventory) => `${Number(row.product.stocks_sum_quantity)-Number(row.product.reservations_sum_reserved_quantity)}`, sortable: true },
         {
-            name: 'Created At',
+            name: 'Dibuat',
             selector: (row: SalespersonInventory) => new Date(row.created_at).toLocaleDateString(),
             sortable: true,
         },
@@ -76,7 +76,7 @@ const SalespersonInventoryIndex: React.FC = () => {
                             setReservationModal(true);
                         }}
                     >
-                        Edit
+                        Ubah
                     </Button>
 
                     <Button
@@ -90,7 +90,7 @@ const SalespersonInventoryIndex: React.FC = () => {
                             }
                         }}
                     >
-                        Delete
+                        Hapus
                     </Button>
                 </div>
             ),
@@ -101,10 +101,10 @@ const SalespersonInventoryIndex: React.FC = () => {
         <AppLayout breadcrumbs={breadcrumbs}>
             <div className="container mx-auto p-4">
                 <div className="mb-4 flex items-center justify-between">
-                    <h1 className="text-2xl font-bold">Salesperson Inventory</h1>
+                    <h1 className="text-2xl font-bold">Reservasi</h1>
 
                     <div className='flex gap-4'>
-                        <Button onClick={() => setReservationModal(true)}>New Reservation</Button>
+                        <Button onClick={() => setReservationModal(true)}>Buat Rervasi Baru</Button>
                         {auth?.user?.roles[0] == 'sales_person' &&<Button onClick={() => setConvertModal(true)}>Order Conversion</Button>}
                     </div>
                 </div>

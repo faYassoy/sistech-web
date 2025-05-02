@@ -57,7 +57,7 @@ const SupplierIndex: React.FC = () => {
                             setSupplierModal(true);
                         }}
                     >
-                        Edit
+                        Ubah
                     </Button>
 
                     <Button
@@ -71,7 +71,7 @@ const SupplierIndex: React.FC = () => {
                             }
                         }}
                     >
-                        Delete
+                        Hapus
                     </Button>
                 </div>
             ),
@@ -82,8 +82,8 @@ const SupplierIndex: React.FC = () => {
         <AppLayout>
             <div className="container mx-auto p-4">
                 <div className="mb-4 flex items-center justify-between">
-                    <h1 className="text-2xl font-bold">Suppliers</h1>
-                    <Button onClick={() => setSupplierModal(true)}>Create New Supplier</Button>
+                    <h1 className="text-2xl font-bold">Pemasok</h1>
+                    <Button onClick={() => setSupplierModal(true)}>Tambahkan Pemasok</Button>
                 </div>
 
                 <CommonDataTable

@@ -75,14 +75,14 @@ const FormReservation: React.FC<SalespersonreservationsFormProps> = ({ reservati
         <Dialog open={isOpen} onOpenChange={onClose}>
             <DialogContent>
                 <DialogHeader>
-                    <DialogTitle>{reservation ? 'Edit Reservation' : 'Create Reservation'}</DialogTitle>
+                    <DialogTitle>{reservation ? 'Ubah Reservasi' : 'Tambahkan Reservasi'}</DialogTitle>
                 </DialogHeader>
 
                 <form onSubmit={handleSubmit} className="space-y-3">
                     {/* Salesperson Selection */}
                     <div>
                         <Label className="pb-1" htmlFor="salesperson_id">
-                            Salesperson
+                            Sales
                         </Label>
                         <Select
                             onValueChange={(value) => setData('salesperson_id', value)}
@@ -107,7 +107,7 @@ const FormReservation: React.FC<SalespersonreservationsFormProps> = ({ reservati
                     {/* Product Selection */}
                     <div>
                         <Label className="pb-1" htmlFor="product_id">
-                            Product
+                            Produk
                         </Label>
                         <Select onValueChange={(value) => setData('product_id', value)} value={String(data.product_id) || ''}>
                             <SelectTrigger>

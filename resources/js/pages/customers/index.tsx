@@ -39,15 +39,15 @@ const CustomerIndex: React.FC = () => {
             selector: (row: Customer, index: number) => (customers.current_page - 1) * customers.per_page + index + 1,
             width: '50px',
         },
-        { name: 'Name', selector: (row: Customer) => row.name, sortable: true },
-        { name: 'Phone', selector: (row: Customer) => row.phone, sortable: true },
+        { name: 'Nama', selector: (row: Customer) => row.name, sortable: true },
+        { name: 'Telepon', selector: (row: Customer) => row.phone, sortable: true },
         {
-            name: 'Created At',
+            name: 'Dibuat',
             selector: (row: Customer) => new Date(row.created_at).toLocaleDateString(),
             sortable: true,
         },
         {
-            name: 'Actions',
+            name: '',
             cell: (row: Customer) => (
                 <div className="grid grid-cols-2 gap-2">
                     <Button
@@ -58,21 +58,21 @@ const CustomerIndex: React.FC = () => {
                             setSelected(row);
                         }}
                     >
-                        Edit
+                        Ubah
                     </Button>
 
                     <Button
                         variant="destructive"
                         size="sm"
                         onClick={() => {
-                            if (confirm('Are you sure you want to delete this warehouse?')) {
+                            if (confirm('Are you sure you want to delete this customer?')) {
                                 router.delete(route('customers.destroy', row.id), {
                                     onError: (err) => alert(err.message),
                                 });
                             }
                         }}
                     >
-                        Delete
+                        Hapus
                     </Button>
                 </div>
             ),
@@ -83,8 +83,8 @@ const CustomerIndex: React.FC = () => {
         <AppLayout>
             <div className="container mx-auto p-4">
                 <div className="mb-4 flex items-center justify-between">
-                    <h1 className="text-2xl font-bold">Customer</h1>
-                    <Button onClick={() => setModalOpen(true)}>Create New Customer</Button>
+                    <h1 className="text-2xl font-bold">Konsumen</h1>
+                    <Button onClick={() => setModalOpen(true)}>Tambahkan Konsumen</Button>
                 </div>
 
                 <CommonDataTable

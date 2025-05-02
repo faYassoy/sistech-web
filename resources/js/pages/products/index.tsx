@@ -51,17 +51,17 @@ const ProductsIndex: React.FC = () => {
             selector: (row: Product, index: number) => (props.products.current_page - 1) * props.products.per_page + index + 1,
             width: '50px',
         },
-        { name: 'Name', selector: (row: Product) => row.name, sortable: true },
+        { name: 'Nama', selector: (row: Product) => row.name, sortable: true },
         { name: 'Part Number', selector: (row: Product) => row.part_number, sortable: true },
         {
             name: 'Brand',
             selector: (row: Product) => row.brand || 'N/A',
             sortable: true,
         },
-        { name: 'Stock', selector: (row: Product) => `${Number(row.stocks_sum_quantity)-Number(row.reservations_sum_reserved_quantity)}`, sortable: true },
-        { name: 'Reserved', selector: (row: Product) => ` ${Number(row.reservations_sum_reserved_quantity)}`, sortable: true },
+        { name: 'Stok', selector: (row: Product) => `${Number(row.stocks_sum_quantity)-Number(row.reservations_sum_reserved_quantity)}`, sortable: true },
+        { name: 'Dipesan', selector: (row: Product) => ` ${Number(row.reservations_sum_reserved_quantity)}`, sortable: true },
         {
-            name: 'Created At',
+            name: 'Dibuat',
             selector: (row: Product) => new Date(row.created_at).toLocaleDateString(),
             sortable: true,
         },
@@ -78,7 +78,7 @@ const ProductsIndex: React.FC = () => {
                                 setProductModal(true);
                             }}
                         >
-                            Edit
+                            Ubah
                         </Button>
 
                         <Button
@@ -93,7 +93,7 @@ const ProductsIndex: React.FC = () => {
                                 }
                             }}
                         >
-                            Delete
+                            Hapus
                         </Button>
                     </div>
                 ) : null,
@@ -104,8 +104,8 @@ const ProductsIndex: React.FC = () => {
         <AppLayout breadcrumbs={breadcrumbs}>
             <div className="container mx-auto p-4">
                 <div className="mb-4 flex items-center justify-between">
-                    <h1 className="text-2xl font-bold">Products</h1>
-                    { auth?.user?.roles[0] == 'admin' &&<Button onClick={() => setProductModal(true)}>Create New Product</Button>}
+                    <h1 className="text-2xl font-bold">Produk</h1>
+                    { auth?.user?.roles[0] == 'admin' &&<Button onClick={() => setProductModal(true)}>Tambahkan Produk</Button>}
                 </div>
 
                 <CommonDataTable
