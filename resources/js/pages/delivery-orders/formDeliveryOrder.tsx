@@ -26,6 +26,17 @@ export default function FormDeliveryOrder() {
         items: deliveryOrder?.items || [],
     });
 
+
+    useEffect(() => {
+        const urlSearchParams = new URLSearchParams(window.location.search);
+
+        if (urlSearchParams.has('ship_to')) {
+            setData('buyer_id',urlSearchParams.get('ship_to')||'')
+        }
+    }, []);
+
+    console.log(data);
+
     const handleSubmit = (e) => {
         e.preventDefault();
 
@@ -63,7 +74,6 @@ export default function FormDeliveryOrder() {
                         <CustomerCombobox
                             setFormOpen={setFormOpen}
                             customers={customers}
-                            data={data}
                             auth={auth}
                             onChange={(e) => setData('buyer_id', e)}
                             value={data.buyer_id}
@@ -165,7 +175,7 @@ export function InlineDeliveryTable({ products, form, errors, onChange, hidePric
                 Harga Satuan
             </Button>
             </div>
-            <div className="max-h-[250px] overflow-y-auto">
+            <div className="max-h-[200px] overflow-y-auto">
                 <DataTable
                     columns={[
                         {
@@ -274,7 +284,7 @@ export function ProductCombobox({ products, value, onChange }) {
 }
 export function CustomerCombobox({ customers, value, onChange, setFormOpen, auth }) {
     const [open, setOpen] = useState(false);
-    const selectedProduct = customers?.find((c) => c.id === value);
+    const selectedProduct = customers?.find((c) => c.id == value);
 
     return (
         <>

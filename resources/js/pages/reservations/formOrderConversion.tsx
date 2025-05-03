@@ -1,14 +1,16 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Label } from '@/components/ui/label';
 import { router } from '@inertiajs/react';
+import axios from 'axios';
 import { Trash2 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import DataTable from 'react-data-table-component';
+import { CustomerCombobox } from '../delivery-orders/formDeliveryOrder';
 interface props {
     isOpen: boolean;
     onClose: () => void;
-    reservations: ReservationData[];
 }
 
 interface ReservationData {
@@ -27,21 +29,30 @@ interface ReservationData {
         description: string;
     };
 }
-const FormOrderConversion = ({ isOpen, onClose, reservations }: props) => {
+const FormOrderConversion = ({ isOpen, onClose,customers }: props) => {
     const [items, setItems] = useState<ReservationData[]>([]);
+    const [shipTo, setShipTo] = useState('');
+
+    const fetchReservation = async () => {
+        try {
+            const response = await axios.get(route('salesperson-inventory'));
+            setItems(response.data.data);
+        } catch (error) {
+            console.log(error);
+        }
+    };
 
     useEffect(() => {
-        setItems(reservations);
-    }, [isOpen]);
+        fetchReservation()
+    }, []);
 
     const removeRow = (id: string | number) => {
         setItems(items.filter((item) => item.id !== id));
     };
 
-
     const prepItems = items.map((i) => {
         return {
-            id:crypto.randomUUID(),
+            id: crypto.randomUUID(),
             product_id: i.product_id,
             quantity: Number(i.reserved_quantity),
             unit_price: Number(i.product.price),
@@ -53,8 +64,14 @@ const FormOrderConversion = ({ isOpen, onClose, reservations }: props) => {
                 <DialogHeader>
                     <DialogTitle>Order Conversion</DialogTitle>
                 </DialogHeader>
+                <div className="space-y-2">
+                    <Label htmlFor="buyer_id">Konsumen (Opsional)</Label>
+                    {/* @ts-ignore */}
+                    <CustomerCombobox customers={customers} onChange={(e) => setShipTo(e)} value={shipTo} />
+                    </div>
 
                 <div className="max-h-[250px] overflow-y-auto">
+                    
                     <DataTable
                         columns={[
                             {
@@ -97,6 +114,8 @@ const FormOrderConversion = ({ isOpen, onClose, reservations }: props) => {
                     <Button
                         onClick={() =>
                             router.get('/delivery-orders/create', {
+
+                                ship_to: shipTo,
                                 items: JSON.stringify(prepItems),
                             })
                         }

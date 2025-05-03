@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Customer;
 use App\Models\Reservation;
 use App\Models\Product;
 use App\Models\User;
@@ -39,6 +40,7 @@ class ReservationController extends Controller
         $salespersons = User::select('id', 'name')->get();
         $products = Product::select('id', 'name')->withSum('stocks', 'quantity')->withSum('reservations', 'reserved_quantity')->get();
         $warehouses = Warehouse::select('id', 'name')->get();
+        $customers = Customer::select('id', 'name')->get();
 
         return Inertia::render('reservations/index', [
             'reservations' => $reservations,
@@ -46,6 +48,8 @@ class ReservationController extends Controller
             'salespersons' => $salespersons,
             'products' => $products,
             'warehouses' => $warehouses,
+            'customers' => $customers,
+            
         ]);
     }
 
@@ -108,5 +112,14 @@ class ReservationController extends Controller
     {
         $reservation->delete();
         return redirect()->route('reservations.index')->with('success', 'Reservation deleted successfully.');
+    }
+
+    function getMyInventory() {
+        $reservations = Reservation::where('salesperson_id', Auth::id())->with('product')->get();
+
+        return response()->json([
+            'success' => true,
+            'data' => $reservations,
+        ]);
     }
 }

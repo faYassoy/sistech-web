@@ -7,16 +7,17 @@ import { Button } from '@/components/ui/button';
 import AppLayout from '@/layouts/app-layout';
 import { extractBreadcrumbs } from '@/lib/utils';
 import { BreadcrumbItem } from '@/types';
-import FormReservation from './formReservation';
 import FormOrderConversion from './formOrderConversion';
+import FormReservation from './formReservation';
 
 interface SalespersonInventory {
     id: number;
     salesperson: { name: string };
-    product: { name: string; stocks_sum_quantity: string;reservations_sum_reserved_quantity:string };
+    product: { name: string; stocks_sum_quantity: string; reservations_sum_reserved_quantity: string };
     total_stock: number;
     reserved_quantity: number;
     created_at: string;
+    salesperson_id: string | number;
 }
 
 interface PageProps {
@@ -34,7 +35,7 @@ interface PageProps {
 const SalespersonInventoryIndex: React.FC = () => {
     const props = usePage<PageProps>().props;
     const breadcrumbs: BreadcrumbItem[] = extractBreadcrumbs(window.location.pathname);
-    const { auth,reservations, products, salespersons, warehouses } = props;
+    const { auth, customers, reservations, products, salespersons, warehouses } = props;
     const [selected, setSelected] = useState<SalespersonInventory | null>(null);
     const [reservationModal, setReservationModal] = useState(false);
     const [convertModal, setConvertModal] = useState(false);
@@ -58,7 +59,12 @@ const SalespersonInventoryIndex: React.FC = () => {
             ),
         },
         { name: 'Dipesan', selector: (row: SalespersonInventory) => row.reserved_quantity, sortable: true },
-        { name: 'Total Stok', selector: (row: SalespersonInventory) => `${Number(row.product.stocks_sum_quantity)-Number(row.product.reservations_sum_reserved_quantity)}`, sortable: true },
+        {
+            name: 'Total Stok',
+            selector: (row: SalespersonInventory) =>
+                `${Number(row.product.stocks_sum_quantity) - Number(row.product.reservations_sum_reserved_quantity)}`,
+            sortable: true,
+        },
         {
             name: 'Dibuat',
             selector: (row: SalespersonInventory) => new Date(row.created_at).toLocaleDateString(),
@@ -66,34 +72,35 @@ const SalespersonInventoryIndex: React.FC = () => {
         },
         {
             name: '',
-            cell: (row: SalespersonInventory) => (
-                <div className="grid grid-cols-2 gap-4">
-                    <Button
-                        variant="outline"
-                        size={'sm'}
-                        onClick={() => {
-                            setSelected(row);
-                            setReservationModal(true);
-                        }}
-                    >
-                        Ubah
-                    </Button>
+            cell: (row: SalespersonInventory) =>
+                (auth?.user?.id == row.salesperson_id || auth?.user?.roles[0] == 'admin') && (
+                    <div className="grid grid-cols-2 gap-4">
+                        <Button
+                            variant="outline"
+                            size={'sm'}
+                            onClick={() => {
+                                setSelected(row);
+                                setReservationModal(true);
+                            }}
+                        >
+                            Ubah
+                        </Button>
 
-                    <Button
-                        variant="destructive"
-                        size={'sm'}
-                        onClick={() => {
-                            if (confirm('Are you sure you want to delete this reservation?')) {
-                                router.delete(route('reservations.destroy', row.id), {
-                                    onError: (err) => alert(err.message),
-                                });
-                            }
-                        }}
-                    >
-                        Hapus
-                    </Button>
-                </div>
-            ),
+                        <Button
+                            variant="destructive"
+                            size={'sm'}
+                            onClick={() => {
+                                if (confirm('Are you sure you want to delete this reservation?')) {
+                                    router.delete(route('reservations.destroy', row.id), {
+                                        onError: (err) => alert(err.message),
+                                    });
+                                }
+                            }}
+                        >
+                            Hapus
+                        </Button>
+                    </div>
+                ),
         },
     ];
 
@@ -103,9 +110,9 @@ const SalespersonInventoryIndex: React.FC = () => {
                 <div className="mb-4 flex items-center justify-between">
                     <h1 className="text-2xl font-bold">Reservasi</h1>
 
-                    <div className='flex gap-4'>
+                    <div className="flex gap-4">
                         <Button onClick={() => setReservationModal(true)}>Buat Rervasi Baru</Button>
-                        {auth?.user?.roles[0] == 'sales_person' &&<Button onClick={() => setConvertModal(true)}>Order Conversion</Button>}
+                        {auth?.user?.roles[0] == 'sales_person' && <Button onClick={() => setConvertModal(true)}>Order Conversion</Button>}
                     </div>
                 </div>
 
@@ -129,7 +136,7 @@ const SalespersonInventoryIndex: React.FC = () => {
                 salespersons={salespersons}
                 warehouses={warehouses}
             />
-            <FormOrderConversion isOpen={convertModal} onClose={() => setConvertModal(false)} reservations={reservations.data} />
+            <FormOrderConversion isOpen={convertModal} onClose={() => setConvertModal(false)} customers={customers} />
         </AppLayout>
     );
 };

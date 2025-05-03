@@ -37,6 +37,8 @@ Route::group(['middleware' => ['auth']],function () {
 
     Route::get('/delivery-orders/{deliveryOrder}/print', [DeliveryOrderController::class, 'print'])->name('delivery-orders.print');
 
+    Route::get('salesperson-inventory', [ReservationController::class,'getMyInventory'])->name('salesperson-inventory');
+
 });
 
 Route::group(['middleware' => ['role:admin','auth']],function () {
