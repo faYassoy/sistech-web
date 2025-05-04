@@ -255,7 +255,7 @@ export function ProductCombobox({ products, value, onChange }) {
     return (
         <Popover open={open} onOpenChange={setOpen}>
             <PopoverTrigger asChild>
-                <Button variant="outline" className="w-full justify-between">
+                <Button variant="outline" className="w-full justify-between truncate">
                     {selectedProduct ? selectedProduct.name : 'Pilih Produk'}
                     {/* <Check className="ml-2 h-4 w-4 opacity-50" /> */}
                 </Button>
@@ -273,7 +273,7 @@ export function ProductCombobox({ products, value, onChange }) {
                                     setOpen(false);
                                 }}
                             >
-                                {product.name}
+                                {`${product.name} (${Number(product.stocks_sum_quantity) - Number(product.reservations_sum_reserved_quantity)})`}
                             </CommandItem>
                         ))}
                     </CommandList>

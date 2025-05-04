@@ -20,14 +20,14 @@ class ProductSeeder extends Seeder
             [
                 'name' => 'Smart TV 4K 55 Inch',
                 'part_number' => 'TV-4K-55',
-                'brand' => 'SAMSUNG',
+                'brand' => 'AOC',
                 'description' => 'Immersive 4K Ultra HD Smart TV with vibrant colors and smart features.',
                 'price' => 7999000, // Example price in IDR
             ],
             [
                 'name' => 'Wireless Noise-Cancelling Headphones',
                 'part_number' => 'HP-NC-001',
-                'brand' => 'SAMSUNG',
+                'brand' => 'Lenovo',
                 'description' => 'Premium wireless headphones with active noise cancellation for immersive audio.',
                 'price' => 2499000,
             ],
@@ -48,14 +48,14 @@ class ProductSeeder extends Seeder
             [
                 'name' => 'Bluetooth Speaker Portable',
                 'part_number' => 'SPK-BT-PRT',
-                'brand' => 'SAMSUNG',
+                'brand' => 'Lenovo',
                 'description' => 'Portable Bluetooth speaker with rich sound and long battery life.',
                 'price' => 899000,
             ],
             [
                 'name' => 'Mirrorless Camera with Kit Lens',
                 'part_number' => 'CAM-ML-KIT',
-                'brand' => 'SAMSUNG',
+                'brand' => 'SONY',
                 'description' => 'High-quality mirrorless camera with versatile kit lens for photography enthusiasts.',
                 'price' => 11999000,
             ],
@@ -69,21 +69,21 @@ class ProductSeeder extends Seeder
             [
                 'name' => 'Solid State Drive (SSD) 1TB',
                 'part_number' => 'SSD-1TB-INT',
-                'brand' => 'SAMSUNG',
+                'brand' => 'V-Gen',
                 'description' => 'Internal 1TB Solid State Drive for faster data access and improved performance.',
                 'price' => 1799000,
             ],
             [
                 'name' => 'External Hard Drive 2TB',
                 'part_number' => 'HDD-EXT-2TB',
-                'brand' => 'SAMSUNG',
+                'brand' => 'V-gen',
                 'description' => 'Portable 2TB external hard drive for data backup and storage.',
                 'price' => 999000,
             ],
             [
                 'name' => 'Wireless Mouse Ergonomic',
                 'part_number' => 'MOU-WL-ERG',
-                'brand' => 'SAMSUNG',
+                'brand' => 'Lenovo',
                 'description' => 'Ergonomic wireless mouse designed for comfortable and efficient use.',
                 'price' => 399000,
             ],

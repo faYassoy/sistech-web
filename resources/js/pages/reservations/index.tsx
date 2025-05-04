@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 import { router, usePage } from '@inertiajs/react';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import CommonDataTable from '@/components/commonDataTable.component';
 import { Button } from '@/components/ui/button';
@@ -103,6 +103,14 @@ const SalespersonInventoryIndex: React.FC = () => {
                 ),
         },
     ];
+
+     useEffect(() => {
+            const urlSearchParams = new URLSearchParams(window.location.search);
+    
+            if (urlSearchParams.has('is_creating')) {
+                setReservationModal(urlSearchParams.get('is_creating'))
+            }
+        }, []);
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>

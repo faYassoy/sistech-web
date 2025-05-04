@@ -168,10 +168,10 @@ const FormReservation: React.FC<SalespersonreservationsFormProps> = ({ reservati
                     {/* Action Buttons */}
                     <div className="flex justify-end space-x-2">
                         <Button type="button" variant="outline" onClick={onClose}>
-                            Cancel
+                            Batal
                         </Button>
                         <Button type="submit" disabled={processing}>
-                            {reservation ? 'Update' : 'Create'}
+                            {reservation ? 'Ubah' : 'Tambahkan'}
                         </Button>
                     </div>
                 </form>

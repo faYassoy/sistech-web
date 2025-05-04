@@ -70,7 +70,7 @@ class ReservationController extends Controller
         $availableStock = $product->stocks_sum_quantity - $reservedStock;
 
         if ($validated['reserved_quantity'] > $availableStock) {
-            return back()->withErrors(['error' => 'Not enough stock available for reservation.']);
+            return back()->withErrors(['reserved_quantity' => 'Not enough stock available for reservation.']);
         }
 
         Reservation::create($validated);
