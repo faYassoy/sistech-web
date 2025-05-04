@@ -3,6 +3,7 @@
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DeliveryOrderController;
+use App\Http\Controllers\DeliveryOrderReportController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ReservationController;
 use App\Http\Controllers\SalespersonInventoryController;
@@ -29,7 +30,7 @@ Route::group(['middleware' => ['auth']],function () {
     Route::get('price-list', [ProductController::class,'list']);
 
     Route::resource('reservations', ReservationController::class)->only([
-        'index', 'create', 'store'
+        'index', 'create', 'store','destroy'
     ]);
     Route::resource('delivery-orders', DeliveryOrderController::class)->only([
         'index', 'create', 'store', 'update'
@@ -60,10 +61,6 @@ Route::group(['middleware' => ['role:admin','auth']],function () {
     Route::resource('stocks', StockController::class);
     Route::post('customers/quick', [CustomerController::class, 'quick_store'])->name('customers.quick');
 
-    Route::resource('reservations', ReservationController::class)->only([
-         'destroy'
-    ]);
-
     Route::resource('delivery-orders', DeliveryOrderController::class)->only([
       'edit','update','destroy'
     ]);
@@ -80,6 +77,9 @@ Route::group(['middleware' => ['role:admin','auth']],function () {
         Route::get('stocks/peek', [StockPeekController::class, 'index'])->name('warehouses.stocks.peek');
         Route::post('stocks/adjust', [StockPeekController::class, 'adjust'])->name('warehouses.stocks.adjust');
     });
+    Route::get('reports/', [DeliveryOrderReportController::class, 'index'])->name('reports.index');
+    // Route::resource('reports/', DeliveryOrderReportController::class);
+
     
 });
 

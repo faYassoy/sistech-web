@@ -28,6 +28,13 @@ class UserSeeder extends Seeder
             'is_active' => true,
         ])->assignRole('sales_person');
 
+        User::create([
+            'name' => 'Gunaryoko',
+            'email' => 'gunaryoko@gmail.com',
+            'password' => Hash::make('password'),
+            'is_active' => true,
+        ])->assignRole('sales_person');
+
         // User::factory(10)->create(); // Generate 10 random users
        
     }

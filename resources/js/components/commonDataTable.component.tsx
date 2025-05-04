@@ -9,6 +9,7 @@ interface CommonDataTableProps<T> {
     columns: TableColumn<T>[];
     data: T[];
     searchRoute: string;
+    noSearch?:boolean
     totalRow: number;
 }
 
@@ -16,6 +17,7 @@ const CommonDataTable = <T,>({
     columns,
     data,
     searchRoute,
+    noSearch,
     totalRow,
 
     ...props
@@ -44,7 +46,7 @@ const CommonDataTable = <T,>({
     };
     return (
         <>
-            <div className="grid grid-cols-12 pb-2">
+           {!noSearch&& <div className="grid grid-cols-12 pb-2">
                 <div className="col-span-3 col-start-10 flex gap-2">
                     <Button size={'icon'} variant={'outline'} onClick={resetSearch}>
                         <SearchX />
@@ -58,7 +60,7 @@ const CommonDataTable = <T,>({
                         }}
                     />
                 </div>
-            </div>
+            </div>}
             <div className="max-h-[440px] overflow-y-scroll">
                 <DataTable
                     columns={columns}

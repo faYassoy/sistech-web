@@ -52,7 +52,7 @@ class DeliveryOrderReportController extends Controller
 
     $deliveryOrders = $query->latest()->paginate(15);
 
-    return Inertia::render('Reports/DeliveryOrderReport', [
+    return Inertia::render('reports/index', [
         'deliveryOrders' => $deliveryOrders,
         'filters' => $request->only('search', 'status', 'salesperson_id', 'date_filter_type', 'date_value'),
         'salespersons' => User::role('sales_person')->select('id', 'name')->get(),

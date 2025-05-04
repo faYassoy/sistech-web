@@ -44,7 +44,7 @@ const FormOrderConversion = ({ isOpen, onClose,customers }: props) => {
 
     useEffect(() => {
         fetchReservation()
-    }, []);
+    }, [isOpen]);
 
     const removeRow = (id: string | number) => {
         setItems(items.filter((item) => item.id !== id));

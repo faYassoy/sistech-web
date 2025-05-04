@@ -15,7 +15,7 @@ export const mainNavItems = {
         items: [
           { title: "Dashboard", url: "/dashboard", icon: LayoutGrid },
           { title: "Surat Jalan", url: "/delivery-orders", icon: Warehouse },
-          { title: "Daftar Harga", url: "/price-list", icon: ScrollText },
+          { title: "Daftar Harga", url: "/price-list", icon: ScrollText }
         ],
       },
       {
@@ -33,6 +33,14 @@ export const mainNavItems = {
           // { title: "Gudang", url: "/warehouses", icon: Warehouse },
           { title: "Kelola Stok", url: "/stocks", icon: Boxes },
           { title: "Reservasi", url: "/reservations", icon: Warehouse },
+        ],
+      },
+      {
+        colapsableGroup: "Laporan",
+        items: [
+          // { title: "Gudang", url: "/warehouses", icon: Warehouse },
+          { title: "Laporan", url: "/reports", icon: Boxes },
+          // { title: "Reservasi", url: "/reservations", icon: Warehouse },
         ],
       },
     ],
