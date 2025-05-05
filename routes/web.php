@@ -27,7 +27,7 @@ Route::group(['middleware' => ['auth']],function () {
         'index', 'show'
     ]);
     
-    Route::get('price-list', [ProductController::class,'list']);
+    Route::get('price-list', [ProductController::class,'list'])->name('list');
 
     Route::resource('reservations', ReservationController::class)->only([
         'index', 'create', 'store','destroy'

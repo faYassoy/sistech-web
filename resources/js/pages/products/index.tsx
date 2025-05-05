@@ -117,6 +117,36 @@ const ProductsIndex: React.FC = () => {
                     data={products.data}
                     searchRoute="products.index"
                     totalRow={products.total}
+                    expandableRows
+                    expandableRowsComponent={({ data }) => (
+                        <div className="flex flex-col gap-2 bg-slate-100 p-4">
+                             {/* <pre>{JSON.stringify(data, null, 2)}</pre> */}
+                            <div className="flex gap-4 text-sm">
+                                <p className="font-semibold">Produk : </p>
+                                <p>{data?.name}</p>
+                            </div>
+                            <div className="flex gap-4 text-sm">
+                                <p className="font-semibold">No. Seri : </p>
+                                <p>{data?.serial_number}</p>
+                            </div>
+                            <div className="flex gap-4 text-sm">
+                                <p className="font-semibold">Part : </p>
+                                <p>{data?.part_number}</p>
+                            </div>
+                            <div className="flex gap-4 text-sm">
+                                <p className="font-semibold">Brand : </p>
+                                <p>{data?.brand}</p>
+                            </div>
+                            <div className="flex gap-4 text-sm">
+                                <p className="font-semibold">Harga : </p>
+                                <p>{`Rp ${Number(data?.price).toLocaleString('id-ID')}`}</p>
+                            </div>
+                            <div className="flex gap-4 text-sm">
+                                <p className="font-semibold">Deskripsi </p>
+                                <p className="max-w-64 wrap-break-word">{data?.description}</p>
+                            </div>
+                        </div>
+                    )}
                 />
             </div>
             <ProductForm

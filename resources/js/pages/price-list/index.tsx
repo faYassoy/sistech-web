@@ -77,7 +77,7 @@ const ProductsIndex: React.FC = () => {
                     // @ts-ignore
                     columns={columns}
                     data={products.data}
-                    searchRoute="products.index"
+                    searchRoute="list"
                     totalRow={products.total}
                 />
             </div>

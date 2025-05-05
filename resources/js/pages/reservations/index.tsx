@@ -146,6 +146,26 @@ const SalespersonInventoryIndex: React.FC = () => {
                     data={reservations.data}
                     searchRoute="reservations.index"
                     totalRow={reservations.total}
+                    expandableRows
+                    expandableRowsComponent={({ data }) => (
+                        <div className="flex flex-col gap-2 bg-slate-100 p-4">
+                             {/* <pre>{JSON.stringify(data, null, 2)}</pre> */}
+                            <div className="flex gap-4 text-sm">
+                                <p className="font-semibold">Produk : </p>
+                                <p>{data?.product?.name}</p>
+                            </div>
+                            <div className="flex gap-4 text-sm">
+                                <p className="font-semibold">Sales : </p>
+                                <p>{data?.salesperson?.name}</p>
+                            </div>
+                            <div className="flex gap-4 text-sm">
+                                <p className="font-semibold">Dipesan : </p>
+                                <p>{`${data.reserved_quantity} (stock:${Number(data.product.stocks_sum_quantity) - Number(data.product.reservations_sum_reserved_quantity)})`}</p>
+                                {/* <p>{data?.creator?.name}</p> */}
+                            </div>
+                            
+                        </div>
+                    )}
                 />
             </div>
             <FormReservation

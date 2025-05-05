@@ -19,7 +19,7 @@ const DeliveryOrdersIndex: React.FC = () => {
         },
         {
             name: 'No. Surat Jalan',
-            width:'200px',
+            width: '200px',
             selector: (row: any) => row.status,
             cell: (row) => (
                 <div>
@@ -29,20 +29,20 @@ const DeliveryOrdersIndex: React.FC = () => {
             ),
             sortable: true,
         },
-        { name: 'Konsumen',width:'150px', selector: (row: any) => row.buyer.name, sortable: true,hide:'sm' },
+        { name: 'Konsumen', width: '150px', selector: (row: any) => row.buyer.name, sortable: true, hide: 'sm' },
         {
             name: 'Gudang',
-            width:'150px',
+            width: '150px',
             selector: (row: any) => warehouses.find((w: any) => w.id === row.warehouse_id)?.name || 'N/A',
             sortable: true,
-            hide:'sm'
+            hide: 'sm',
         },
         {
             name: 'Di Buat',
             width: '150px',
             selector: (row: any) => new Date(row.created_at).toLocaleDateString(),
             sortable: true,
-            hide:'sm'
+            hide: 'sm',
         },
         {
             name: '',
@@ -57,12 +57,13 @@ const DeliveryOrdersIndex: React.FC = () => {
                     )}
                 </div>
             ),
-            hide:'sm'
+            hide: 'sm',
         },
         {
             name: '',
             cell: (row: any) =>
-                auth?.user?.roles[0] == 'admin' && row.status =='pending' &&(
+                auth?.user?.roles[0] == 'admin' &&
+                row.status == 'pending' && (
                     <div className="flex gap-2">
                         <Button
                             variant="outline"
@@ -119,7 +120,9 @@ const DeliveryOrdersIndex: React.FC = () => {
             <div className="container mx-auto p-4">
                 <div className="mb-4 flex items-center justify-between">
                     <h1 className="text-2xl font-bold">Surat Jalan</h1>
-                    {auth?.user?.roles[0] == 'admin' && <Button onClick={() => router.get(route('delivery-orders.create'))}>Tambahkan Surat Jalan</Button>}
+                    {auth?.user?.roles[0] == 'admin' && (
+                        <Button onClick={() => router.get(route('delivery-orders.create'))}>Tambahkan Surat Jalan</Button>
+                    )}
                 </div>
 
                 <CommonDataTable
@@ -128,6 +131,36 @@ const DeliveryOrdersIndex: React.FC = () => {
                     data={deliveryOrders.data}
                     searchRoute="delivery-orders.index"
                     totalRow={deliveryOrders.total}
+                    expandableRows
+                    expandableRowsComponent={({ data }) => (
+                        <div className="flex flex-col gap-2 bg-slate-100 p-4">
+                             {/* <pre>{JSON.stringify(data, null, 2)}</pre> */}
+                            <div className="flex gap-4 text-sm">
+                                <p className="font-semibold">No Surat Jalan : </p>
+                                <p>{data?.order_number}</p>
+                            </div>
+                            <div className="flex gap-4 text-sm">
+                                <p className="font-semibold">Staus : </p>
+                                <p>{data?.status}</p>
+                            </div>
+                            <div className="flex gap-4 text-sm">
+                                <p className="font-semibold">Sales : </p>
+                                <p>{data?.creator?.name}</p>
+                            </div>
+                            <div className="flex gap-4 text-sm">
+                                <p className="font-semibold">Tanggal : </p>
+                                <p>{new Date(data?.date).toLocaleDateString('id')}</p>
+                            </div>
+                            <div className="flex gap-4 text-sm">
+                                <p className="font-semibold">Konsumen : </p>
+                                <p>{data?.buyer?.name}</p>
+                            </div>
+                            <div className="flex gap-4 text-sm">
+                                <p className="font-semibold">Gudang : </p>
+                                <p>{data?.warehouse?.name}</p>
+                            </div>
+                        </div>
+                    )}
                 />
             </div>
         </AppLayout>

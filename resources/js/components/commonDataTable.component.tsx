@@ -95,8 +95,7 @@ const CommonDataTable = <T,>({
                         router.get(route(searchRoute, { page }), {}, { preserveState: true, replace: true });
                     }}
                     highlightOnHover
-                    expandableRows
-                    expandableRowsComponent={({ data }) => <pre>{JSON.stringify(removeId(data), null, 2)}</pre>}
+                    
                     {...props}
                 />
             </div>
