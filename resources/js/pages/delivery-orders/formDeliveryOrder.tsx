@@ -58,11 +58,11 @@ export default function FormDeliveryOrder() {
 
     return (
         <AppLayout backTo="delivery-orders.index">
-            <form onSubmit={handleSubmit} className="mx-auto max-w-[80%] space-y-4 bg-white pt-4">
+            <form onSubmit={handleSubmit} className="mx-auto max-w-svw p-8 md:max-w-[80%] space-y-4 bg-white md:pt-4">
                 <h1 className="mb-4 text-2xl font-bold">{deliveryOrder ? 'Ubah' : 'Buat'} Surat Jalan</h1>
 
                 {/* Form Fields */}
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid md:grid-cols-2 gap-4">
                     <div>
                         <Label htmlFor="date">Tanggal</Label>
                         <Input id="date" type="date" name="date" value={data.date} onChange={(e) => setData('date', e.target.value)} required />
