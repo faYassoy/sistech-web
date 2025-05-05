@@ -29,18 +29,20 @@ const DeliveryOrdersIndex: React.FC = () => {
             ),
             sortable: true,
         },
-        { name: 'Konsumen',width:'150px', selector: (row: any) => row.buyer.name, sortable: true },
+        { name: 'Konsumen',width:'150px', selector: (row: any) => row.buyer.name, sortable: true,hide:'sm' },
         {
             name: 'Gudang',
             width:'150px',
             selector: (row: any) => warehouses.find((w: any) => w.id === row.warehouse_id)?.name || 'N/A',
             sortable: true,
+            hide:'sm'
         },
         {
             name: 'Di Buat',
             width: '150px',
             selector: (row: any) => new Date(row.created_at).toLocaleDateString(),
             sortable: true,
+            hide:'sm'
         },
         {
             name: '',
@@ -55,6 +57,7 @@ const DeliveryOrdersIndex: React.FC = () => {
                     )}
                 </div>
             ),
+            hide:'sm'
         },
         {
             name: '',

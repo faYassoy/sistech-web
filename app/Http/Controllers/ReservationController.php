@@ -20,22 +20,24 @@ class ReservationController extends Controller
     {
         $search = $request->query('search');
 
-        $reservations = Reservation::with(['salesperson', 'product' => function ($query) {
+        $reservations = Reservation::with(['salesperson' => function ($query) {
+            $query->select('id', 'name');
+        }, 'product' => function ($query) {
             $query->withSum('stocks', 'quantity') // Total stock across warehouses
                 ->withSum('reservations', 'reserved_quantity'); // Total reserved stock
         }])
-        // ->when(Auth::check() && Auth::user()->roles[0]->name === 'sales_person', function ($query) {
-        //     $query->where('salesperson_id', Auth::id());
-        // })
-        ->when($search, function ($query) use ($search) {
-            $query->whereHas('salesperson', function ($q) use ($search) {
-                $q->where('name', 'like', "%{$search}%");
-            })->orWhereHas('product', function ($q) use ($search) {
-                $q->where('name', 'like', "%{$search}%");
-            });
-        })
-        ->paginate(10)
-        ->withQueryString();
+            // ->when(Auth::check() && Auth::user()->roles[0]->name === 'sales_person', function ($query) {
+            //     $query->where('salesperson_id', Auth::id());
+            // })
+            ->when($search, function ($query) use ($search) {
+                $query->whereHas('salesperson', function ($q) use ($search) {
+                    $q->where('name', 'like', "%{$search}%");
+                })->orWhereHas('product', function ($q) use ($search) {
+                    $q->where('name', 'like', "%{$search}%");
+                });
+            })
+            ->paginate(10)
+            ->withQueryString();
 
         $salespersons = User::select('id', 'name')->get();
         $products = Product::select('id', 'name')->withSum('stocks', 'quantity')->withSum('reservations', 'reserved_quantity')->get();
@@ -49,7 +51,7 @@ class ReservationController extends Controller
             'products' => $products,
             'warehouses' => $warehouses,
             'customers' => $customers,
-            
+
         ]);
     }
 
@@ -114,7 +116,8 @@ class ReservationController extends Controller
         return redirect()->route('reservations.index')->with('success', 'Reservation deleted successfully.');
     }
 
-    function getMyInventory() {
+    function getMyInventory()
+    {
         $reservations = Reservation::where('salesperson_id', Auth::id())->with('product')->get();
 
         return response()->json([

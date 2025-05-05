@@ -52,21 +52,24 @@ const ProductsIndex: React.FC = () => {
             width: '50px',
         },
         { name: 'Nama', selector: (row: Product) => row.name, sortable: true },
-        { name: 'Part Number', selector: (row: Product) => row.part_number, sortable: true },
+        { name: 'Part Number', selector: (row: Product) => row.part_number, sortable: true,hide:'sm' },
         {
             name: 'Brand',
             selector: (row: Product) => row.brand || 'N/A',
             sortable: true,
+            hide:'sm'
         },
-        { name: 'Stok', selector: (row: Product) => `${Number(row.stocks_sum_quantity)-Number(row.reservations_sum_reserved_quantity)}`, sortable: true },
-        { name: 'Dipesan', selector: (row: Product) => ` ${Number(row.reservations_sum_reserved_quantity)}`, sortable: true },
+        // { name: 'Stok', selector: (row: Product) => ``, sortable: true,hide:'sm' },
+        { name: 'Dipesan', selector: (row: Product) => ` ${Number(row.reservations_sum_reserved_quantity)} (stok: ${Number(row.stocks_sum_quantity)-Number(row.reservations_sum_reserved_quantity)})`, sortable: true },
         {
             name: 'Dibuat',
             selector: (row: Product) => new Date(row.created_at).toLocaleDateString(),
             sortable: true,
+            hide:'sm'
         },
         {
             name: '',
+            hide:'sm',
             cell: (row: Product) =>
                 auth?.user?.roles[0] == 'admin' ? (
                     <div className="grid grid-cols-2 gap-4">

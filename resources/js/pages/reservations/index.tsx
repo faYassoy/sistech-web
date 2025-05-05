@@ -47,28 +47,44 @@ const SalespersonInventoryIndex: React.FC = () => {
             selector: (row: SalespersonInventory, index: number) => (props.reservations.current_page - 1) * props.reservations.per_page + index + 1,
             width: '50px',
         },
-        { name: 'Sales', selector: (row: SalespersonInventory) => row.salesperson.name, sortable: true },
-        {
-            name: 'Product',
-            selector: (row: SalespersonInventory) => row.product.name,
+        { name: 'Sales', selector: (row: SalespersonInventory) => row.salesperson.name,
             sortable: true,
             cell: (row: SalespersonInventory) => (
                 <div className="w-full truncate" title={row.product.name}>
+                    <p>
+
+                    {row.salesperson.name}
+                    </p>
+                    <p>
+
                     {row.product.name}
+                    </p>
                 </div>
-            ),
+                )
         },
-        { name: 'Dipesan', selector: (row: SalespersonInventory) => row.reserved_quantity, sortable: true },
-        {
-            name: 'Total Stok',
-            selector: (row: SalespersonInventory) =>
-                `${Number(row.product.stocks_sum_quantity) - Number(row.product.reservations_sum_reserved_quantity)}`,
-            sortable: true,
-        },
+            
+        // {
+        //     name: 'Product',
+        //     selector: (row: SalespersonInventory) => row.product.name,
+        //     sortable: true,
+        //     cell: (row: SalespersonInventory) => (
+        //         <div className="w-full truncate" title={row.product.name}>
+        //             {row.product.name}
+        //         </div>
+        //     ),
+        // },
+        { name: 'Dipesan', selector: (row: SalespersonInventory) => `${row.reserved_quantity} (stock:${Number(row.product.stocks_sum_quantity) - Number(row.product.reservations_sum_reserved_quantity)})`, sortable: true },
+        // {
+        //     name: 'Total Stok',
+        //     selector: (row: SalespersonInventory) =>
+        //         `${Number(row.product.stocks_sum_quantity) - Number(row.product.reservations_sum_reserved_quantity)}`,
+        //     sortable: true,
+        // },
         {
             name: 'Dibuat',
             selector: (row: SalespersonInventory) => new Date(row.created_at).toLocaleDateString(),
             sortable: true,
+            hide:'sm'
         },
         {
             name: '',

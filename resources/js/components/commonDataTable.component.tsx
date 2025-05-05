@@ -9,7 +9,7 @@ interface CommonDataTableProps<T> {
     columns: TableColumn<T>[];
     data: T[];
     searchRoute: string;
-    noSearch?:boolean
+    noSearch?: boolean;
     totalRow: number;
 }
 
@@ -44,23 +44,46 @@ const CommonDataTable = <T,>({
         setSearchTerm('');
         router.visit(route(searchRoute));
     };
+    function removeId(data) {
+        if (typeof data !== 'object' || data === null) {
+            return data; 
+        }
+
+        if (Array.isArray(data)) {
+            return data.map((item) => removeId(item));
+        }
+
+        const newData = { ...data }; 
+        delete newData.id;
+
+        for (const key in newData) {
+            if (typeof newData[key] === 'object' && newData[key] !== null) {
+                newData[key] = removeId(newData[key]);
+            }
+        }
+
+        return newData;
+    }
+
     return (
         <>
-           {!noSearch&& <div className="grid grid-cols-12 pb-2">
-                <div className="col-span-3 col-start-10 flex gap-2">
-                    <Button size={'icon'} variant={'outline'} onClick={resetSearch}>
-                        <SearchX />
-                    </Button>
-                    <Input
-                        type="search"
-                        placeholder="Cari ..."
-                        value={searchTerm}
-                        onChange={(e) => {
-                            handleSearch(e);
-                        }}
-                    />
+            {!noSearch && (
+                <div className="grid grid-cols-12 pb-2">
+                    <div className="col-span-10 md:col-span-3 md:col-start-10 flex gap-2">
+                        <Button size={'icon'} variant={'outline'} onClick={resetSearch}>
+                            <SearchX />
+                        </Button>
+                        <Input
+                            type="search"
+                            placeholder="Cari ..."
+                            value={searchTerm}
+                            onChange={(e) => {
+                                handleSearch(e);
+                            }}
+                        />
+                    </div>
                 </div>
-            </div>}
+            )}
             <div className="max-h-[440px] overflow-y-scroll">
                 <DataTable
                     columns={columns}
@@ -72,6 +95,8 @@ const CommonDataTable = <T,>({
                         router.get(route(searchRoute, { page }), {}, { preserveState: true, replace: true });
                     }}
                     highlightOnHover
+                    expandableRows
+                    expandableRowsComponent={({ data }) => <pre>{JSON.stringify(removeId(data), null, 2)}</pre>}
                     {...props}
                 />
             </div>

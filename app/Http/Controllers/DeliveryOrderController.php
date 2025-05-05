@@ -24,7 +24,17 @@ class DeliveryOrderController extends Controller
     {
         $search = $request->query('search');
 
-        $deliveryOrders = DeliveryOrder::with('warehouse', 'creator', 'buyer')
+        $deliveryOrders = DeliveryOrder::with([
+            'warehouse' => function ($query) {
+                $query->select('id','name');
+            },
+            'creator' => function ($query) {
+                $query->select('id','name');
+            },
+            'buyer' => function ($query) {
+                $query->select('id','name');
+            }
+        ])
             ->when($search, function ($query) use ($search) {
                 $query->where('order_number', 'like', "%{$search}%")
                     ->orWhere('buyer', 'like', "%{$search}%");
