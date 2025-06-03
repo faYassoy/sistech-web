@@ -50,7 +50,7 @@ class DeliveryOrderReportController extends Controller
             }
         });
 
-    $deliveryOrders = $query->latest()->paginate(15);
+    $deliveryOrders = $query->latest()->paginate(1000);
 
     return Inertia::render('reports/index', [
         'deliveryOrders' => $deliveryOrders,

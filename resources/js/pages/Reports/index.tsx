@@ -1,8 +1,10 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 import CommonDataTable from '@/components/commonDataTable.component';
+import DeliveryOrderReportPDF from '@/components/DeliveryOrderReportPdf';
 import { Button } from '@/components/ui/button';
 import AppLayout from '@/layouts/app-layout';
 import { router, usePage } from '@inertiajs/react';
+import { PDFDownloadLink } from '@react-pdf/renderer';
 import { useState } from 'react';
 
 interface DeliveryOrder {
@@ -70,12 +72,15 @@ const DeliveryOrderReport: React.FC = () => {
         { name: 'Status', selector: (row: DeliveryOrder) => row.status, sortable: true },
         { name: 'Di Buat Oleh', selector: (row: DeliveryOrder) => row.creator.name, sortable: true },
     ];
-
+const date = new Date
     return (
         <AppLayout>
             <div className="container mx-auto p-4">
-                <div className="mb-6">
+                <div className="mb-6 flex justify-between">
                     <h1 className="text-2xl font-extrabold text-gray-800">Laporan Surat Jalan</h1>
+                    <PDFDownloadLink document={<DeliveryOrderReportPDF orders={deliveryOrders.data} />} fileName={"delivery-order-report ["+ date.toDateString()+"]"}>
+                        {({ loading }) => <Button variant="outline">{loading ? 'Generating...' : 'Download PDF 📄'}</Button>}
+                    </PDFDownloadLink>
                 </div>
 
                 {/* Filters Section */}
@@ -141,7 +146,7 @@ const DeliveryOrderReport: React.FC = () => {
                         placeholder="Cari..."
                         value={localFilters.search || ''}
                         onChange={(e) => setLocalFilters((prev) => ({ ...prev, search: e.target.value }))}
-                        className="rounded-md border col-span-2 border-gray-300 px-4 py-2 focus:border-transparent focus:ring-2 focus:ring-slate-500 focus:outline-none"
+                        className="col-span-2 rounded-md border border-gray-300 px-4 py-2 focus:border-transparent focus:ring-2 focus:ring-slate-500 focus:outline-none"
                     />
 
                     <select
@@ -170,7 +175,7 @@ const DeliveryOrderReport: React.FC = () => {
                     </select>
                     <Button onClick={applyFilters}>Cari</Button>
                 </div>
-                
+
                 {/* Data Table */}
                 <div className="rounded-lg bg-white p-6 shadow-md">
                     <CommonDataTable

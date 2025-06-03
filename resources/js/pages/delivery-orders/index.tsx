@@ -1,14 +1,16 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 import CommonDataTable from '@/components/commonDataTable.component';
+import DeliveryOrderPDF from '@/components/DeliveryOrderPdf';
 import { Button } from '@/components/ui/button';
 import AppLayout from '@/layouts/app-layout';
 import { router, usePage } from '@inertiajs/react';
 import { Printer } from 'lucide-react';
-// import { useState } from 'react';
+import { useState } from 'react';
 
 const DeliveryOrdersIndex: React.FC = () => {
     const { auth, deliveryOrders, warehouses } = usePage().props as any;
-    // const [selected, setSelected] = useState(null);
+    const [selected, setSelected] = useState(null);
+    const [isOpen, setIsOpen] = useState(false);
 
     // Define columns
     const columns = [
@@ -51,7 +53,8 @@ const DeliveryOrdersIndex: React.FC = () => {
             cell: (row: any) => (
                 <div className="w-full">
                     {row.status != 'pending' && (
-                        <Button className="float-right" variant="secondary" onClick={() => router.get(route('delivery-orders.print', row.id))}>
+                        // JSON.stringify(row)
+                        <Button className="float-right" variant="secondary" onClick={() => {setIsOpen(true);setSelected(row)}}>
                             <Printer />
                         </Button>
                     )}
@@ -134,7 +137,7 @@ const DeliveryOrdersIndex: React.FC = () => {
                     expandableRows
                     expandableRowsComponent={({ data }) => (
                         <div className="flex flex-col gap-2 bg-slate-100 p-4">
-                             {/* <pre>{JSON.stringify(data, null, 2)}</pre> */}
+                            {/* <pre>{JSON.stringify(data, null, 2)}</pre> */}
                             <div className="flex gap-4 text-sm">
                                 <p className="font-semibold">No Surat Jalan : </p>
                                 <p>{data?.order_number}</p>
@@ -163,6 +166,7 @@ const DeliveryOrdersIndex: React.FC = () => {
                     )}
                 />
             </div>
+            <DeliveryOrderPDF isOpen={isOpen} onClose={()=>setIsOpen(false)} data={selected} />
         </AppLayout>
     );
 };

@@ -25,14 +25,17 @@ class DeliveryOrderController extends Controller
         $search = $request->query('search');
 
         $deliveryOrders = DeliveryOrder::with([
+            'items' => function ($query) {
+                $query->with('product');
+            },
             'warehouse' => function ($query) {
-                $query->select('id','name');
+                $query->select('id', 'name');
             },
             'creator' => function ($query) {
-                $query->select('id','name');
+                $query->select('id', 'name');
             },
             'buyer' => function ($query) {
-                $query->select('id','name');
+                $query->select('id', 'name', 'address');
             }
         ])
             ->when($search, function ($query) use ($search) {
