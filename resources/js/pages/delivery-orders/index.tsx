@@ -52,7 +52,7 @@ const DeliveryOrdersIndex: React.FC = () => {
 
             cell: (row: any) => (
                 <div className="w-full">
-                    {row.status != 'pending' && (
+                    {row.status.includes(['panding','cancled']) && (
                         // JSON.stringify(row)
                         <Button className="float-right" variant="secondary" onClick={() => {setIsOpen(true);setSelected(row)}}>
                             <Printer />

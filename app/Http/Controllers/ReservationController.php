@@ -25,7 +25,8 @@ class ReservationController extends Controller
         }, 'product' => function ($query) {
             $query->withSum('stocks', 'quantity') // Total stock across warehouses
                 ->withSum('reservations', 'reserved_quantity'); // Total reserved stock
-        }])
+        }])->whereNull('delivery_order_id')
+
             // ->when(Auth::check() && Auth::user()->roles[0]->name === 'sales_person', function ($query) {
             //     $query->where('salesperson_id', Auth::id());
             // })
@@ -118,7 +119,7 @@ class ReservationController extends Controller
 
     function getMyInventory()
     {
-        $reservations = Reservation::where('salesperson_id', Auth::id())->with('product')->get();
+        $reservations = Reservation::where('salesperson_id', Auth::id())->whereNull('delivery_order_id')->with('product')->get();
 
         return response()->json([
             'success' => true,

@@ -48,6 +48,8 @@ class DashboardController extends Controller
                 'delivery_items.product_id',
                 DB::raw('SUM(delivery_items.quantity) as total_ordered_quantity')
             )
+            ->where('status','=','approved')
+            ->where('status','=','delivered')
             ->join('delivery_orders', 'delivery_items.delivery_order_id', '=', 'delivery_orders.id')
             ->whereBetween('delivery_orders.date', [$startOfMonth, $endOfMonth])
             ->groupBy('delivery_items.product_id')

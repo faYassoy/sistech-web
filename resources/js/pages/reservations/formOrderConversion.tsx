@@ -29,7 +29,7 @@ interface ReservationData {
         description: string;
     };
 }
-const FormOrderConversion = ({ isOpen, onClose,customers }: props) => {
+const FormOrderConversion = ({ isOpen, onClose, customers }: props) => {
     const [items, setItems] = useState<ReservationData[]>([]);
     const [shipTo, setShipTo] = useState('');
 
@@ -43,7 +43,7 @@ const FormOrderConversion = ({ isOpen, onClose,customers }: props) => {
     };
 
     useEffect(() => {
-        fetchReservation()
+        fetchReservation();
     }, [isOpen]);
 
     const removeRow = (id: string | number) => {
@@ -59,72 +59,73 @@ const FormOrderConversion = ({ isOpen, onClose,customers }: props) => {
         };
     });
     return (
-        <Dialog open={isOpen} onOpenChange={onClose}>
-            <DialogContent>
-                <DialogHeader>
-                    <DialogTitle>Order Conversion</DialogTitle>
-                </DialogHeader>
-                <div className="space-y-2">
-                    <Label htmlFor="buyer_id">Konsumen (Opsional)</Label>
-                    {/* @ts-ignore */}
-                    <CustomerCombobox customers={customers} onChange={(e) => setShipTo(e)} value={shipTo} />
+        <div>
+            {isOpen && <div className="fixed inset-0 z-40 bg-black/50 backdrop-blur-sm" onClick={onClose} />}
+            <Dialog modal={false} open={isOpen} onOpenChange={onClose}>
+                <DialogContent>
+                    <DialogHeader>
+                        <DialogTitle>Order Conversion</DialogTitle>
+                    </DialogHeader>
+                    <div className="space-y-2">
+                        <Label htmlFor="buyer_id">Konsumen (Opsional)</Label>
+                        {/* @ts-ignore */}
+                        <CustomerCombobox customers={customers} onChange={(e) => setShipTo(e)} value={shipTo} />
                     </div>
 
-                <div className="max-h-[250px] overflow-y-auto">
-                    
-                    <DataTable
-                        columns={[
-                            {
-                                name: 'Product',
-                                width: '280px',
-                                selector: (row: ReservationData) => row.product.name,
-                                cell: (row: ReservationData) => (
-                                    <div className="w-full truncate" title={row.product.name}>
-                                        {row.product.name}
-                                    </div>
-                                ),
-                            },
-                            {
-                                name: 'Jumlah',
-                                width: '80px',
-                                selector: (row) => row.reserved_quantity,
-                            },
+                    <div className="max-h-[250px] overflow-y-auto">
+                        <DataTable
+                            columns={[
+                                {
+                                    name: 'Product',
+                                    width: '280px',
+                                    selector: (row: ReservationData) => row.product.name,
+                                    cell: (row: ReservationData) => (
+                                        <div className="w-full truncate" title={row.product.name}>
+                                            {row.product.name}
+                                        </div>
+                                    ),
+                                },
+                                {
+                                    name: 'Jumlah',
+                                    width: '80px',
+                                    selector: (row) => row.reserved_quantity,
+                                },
 
-                            {
-                                name: '',
-                                width: '80px',
-                                cell: (row, index) => (
-                                    <Button
-                                        variant="destructive"
-                                        size="icon"
-                                        onClick={() => removeRow(row.id)}
-                                        disabled={items.length < 2 && index === 0}
-                                    >
-                                        <Trash2 className="h-4 w-4" />
-                                    </Button>
-                                ),
-                            },
-                        ]}
-                        data={items}
-                        noHeader
-                    />
-                </div>
+                                {
+                                    name: '',
+                                    width: '80px',
+                                    cell: (row, index) => (
+                                        <Button
+                                            variant="destructive"
+                                            size="icon"
+                                            onClick={() => removeRow(row.id)}
+                                            disabled={items.length < 2 && index === 0}
+                                        >
+                                            <Trash2 className="h-4 w-4" />
+                                        </Button>
+                                    ),
+                                },
+                            ]}
+                            data={items}
+                            noHeader
+                        />
+                    </div>
 
-                <DialogFooter>
-                    <Button
-                        onClick={() =>
-                            router.get('/delivery-orders/create', {
-
-                                ship_to: shipTo,
-                                items: JSON.stringify(prepItems),
-                            })
-                        }
-                    >
-                        Create Order
-                    </Button>
-                </DialogFooter>
-            </DialogContent>
-        </Dialog>
+                    <DialogFooter>
+                        <Button
+                            onClick={() =>
+                                router.get('/delivery-orders/create', {
+                                    ship_to: shipTo,
+                                    items: JSON.stringify(prepItems),
+                                })
+                            }
+                        >
+                            Create Order
+                        </Button>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
+        </div>
     );
 };
 

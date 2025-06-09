@@ -295,7 +295,7 @@ export function CustomerCombobox({ customers, value, onChange, setFormOpen, auth
                         {/* <Check className="ml-2 h-4 w-4 opacity-50" /> */}
                     </Button>
                 </PopoverTrigger>
-                <PopoverContent className="p-0">
+                <PopoverContent asChild className="relative p-0">
                     <Command>
                         <CommandInput placeholder="Cari Konsumen..." />
                         <CommandList>

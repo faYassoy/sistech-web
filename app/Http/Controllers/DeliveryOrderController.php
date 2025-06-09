@@ -116,6 +116,7 @@ class DeliveryOrderController extends Controller
 
                 $reservations = $product->reservations()
                     ->where('salesperson_id', auth()->id())
+                    ->whereNull('delivery_order_id') // only unused reservations
                     ->orderBy('id')
                     ->get();
 
@@ -133,8 +134,15 @@ class DeliveryOrderController extends Controller
                     ]);
 
                     $remainingToDeduct -= $deduct;
+                    if ($deduct === $reservation->reserved_quantity) {
+                        $reservation->update([
+                            'delivery_order_id' => $order->id,
+                        ]);
+                    }
                 }
 
+                \Log::info("Updated reservation ID {$reservation->id} with DO ID {$order->id}");
+                \Log::info("Updated reservation {$reservation}");
                 // Step 5: Deduct remaining from warehouse if needed
                 if ($remainingToDeduct > 0) {
                     $product->stocks()->decrement('quantity', $remainingToDeduct);
@@ -322,7 +330,9 @@ class DeliveryOrderController extends Controller
                 // Delete all reservation usage logs
                 $item->reservationDeliveries()->delete();
             }
-
+            Reservation::where('delivery_order_id', $deliveryOrder->id)->update([
+                'delivery_order_id' => null,
+            ]);
             $deliveryOrder->status = 'canceled';
             $deliveryOrder->save();
         });
