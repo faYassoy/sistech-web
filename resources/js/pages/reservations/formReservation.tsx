@@ -7,6 +7,7 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useForm, usePage } from '@inertiajs/react';
 import { useEffect } from 'react';
+import { ProductCombobox } from '../delivery-orders/formDeliveryOrder';
 
 interface SalespersonreservationsFormProps {
     reservation?: {
@@ -70,46 +71,54 @@ const FormReservation: React.FC<SalespersonreservationsFormProps> = ({ reservati
             });
         }
     };
-
+    console.log(data)
     return (
-        <Dialog open={isOpen} onOpenChange={onClose}>
-            <DialogContent>
-                <DialogHeader>
-                    <DialogTitle>{reservation ? 'Ubah Reservasi' : 'Tambahkan Reservasi'}</DialogTitle>
-                </DialogHeader>
+        <div>
+            {isOpen && <div className="fixed inset-0 z-40 bg-black/50 backdrop-blur-sm" onClick={onClose} />}
 
-                <form onSubmit={handleSubmit} className="space-y-3">
-                    {/* Salesperson Selection */}
-                    <div>
-                        <Label className="pb-1" htmlFor="salesperson_id">
-                            Sales
-                        </Label>
-                        <Select
-                            onValueChange={(value) => setData('salesperson_id', value)}
-                            value={String(data.salesperson_id) || ''}
-                            // @ts-ignore
-                            disabled={auth?.user?.roles[0] == 'sales_person'}
-                        >
-                            <SelectTrigger>
-                                <SelectValue placeholder="Pilih Salesperson" />
-                            </SelectTrigger>
-                            <SelectContent>
-                                {salespersons.map((sp) => (
-                                    <SelectItem key={sp.id} value={sp.id.toString()}>
-                                        {sp.name}
-                                    </SelectItem>
-                                ))}
-                            </SelectContent>
-                        </Select>
-                        {errors.salesperson_id && <p className="text-sm text-red-500">{errors.salesperson_id}</p>}
-                    </div>
+            <Dialog modal={false} open={isOpen} onOpenChange={onClose}>
+                <DialogContent>
+                    <DialogHeader>
+                        <DialogTitle>{reservation ? 'Ubah Reservasi' : 'Tambahkan Reservasi'}</DialogTitle>
+                    </DialogHeader>
 
-                    {/* Product Selection */}
-                    <div>
-                        <Label className="pb-1" htmlFor="product_id">
-                            Produk
-                        </Label>
-                        <Select onValueChange={(value) => setData('product_id', value)} value={String(data.product_id) || ''}>
+                    <form onSubmit={handleSubmit} className="space-y-3">
+                        {/* Salesperson Selection */}
+                        <div>
+                            <Label className="pb-1" htmlFor="salesperson_id">
+                                Sales
+                            </Label>
+                            <Select
+                                onValueChange={(value) => setData('salesperson_id', value)}
+                                value={String(data.salesperson_id) || ''}
+                                // @ts-ignore
+                                disabled={auth?.user?.roles[0] == 'sales_person'}
+                            >
+                                <SelectTrigger>
+                                    <SelectValue placeholder="Pilih Salesperson" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    {salespersons.map((sp) => (
+                                        <SelectItem key={sp.id} value={sp.id.toString()}>
+                                            {sp.name}
+                                        </SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
+                            {errors.salesperson_id && <p className="text-sm text-red-500">{errors.salesperson_id}</p>}
+                        </div>
+
+                        {/* Product Selection */}
+                        <div>
+                            <Label className="pb-1" htmlFor="product_id">
+                                Produk
+                            </Label>
+                            <ProductCombobox
+                                products={products}
+                                value={data.product_id || ''}
+                                onChange={({ id }: { id: string }) => setData('product_id', id)}
+                            />
+                            {/* <Select onValueChange={(value) => setData('product_id', value)} value={String(data.product_id) || ''}>
                             <SelectTrigger>
                                 <SelectValue placeholder="Pilih Product" />
                             </SelectTrigger>
@@ -124,12 +133,12 @@ const FormReservation: React.FC<SalespersonreservationsFormProps> = ({ reservati
                                     );
                                 })}
                             </SelectContent>
-                        </Select>
-                        {errors.product_id && <p className="text-sm text-red-500">{errors.product_id}</p>}
-                    </div>
+                        </Select> */}
+                            {errors.product_id && <p className="text-sm text-red-500">{errors.product_id}</p>}
+                        </div>
 
-                    {/* Warehouse Selection */}
-                    {/* <div>
+                        {/* Warehouse Selection */}
+                        {/* <div>
                         <Label className="pb-1" htmlFor="warehouse_id">
                             Warehouse
                         </Label>
@@ -148,35 +157,36 @@ const FormReservation: React.FC<SalespersonreservationsFormProps> = ({ reservati
                         {errors.warehouse_id && <p className="text-sm text-red-500">{errors.warehouse_id}</p>}
                     </div> */}
 
-                    {/* Reserved Quantity Input */}
-                    <div>
-                        <Label className="pb-1" htmlFor="reserved_quantity">
-                            Jumlah
-                        </Label>
-                        <Input
-                            id="reserved_quantity"
-                            name="reserved_quantity"
-                            placeholder="Jumlah..."
-                            type="number"
-                            min="1"
-                            value={data.reserved_quantity}
-                            onChange={(e) => setData('reserved_quantity', e.target.value)}
-                        />
-                        {errors.reserved_quantity && <p className="text-sm text-red-500">{errors.reserved_quantity}</p>}
-                    </div>
+                        {/* Reserved Quantity Input */}
+                        <div>
+                            <Label className="pb-1" htmlFor="reserved_quantity">
+                                Jumlah
+                            </Label>
+                            <Input
+                                id="reserved_quantity"
+                                name="reserved_quantity"
+                                placeholder="Jumlah..."
+                                type="number"
+                                min="1"
+                                value={data.reserved_quantity}
+                                onChange={(e) => setData('reserved_quantity', e.target.value)}
+                            />
+                            {errors.reserved_quantity && <p className="text-sm text-red-500">{errors.reserved_quantity}</p>}
+                        </div>
 
-                    {/* Action Buttons */}
-                    <div className="flex justify-end space-x-2">
-                        <Button type="button" variant="outline" onClick={onClose}>
-                            Batal
-                        </Button>
-                        <Button type="submit" disabled={processing}>
-                            {reservation ? 'Ubah' : 'Tambahkan'}
-                        </Button>
-                    </div>
-                </form>
-            </DialogContent>
-        </Dialog>
+                        {/* Action Buttons */}
+                        <div className="flex justify-end space-x-2">
+                            <Button type="button" variant="outline" onClick={onClose}>
+                                Batal
+                            </Button>
+                            <Button type="submit" disabled={processing}>
+                                {reservation ? 'Ubah' : 'Tambahkan'}
+                            </Button>
+                        </div>
+                    </form>
+                </DialogContent>
+            </Dialog>
+        </div>
     );
 };
 
