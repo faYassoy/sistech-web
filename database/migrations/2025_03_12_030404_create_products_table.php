@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('name');
             $table->string('part_number')->nullable();
             $table->string('brand')->nullable();
-            $table->string('serial_number');
+            $table->string('serial_number')->nullable();
             $table->string('price');
             $table->text('description')->nullable();
             $table->foreignId('supplier_id')->nullable()->constrained('suppliers')->nullOnDelete();

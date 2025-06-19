@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 import CommonDataTable from '@/components/commonDataTable.component';
-import DeliveryOrderReportPDF from '@/components/DeliveryOrderReportPdf';
+import DeliveryOrderReportPDF, { DeliveryOrderReportDoc } from '@/components/DeliveryOrderReportPdf';
 import { Button } from '@/components/ui/button';
 import AppLayout from '@/layouts/app-layout';
 import { router, usePage } from '@inertiajs/react';
@@ -60,6 +60,8 @@ const DeliveryOrderReport: React.FC = () => {
         router.get(route('reports.index'), finalFilters, { preserveState: true, replace: true });
     };
 
+const [isOpen, setIsOpen] = useState(false);
+
     const columns = [
         {
             name: '#',
@@ -78,9 +80,13 @@ const date = new Date
             <div className="container mx-auto p-4">
                 <div className="mb-6 flex justify-between">
                     <h1 className="text-2xl font-extrabold text-gray-800">Laporan Surat Jalan</h1>
-                    <PDFDownloadLink document={<DeliveryOrderReportPDF orders={deliveryOrders.data} />} fileName={"delivery-order-report ["+ date.toDateString()+"]"}>
+                    <div className="flex gap-4">
+                    <Button onClick={()=>{setIsOpen(true)}} variant="outline">Preview</Button>
+
+                    <PDFDownloadLink document={<DeliveryOrderReportDoc orders={deliveryOrders.data} />} fileName={"delivery-order-report ["+ date.toDateString()+"]"}>
                         {({ loading }) => <Button variant="outline">{loading ? 'Generating...' : 'Download PDF 📄'}</Button>}
                     </PDFDownloadLink>
+                    </div>
                 </div>
 
                 {/* Filters Section */}
@@ -197,6 +203,7 @@ const date = new Date
                     />
                 </div>
             </div>
+            <DeliveryOrderReportPDF isOpen={isOpen} onClose={()=> setIsOpen(!isOpen)} orders={deliveryOrders.data} />
         </AppLayout>
     );
 };

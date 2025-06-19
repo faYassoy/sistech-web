@@ -47,14 +47,21 @@ const DeliveryOrdersIndex: React.FC = () => {
             hide: 'sm',
         },
         {
+            name: 'Di kirim',
+            width: '150px',
+            selector: (row: any) => row.status=='delivered'&&new Date(row.updated_at).toLocaleDateString(),
+            sortable: true,
+            hide: 'sm',
+        },
+        {
             name: '',
             width: '100px',
 
             cell: (row: any) => (
                 <div className="w-full">
-                    {row.status.includes(['panding','cancled']) && (
+                    {row.status != 'canceled' && row.status != 'pending' && (
                         // JSON.stringify(row)
-                        <Button className="float-right" variant="secondary" onClick={() => {setIsOpen(true);setSelected(row)}}>
+                        <Button className="float-right" variant="secondary" onClick={() => { setIsOpen(true); setSelected(row) }}>
                             <Printer />
                         </Button>
                     )}
@@ -65,20 +72,20 @@ const DeliveryOrdersIndex: React.FC = () => {
         {
             name: '',
             cell: (row: any) =>
-                auth?.user?.roles[0] == 'admin' &&
-                row.status == 'pending' && (
-                    <div className="flex gap-2">
-                        <Button
-                            variant="outline"
-                            size={'sm'}
-                            onClick={() => {
-                                router.get(route('delivery-orders.edit', row.id));
-                            }}
-                        >
-                            Edit
-                        </Button>
+                auth?.user?.roles[0] == 'admin' ?
+                    row.status == 'pending' ? (
+                        <div className="flex gap-2">
+                            <Button
+                                variant="outline"
+                                size={'sm'}
+                                onClick={() => {
+                                    router.get(route('delivery-orders.edit', row.id));
+                                }}
+                            >
+                                Edit
+                            </Button>
 
-                        {/* <Button
+                            {/* <Button
                             variant="destructive"
                             size={'sm'}
                             onClick={() => {
@@ -91,30 +98,42 @@ const DeliveryOrdersIndex: React.FC = () => {
                         >
                             Delete
                         </Button> */}
-                        <Button
-                            variant="destructive"
-                            size={'sm'}
-                            onClick={() => {
-                                if (confirm('Are you sure you want to cancle this order?')) {
-                                    router.post(route('delivery-orders.cancel', row.id));
-                                }
-                            }}
-                        >
-                            Cancel
-                        </Button>
+                            <Button
+                                variant="destructive"
+                                size={'sm'}
+                                onClick={() => {
+                                    if (confirm('Are you sure you want to cancle this order?')) {
+                                        router.post(route('delivery-orders.cancel', row.id));
+                                    }
+                                }}
+                            >
+                                Cancel
+                            </Button>
+                            <Button
+                                variant="default"
+                                size={'sm'}
+                                onClick={() => {
+                                    if (confirm('Are you sure you want to approve this order?')) {
+                                        router.patch(route('delivery-orders.approve', row.id));
+                                    }
+                                }}
+                            >
+                                Approve
+                            </Button>
+                        </div>
+                    ) : row.status == 'approved' ? (
                         <Button
                             variant="default"
                             size={'sm'}
                             onClick={() => {
-                                if (confirm('Are you sure you want to approve this order?')) {
-                                    router.patch(route('delivery-orders.approve', row.id));
+                                if (confirm('Are you sure you want to deliver this order?')) {
+                                    router.patch(route('delivery-orders.deliver', row.id));
                                 }
                             }}
                         >
-                            Approve
+                            Deliver
                         </Button>
-                    </div>
-                ),
+                    ) : null : null,
         },
     ];
     // console.log(warehouses);
@@ -143,7 +162,7 @@ const DeliveryOrdersIndex: React.FC = () => {
                                 <p>{data?.order_number}</p>
                             </div>
                             <div className="flex gap-4 text-sm">
-                                <p className="font-semibold">Staus : </p>
+                                <p className="font-semibold">Status : </p>
                                 <p>{data?.status}</p>
                             </div>
                             <div className="flex gap-4 text-sm">
@@ -153,6 +172,10 @@ const DeliveryOrdersIndex: React.FC = () => {
                             <div className="flex gap-4 text-sm">
                                 <p className="font-semibold">Tanggal : </p>
                                 <p>{new Date(data?.date).toLocaleDateString('id')}</p>
+                            </div>
+                            <div className="flex gap-4 text-sm">
+                                <p className="font-semibold">Di Kirim : </p>
+                                <p>{data?.status=='delivered'&&new Date(data?.updated_at).toLocaleDateString('id')}</p>
                             </div>
                             <div className="flex gap-4 text-sm">
                                 <p className="font-semibold">Konsumen : </p>
@@ -166,7 +189,7 @@ const DeliveryOrdersIndex: React.FC = () => {
                     )}
                 />
             </div>
-            <DeliveryOrderPDF isOpen={isOpen} onClose={()=>setIsOpen(false)} data={selected} />
+            <DeliveryOrderPDF isOpen={isOpen} onClose={() => setIsOpen(false)} data={selected} />
         </AppLayout>
     );
 };

@@ -60,7 +60,7 @@ const ProductsIndex: React.FC = () => {
             hide:'sm'
         },
         // { name: 'Stok', selector: (row: Product) => ``, sortable: true,hide:'sm' },
-        { name: 'Dipesan', selector: (row: Product) => ` ${Number(row.reservations_sum_reserved_quantity)} (stok: ${Number(row.stocks_sum_quantity)-Number(row.reservations_sum_reserved_quantity)})`, sortable: true },
+        { name: 'Reservasi', selector: (row: Product) => ` ${Number(row.reservations_sum_reserved_quantity)} (stok: ${Number(row.stocks_sum_quantity)-Number(row.reservations_sum_reserved_quantity)})`, sortable: true },
         {
             name: 'Dibuat',
             selector: (row: Product) => new Date(row.created_at).toLocaleDateString(),
