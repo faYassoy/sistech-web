@@ -541,6 +541,11 @@
     "@jridgewell/resolve-uri" "^3.1.0"
     "@jridgewell/sourcemap-codec" "^1.4.14"
 
+"@laravel/echo-react@^2.1.6":
+  version "2.1.6"
+  resolved "https://registry.yarnpkg.com/@laravel/echo-react/-/echo-react-2.1.6.tgz#55c8fc3e764e04015e0385edc2fdd9566b4809d9"
+  integrity sha512-G+iFvGcwLgGxKVzHoTxukUwHkyx/9vx3GULWZtXB1LbkMHpmzUS6NvW2pi7cOgX6VWHYTcxRBsK+fySMoAWYUQ==
+
 "@napi-rs/wasm-runtime@^0.2.8":
   version "0.2.9"
   resolved "https://registry.yarnpkg.com/@napi-rs/wasm-runtime/-/wasm-runtime-0.2.9.tgz#7278122cf94f3b36d8170a8eee7d85356dfa6a96"
@@ -3337,6 +3342,11 @@ keyv@^4.5.4:
   dependencies:
     json-buffer "3.0.1"
 
+laravel-echo@^2.1.6:
+  version "2.1.6"
+  resolved "https://registry.yarnpkg.com/laravel-echo/-/laravel-echo-2.1.6.tgz#99e39f54865377133ff5dff29a86bd661e9187de"
+  integrity sha512-X7tdIDhG/o8AenMvY83Hcjtw/TN/eKT+zA5WEENHIbY8tq12NQbdxtVePw1yImxXwKC/yZoVWNukFlG+gWqKCA==
+
 laravel-vite-plugin@^1.0:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/laravel-vite-plugin/-/laravel-vite-plugin-1.2.0.tgz#7a82e850fba9ca2359fa64f70e0647478ea5fde3"
@@ -3761,6 +3771,13 @@ punycode@^2.1.0:
   version "2.3.1"
   resolved "https://registry.yarnpkg.com/punycode/-/punycode-2.3.1.tgz#027422e2faec0b25e1549c3e1bd8309b9133b6e5"
   integrity sha512-vYt7UD1U9Wg6138shLtLOvdAu+8DsC/ilFtEVHcH+wydcSpNE20AfSOduf6MkRFahL5FY7X1oU7nKVZFtfq8Fg==
+
+pusher-js@^8.4.0:
+  version "8.4.0"
+  resolved "https://registry.yarnpkg.com/pusher-js/-/pusher-js-8.4.0.tgz#eb28dca291f553ad9622f4e421d14c23abbaf40f"
+  integrity sha512-wp3HqIIUc1GRyu1XrP6m2dgyE9MoCsXVsWNlohj0rjSkLf+a0jLvEyVubdg58oMk7bhjBWnFClgp8jfAa6Ak4Q==
+  dependencies:
+    tweetnacl "^1.0.3"
 
 qs@^6.9.0:
   version "6.14.0"
@@ -4369,6 +4386,11 @@ tslib@^2.0.0, tslib@^2.1.0, tslib@^2.4.0, tslib@^2.8.0:
   version "2.8.1"
   resolved "https://registry.yarnpkg.com/tslib/-/tslib-2.8.1.tgz#612efe4ed235d567e8aba5f2a5fab70280ade83f"
   integrity sha512-oJFu94HQb+KVduSUQL7wnpmqnfmLsOA/nAh6b6EH0wCEoK0/mPeXU6c3wKDV83MkOuHPRHtSXKKU99IBazS/2w==
+
+tweetnacl@^1.0.3:
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/tweetnacl/-/tweetnacl-1.0.3.tgz#ac0af71680458d8a6378d0d0d050ab1407d35596"
+  integrity sha512-6rt+RN7aOi1nGMyC4Xa5DdYiukl2UWCbcJft7YhxReBGQD7OAM8Pbxw6YMo4r2diNEA8FEmu32YOn9rhaiE5yw==
 
 type-check@^0.4.0, type-check@~0.4.0:
   version "0.4.0"

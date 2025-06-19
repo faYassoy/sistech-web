@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\DeliveryOrderCreated;
 use App\Models\Customer;
 use App\Models\DeliveryOrder;
 use App\Models\DeliveryItem;
@@ -91,6 +92,9 @@ class DeliveryOrderController extends Controller
                 'status' => 'pending',
             ]);
 
+            DeliveryOrderCreated::dispatch($order);
+
+
             foreach ($validated['items'] as $item) {
                 $product = Product::findOrFail($item['product_id']);
 
@@ -141,8 +145,6 @@ class DeliveryOrderController extends Controller
                     }
                 }
 
-                \Log::info("Updated reservation ID {$reservation->id} with DO ID {$order->id}");
-                \Log::info("Updated reservation {$reservation}");
                 // Step 5: Deduct remaining from warehouse if needed
                 if ($remainingToDeduct > 0) {
                     $product->stocks()->decrement('quantity', $remainingToDeduct);

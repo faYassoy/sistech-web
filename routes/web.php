@@ -12,8 +12,12 @@ use App\Http\Controllers\StockPeekController;
 use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\WarehouseController;
+use Illuminate\Support\Facades\Broadcast;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
+
+
+Broadcast::routes();
 
 Route::get('/', function () {
     return Inertia::render('auth/login');

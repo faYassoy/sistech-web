@@ -13,18 +13,17 @@ const breadcrumbs: BreadcrumbItem[] = [
 ];
 
 export default function Dashboard() {
-    const { auth, isAdmin, reservations, deliveryOrders, products,top5Brands,mostOrder } = usePage<SharedData>().props;
-
+    const { auth, isAdmin, reservations, deliveryOrders, products, top5Brands, mostOrder } = usePage<SharedData>().props;
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Dashboard" />
             <div className="flex h-full flex-1 flex-col gap-4 rounded-xl p-4">
-                <div className="hidden md:grid auto-rows-min gap-4 md:grid-cols-2">
+                <div className="hidden auto-rows-min gap-4 md:grid md:grid-cols-2">
                     <div className="border-sidebar-border/70 dark:border-sidebar-border relative aspect-video rounded-xl border">
-                    <PopularProduct productData={mostOrder}/>
+                        <PopularProduct productData={mostOrder} />
                     </div>
                     <div className="border-sidebar-border/70 dark:border-sidebar-border relative aspect-video rounded-xl border">
-                    <BrandPie brandData={top5Brands}/>
+                        <BrandPie brandData={top5Brands} />
                     </div>
                 </div>
                 <div className="grid auto-rows-min gap-4 md:grid-cols-2">
@@ -52,12 +51,12 @@ export default function Dashboard() {
                             ) : (
                                 deliveryOrders.map((item) => {
                                     return (
-                                        <div className="relative mx-4 grid w-[90%] grid-cols-12 border-b rounded-md bg-red-50 p-4">
+                                        <div className="relative mx-4 grid w-[90%] grid-cols-12 rounded-md border-b bg-red-50 p-4">
                                             <div className="col-span-8">
                                                 <p className="font-semibold">{item.order_number}</p>
                                                 <p className="text-sm">Customer: {item.buyer.name}</p>
                                             </div>
-                                            <p className="my-auto col-span-4 text-center font-semibold">{item.status}</p>
+                                            <p className="col-span-4 my-auto text-center font-semibold">{item.status}</p>
                                         </div>
                                     );
                                 })
@@ -79,7 +78,7 @@ export default function Dashboard() {
                                         type="button"
                                         className="w-full cursor-pointer"
                                         title="buat baru"
-                                        onClick={() => router.get('/reservations',{is_creating:true})}
+                                        onClick={() => router.get('/reservations', { is_creating: true })}
                                     >
                                         Buat Baru
                                     </Button>
@@ -87,7 +86,7 @@ export default function Dashboard() {
                             ) : (
                                 reservations.map((item) => {
                                     return (
-                                        <div className="relative mx-4 grid w-[90%] grid-cols-12 items-center border-b rounded-md bg-red-50 p-2">
+                                        <div className="relative mx-4 grid w-[90%] grid-cols-12 items-center rounded-md border-b bg-red-50 p-2">
                                             <div className="col-span-8">
                                                 <p className="truncate font-semibold">{item.product.name}</p>
                                                 <p className="text-sm">A/N: {item.salesperson.name}</p>
@@ -114,7 +113,7 @@ export default function Dashboard() {
                                     type="button"
                                     className="w-full cursor-pointer"
                                     title="buat baru"
-                                    onClick={() => router.get('/reservations',{create:true})}
+                                    onClick={() => router.get('/reservations', { create: true })}
                                 >
                                     Buat Baru
                                 </Button>
