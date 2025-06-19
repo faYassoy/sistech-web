@@ -141,8 +141,8 @@ class DeliveryOrderController extends Controller
                     }
                 }
 
-                \Log::info("Updated reservation ID {$reservation->id} with DO ID {$order->id}");
-                \Log::info("Updated reservation {$reservation}");
+                // \Log::info("Updated reservation ID {$reservation->id} with DO ID {$order->id}");
+                // \Log::info("Updated reservation {$reservation}");
                 // Step 5: Deduct remaining from warehouse if needed
                 if ($remainingToDeduct > 0) {
                     $product->stocks()->decrement('quantity', $remainingToDeduct);
@@ -338,5 +338,19 @@ class DeliveryOrderController extends Controller
         });
 
         return redirect()->route('delivery-orders.index')->with('success', 'Delivery order canceled and stock reverted.');
+    }
+    public function deliver(DeliveryOrder $deliveryOrder)
+    {
+        if ($deliveryOrder->status === 'delivered') {
+            return redirect()->back()->with('info', 'Order already delivered.');
+        }
+
+        DB::transaction(function () use ($deliveryOrder) {
+            
+            $deliveryOrder->status = 'delivered';
+            $deliveryOrder->save();
+        });
+
+        return redirect()->route('delivery-orders.index')->with('success', 'Delivery order delivered and stock reverted.');
     }
 }

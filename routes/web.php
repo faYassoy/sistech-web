@@ -71,6 +71,9 @@ Route::group(['middleware' => ['role:admin','auth']],function () {
     Route::patch('/delivery-orders/{deliveryOrder}/approve', [DeliveryOrderController::class, 'approve'])
     ->name('delivery-orders.approve');
 
+    Route::patch('/delivery-orders/{deliveryOrder}/deliver', [DeliveryOrderController::class, 'deliver'])
+    ->name('delivery-orders.deliver');
+
     Route::get('/delivery-orders/{deliveryOrder}/print', [DeliveryOrderController::class, 'print'])->name('delivery-orders.print');
 
     Route::prefix('warehouses/{warehouse}')->group(function () {

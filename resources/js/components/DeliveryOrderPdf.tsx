@@ -59,7 +59,8 @@ const styles = StyleSheet.create({
         padding: 4,
         textAlign: 'center',
     },
-    descriptionCol: { width: '40%', padding: 4, borderStyle: 'solid', borderWidth: 1, borderLeftWidth: 0, borderTopWidth: 0, borderColor: '#000' },
+    descriptionCol: { width: '60%', padding: 4, borderStyle: 'solid', borderWidth: 1, borderLeftWidth: 0, borderTopWidth: 0, borderColor: '#000' },
+    descriptionHeaderCol: { backgroundColor: '#F0F0F0', width: '60%', padding: 4, borderStyle: 'solid', borderWidth: 1, borderLeftWidth: 0, borderTopWidth: 0, borderColor: '#000' },
     totalsContainer: { alignSelf: 'flex-end', width: 200, marginTop: 4 },
     totalsRow: { flexDirection: 'row', justifyContent: 'space-between', padding: 2 },
     footer: { flexDirection: 'row', justifyContent: 'space-between', marginTop: 20 },
@@ -82,10 +83,10 @@ const DeliveryOrderPDF = ({ data, isOpen, onClose }) => {
     console.log(data);
     return (
         <Sheet open={isOpen} onOpenChange={onClose}>
-            <SheetContent side="bottom" className="h-[90vh]">
+            <SheetContent className="min-w-[50vw]">
                 <SheetHeader>
-                    <SheetTitle>Are you absolutely sure?</SheetTitle>
-                    <SheetDescription className="h-[90vh]">
+                    <SheetTitle>Petinjau Surat Jalan</SheetTitle>
+                    <SheetDescription className="min-h-[90vh]">
                         <PDFViewer style={{ width: '100%', height: '100%' }}>
                                 <Document>
                                     <Page size="A4" style={styles.page}>
@@ -125,9 +126,9 @@ const DeliveryOrderPDF = ({ data, isOpen, onClose }) => {
                                             <View style={styles.tableRow}>
                                                 <Text style={styles.tableColHeader}>QTY</Text>
                                                 <Text style={styles.tableColHeader}>PART NO</Text>
-                                                <Text style={styles.descriptionCol}>DESCRIPTION</Text>
-                                                <Text style={styles.tableColHeader}>UNIT PRICE</Text>
-                                                <Text style={styles.tableColHeader}>TOTAL PRICE</Text>
+                                                <Text style={styles.descriptionHeaderCol}>DESCRIPTION</Text>
+                                                {/* <Text style={styles.tableColHeader}>UNIT PRICE</Text>
+                                                <Text style={styles.tableColHeader}>TOTAL PRICE</Text> */}
                                             </View>
                                             {/* @ts-ignore */}
                                             {data?.items?.map((item) => {
@@ -139,15 +140,15 @@ const DeliveryOrderPDF = ({ data, isOpen, onClose }) => {
                                                         <Text style={styles.tableCol}>{item?.quantity}</Text>
                                                         <Text style={styles.tableCol}>{item?.product?.part_number}</Text>
                                                         <Text style={styles.descriptionCol}>{item?.product?.name}</Text>
-                                                        <Text style={styles.tableCol}>{formatCurrency(item?.unit_price || 0)}</Text>
-                                                        <Text style={styles.tableCol}>{formatCurrency(lineTotal || 0)}</Text>
+                                                        {/* <Text style={styles.tableCol}>{formatCurrency(item?.unit_price || 0)}</Text> */}
+                                                        {/* <Text style={styles.tableCol}>{formatCurrency(lineTotal || 0)}</Text> */}
                                                     </View>
                                                 );
                                             })}
                                         </View>
 
                                         {/* Totals */}
-                                        <View style={styles.totalsContainer}>
+                                        {/* <View style={styles.totalsContainer}>
                                             <View style={styles.totalsRow}>
                                                 <Text>SUB TOTAL</Text>
                                                 <Text>{formatCurrency(subtotal || 0)}</Text>
@@ -168,7 +169,7 @@ const DeliveryOrderPDF = ({ data, isOpen, onClose }) => {
                                                 <Text>TOTAL INVOICE</Text>
                                                 <Text>{formatCurrency(total || 0)}</Text>
                                             </View>
-                                        </View>
+                                        </View> */}
 
                                         {/* Footer */}
                                         <View style={styles.footer}>
