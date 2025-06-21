@@ -15,7 +15,7 @@ const styles = StyleSheet.create({
     cellDO: { width: '20%', paddingHorizontal: 4,display:'flex', flexDirection:'column' },
     cellStatus: { width: '20%', paddingHorizontal: 4, textAlign: 'center' },
     cellNumber: { width: '5%', paddingHorizontal: 4 },
-    cellDate: { width: '18%', paddingHorizontal: 4, textAlign: 'center',},
+    cellDate: { width: '18%', paddingHorizontal: 4,textAlign: 'center'},
 });
 // ts-ignore
 const DeliveryOrderReportPDF = ({ isOpen, orders, onClose }) => (
@@ -45,7 +45,7 @@ export const DeliveryOrderReportDoc = ({ orders }) => (
                 <View style={[styles.row, styles.header]}>
                     <Text style={styles.cellNumber}>No</Text>
                     <Text style={styles.cell}>Order #</Text>
-                    <Text style={styles.cellDate}>Konsumen</Text>
+                    <Text style={styles.cellDate}>Reservasi</Text>
                     <Text style={styles.cell}>Di Setujui</Text>
                     <Text style={styles.cell}>Di Kirim</Text>
                     <Text style={styles.cellStatus}>Status</Text>
@@ -59,9 +59,10 @@ export const DeliveryOrderReportDoc = ({ orders }) => (
                             <View style={styles.cell}>
                                 <Text>{order.order_number}</Text>
                                 <Text style={{marginTop:'4px',fontSize:'10pt'}}>sales: {order.creator.name}</Text>
-                                <Text style={{marginTop:'4px', fontSize:'10pt'}}>tgl: {order.date?new Date(order.date).toLocaleDateString('id-ID',DToptions):'-'}</Text>
+                                <Text style={{marginTop:'4px',fontSize:'10pt'}}>konsumen: {order.buyer.name}</Text>
+                                {/* <Text style={{marginTop:'4px', fontSize:'10pt'}}>tgl: {order.date?new Date(order.date).toLocaleDateString('id-ID'):'-'}</Text> */}
                             </View>
-                            <Text style={styles.cellDate}>{order.buyer.name}</Text>
+                            <Text style={styles.cellDate}>{order.reserved_at?new Date(order.reserved_at).toLocaleDateString():'-'}</Text>
                             <Text style={styles.cell}>{order.approved_at?new Date(order.approved_at).toLocaleDateString('id-ID',DToptions):'-'}</Text>
                             <Text style={styles.cell}>{order.delivered_at?new Date(order.delivered_at).toLocaleDateString('id-ID',DToptions):'-'}</Text>
                             <Text style={styles.cellStatus}>{order.status}</Text>

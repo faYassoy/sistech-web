@@ -261,8 +261,12 @@ class DeliveryOrderController extends Controller
                         // Update or delete reservation
                         $reservation->reserved_quantity -= $deductQty;
                         if ($reservation->reserved_quantity <= 0) {
+                            $deliveryOrder->reserved_at = $reservation->created_at;
+                            $deliveryOrder->save();
                             $reservation->delete();
                         } else {
+                            $deliveryOrder->reserved_at = $reservation->created_at;
+                            $deliveryOrder->save();
                             $reservation->save();
                         }
                     }

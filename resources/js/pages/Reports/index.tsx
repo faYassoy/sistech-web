@@ -77,13 +77,13 @@ const DeliveryOrderReport: React.FC = () => {
                 <div className='p-4 flex flex-col gap-2'>
                     <p>{row.order_number}</p>
                     <p>Sales: {row.creator.name}</p>
-                    <p>Tanggal: {new Date(row.date).toLocaleDateString()}</p>
+                    <p>Konsumen: {row.buyer.name}</p>
                 </div>
             ),
         },
-        { name: 'Konsumen', selector: (row: DeliveryOrder) => row.buyer.name, sortable: true },
-        { name: 'Di Setujui', selector: (row: DeliveryOrder) => row.approved_at?new Date(row.approved_at).toLocaleDateString('id-ID',DToptions):'-' },
-        { name: 'Di Kirim', selector: (row: DeliveryOrder) => row.delivered_at?new Date(row.delivered_at).toLocaleDateString('id-ID', DToptions):'-'},
+        { name: 'Reservasi', selector: (row: DeliveryOrder) => row.reserved_at?row.reserved_at:'-' },
+        { name: 'Di Setujui', selector: (row: DeliveryOrder) => row.approved_at?row.approved_at:'-' },
+        { name: 'Di Kirim', selector: (row: DeliveryOrder) => row.delivered_at?row.delivered_at:'-'},
         { name: 'Status', selector: (row: DeliveryOrder) => row.status, sortable: true },
 
     ];

@@ -10,6 +10,7 @@ class AddApprovedAtAndDeliveredAtToDeliveryOrdersTable extends Migration
         Schema::table('delivery_orders', function (Blueprint $table) {
             $table->timestamp('approved_at')->nullable()->after('status');
             $table->timestamp('delivered_at')->nullable()->after('approved_at');
+            $table->timestamp('reserved_at')->nullable()->after('delivered_at');
         });
     }
 
