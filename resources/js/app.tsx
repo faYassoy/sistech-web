@@ -13,9 +13,9 @@ declare global {
 
 const appName = import.meta.env.VITE_APP_NAME || 'Sistech';
 
-configureEcho({
-    broadcaster: 'reverb',
-});
+// configureEcho({
+//     broadcaster: 'reverb',
+// });
 
 createInertiaApp({
     title: (title) => `${title} - ${appName}`,

@@ -3,6 +3,7 @@ import CommonDataTable from '@/components/commonDataTable.component';
 import DeliveryOrderReportPDF, { DeliveryOrderReportDoc } from '@/components/DeliveryOrderReportPdf';
 import { Button } from '@/components/ui/button';
 import AppLayout from '@/layouts/app-layout';
+import { DToptions } from '@/lib/utils';
 import { router, usePage } from '@inertiajs/react';
 import { PDFDownloadLink } from '@react-pdf/renderer';
 import { useState } from 'react';
@@ -60,7 +61,7 @@ const DeliveryOrderReport: React.FC = () => {
         router.get(route('reports.index'), finalFilters, { preserveState: true, replace: true });
     };
 
-const [isOpen, setIsOpen] = useState(false);
+    const [isOpen, setIsOpen] = useState(false);
 
     const columns = [
         {
@@ -68,24 +69,46 @@ const [isOpen, setIsOpen] = useState(false);
             selector: (_: DeliveryOrder, index: number) => (deliveryOrders.current_page - 1) * deliveryOrders.per_page + index + 1,
             width: '50px',
         },
-        { name: 'No. Surat Jalan', selector: (row: DeliveryOrder) => row.order_number, sortable: true },
+        {
+            name: 'Surat Jalan',
+            selector: (row: DeliveryOrder) => row.order_number,
+            sortable: true,
+            cell: (row: DeliveryOrder) => (
+                <div className='p-4 flex flex-col gap-2'>
+                    <p>{row.order_number}</p>
+                    <p>Sales: {row.creator.name}</p>
+                    <p>Tanggal: {new Date(row.date).toLocaleDateString()}</p>
+                </div>
+            ),
+        },
         { name: 'Konsumen', selector: (row: DeliveryOrder) => row.buyer.name, sortable: true },
-        { name: 'Tanggal', selector: (row: DeliveryOrder) => new Date(row.date).toLocaleDateString(), sortable: true },
+        { name: 'Di Setujui', selector: (row: DeliveryOrder) => row.approved_at?new Date(row.approved_at).toLocaleDateString('id-ID',DToptions):'-' },
+        { name: 'Di Kirim', selector: (row: DeliveryOrder) => row.delivered_at?new Date(row.delivered_at).toLocaleDateString('id-ID', DToptions):'-'},
         { name: 'Status', selector: (row: DeliveryOrder) => row.status, sortable: true },
-        { name: 'Di Buat Oleh', selector: (row: DeliveryOrder) => row.creator.name, sortable: true },
+
     ];
-const date = new Date
+    const date = new Date();
     return (
         <AppLayout>
             <div className="container mx-auto p-4">
                 <div className="mb-6 flex justify-between">
                     <h1 className="text-2xl font-extrabold text-gray-800">Laporan Surat Jalan</h1>
                     <div className="flex gap-4">
-                    <Button onClick={()=>{setIsOpen(true)}} variant="outline">Preview</Button>
+                        <Button
+                            onClick={() => {
+                                setIsOpen(true);
+                            }}
+                            variant="outline"
+                        >
+                            Preview
+                        </Button>
 
-                    <PDFDownloadLink document={<DeliveryOrderReportDoc orders={deliveryOrders.data} />} fileName={"delivery-order-report ["+ date.toDateString()+"]"}>
-                        {({ loading }) => <Button variant="outline">{loading ? 'Generating...' : 'Download PDF 📄'}</Button>}
-                    </PDFDownloadLink>
+                        <PDFDownloadLink
+                            document={<DeliveryOrderReportDoc orders={deliveryOrders.data} />}
+                            fileName={'delivery-order-report [' + date.toDateString() + ']'}
+                        >
+                            {({ loading }) => <Button variant="outline">{loading ? 'Generating...' : 'Download PDF 📄'}</Button>}
+                        </PDFDownloadLink>
                     </div>
                 </div>
 
@@ -203,7 +226,7 @@ const date = new Date
                     />
                 </div>
             </div>
-            <DeliveryOrderReportPDF isOpen={isOpen} onClose={()=> setIsOpen(!isOpen)} orders={deliveryOrders.data} />
+            <DeliveryOrderReportPDF isOpen={isOpen} onClose={() => setIsOpen(!isOpen)} orders={deliveryOrders.data} />
         </AppLayout>
     );
 };

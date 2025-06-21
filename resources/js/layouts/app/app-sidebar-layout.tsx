@@ -22,15 +22,15 @@ export default function AppSidebarLayout({ children, breadcrumbs = [],backTo }: 
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [flash, toast]);
 
-    useEcho(
-      'admin.notifications',
-      'DeliveryOrderCreated',
-      (e: unknown) => {
-        // e.id, e.number, e.date…
-        // e.g. show an Inertia flash or toast:
-        alert(`New delivery order #${e.number} created!`);
-      }
-    );
+    // useEcho(
+    //   'admin.notifications',
+    //   'DeliveryOrderCreated',
+    //   (e: unknown) => {
+    //     // e.id, e.number, e.date…
+    //     // e.g. show an Inertia flash or toast:
+    //     alert(`New delivery order #${e.number} created!`);
+    //   }
+    // );
     return (
         <AppShell variant="sidebar">
             <AppSidebar />

@@ -93,7 +93,7 @@ class DeliveryOrderController extends Controller
                 'status' => 'pending',
             ]);
 
-            DeliveryOrderCreated::dispatch($order);
+            // DeliveryOrderCreated::dispatch($order);
 
 
             foreach ($validated['items'] as $item) {
@@ -162,7 +162,7 @@ class DeliveryOrderController extends Controller
                 }
             }
         });
-        event(new DeliveryOrderChanged());
+        // event(new DeliveryOrderChanged());
         return redirect()->route('delivery-orders.index')->with('success', 'Delivery order created successfully.');
     }
 
@@ -283,8 +283,10 @@ class DeliveryOrderController extends Controller
                 }
             }
 
-            $deliveryOrder->update(['status' => 'approved']);
-            $deliveryOrder->update(['approved_at' => now()]);
+            // $deliveryOrder->update(['status' => 'approved','approved_at' => now()]);
+            $deliveryOrder->status = 'approved';
+            $deliveryOrder->approved_at = now();
+            $deliveryOrder->save();
         });
 
         return redirect()->route('delivery-orders.index')->with('success', 'Delivery Order approved and stock deducted!');

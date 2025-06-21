@@ -2,6 +2,7 @@
 
 import { Document, Page, PDFViewer, StyleSheet, Text, View } from '@react-pdf/renderer';
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from './ui/sheet';
+import { DToptions } from '@/lib/utils';
 
 const styles = StyleSheet.create({
     page: { padding: 24, fontSize: 10 },
@@ -10,10 +11,11 @@ const styles = StyleSheet.create({
     table: { display: 'table', width: 'auto', marginTop: 10 },
     row: { flexDirection: 'row', borderBottom: '1px solid #ccc', paddingVertical: 4 },
     header: { fontWeight: 'bold', backgroundColor: '#eee' },
-    cell: {  width: '20%', paddingHorizontal: 4 },
-    cellStatus: {  width: '20%', paddingHorizontal: 4 ,textAlign: 'center'},
+    cell: { width: '20%', paddingHorizontal: 4 },
+    cellDO: { width: '20%', paddingHorizontal: 4,display:'flex', flexDirection:'column' },
+    cellStatus: { width: '20%', paddingHorizontal: 4, textAlign: 'center' },
     cellNumber: { width: '5%', paddingHorizontal: 4 },
-    cellDate: { width: '18%', paddingHorizontal: 4 ,textAlign: 'center'},
+    cellDate: { width: '18%', paddingHorizontal: 4, textAlign: 'center',},
 });
 // ts-ignore
 const DeliveryOrderReportPDF = ({ isOpen, orders, onClose }) => (
@@ -22,15 +24,15 @@ const DeliveryOrderReportPDF = ({ isOpen, orders, onClose }) => (
             <SheetHeader>
                 <SheetTitle>Petinjau Surat Jalan</SheetTitle>
                 <SheetDescription className="min-h-[90vh]">
-                   { orders &&
-                    <PDFViewer style={{ width: '100%', height: '100%' }}>
-                        <DeliveryOrderReportDoc orders={orders} />
-                    </PDFViewer>}
+                    {orders && (
+                        <PDFViewer style={{ width: '100%', height: '100%' }}>
+                            <DeliveryOrderReportDoc orders={orders} />
+                        </PDFViewer>
+                    )}
                 </SheetDescription>
             </SheetHeader>
         </SheetContent>
-    </Sheet >
-
+    </Sheet>
 );
 
 export default DeliveryOrderReportPDF;
@@ -43,9 +45,9 @@ export const DeliveryOrderReportDoc = ({ orders }) => (
                 <View style={[styles.row, styles.header]}>
                     <Text style={styles.cellNumber}>No</Text>
                     <Text style={styles.cell}>Order #</Text>
-                    <Text style={styles.cellDate}>Date</Text>
-                    <Text style={styles.cell}>Sales</Text>
-                    <Text style={styles.cell}>Buyer</Text>
+                    <Text style={styles.cellDate}>Konsumen</Text>
+                    <Text style={styles.cell}>Di Setujui</Text>
+                    <Text style={styles.cell}>Di Kirim</Text>
                     <Text style={styles.cellStatus}>Status</Text>
                 </View>
 
@@ -54,10 +56,14 @@ export const DeliveryOrderReportDoc = ({ orders }) => (
                     orders.map((order, index) => (
                         <View style={styles.row} key={order.id}>
                             <Text style={styles.cellNumber}>{index + 1}</Text>
-                            <Text style={styles.cell}>{order.order_number}</Text>
-                            <Text style={styles.cellDate}>{order.date}</Text>
-                            <Text style={styles.cell}>{order.creator.name}</Text>
-                            <Text style={styles.cell}>{order.buyer.name}</Text>
+                            <View style={styles.cell}>
+                                <Text>{order.order_number}</Text>
+                                <Text style={{marginTop:'4px',fontSize:'10pt'}}>sales: {order.creator.name}</Text>
+                                <Text style={{marginTop:'4px', fontSize:'10pt'}}>tgl: {order.date?new Date(order.date).toLocaleDateString('id-ID',DToptions):'-'}</Text>
+                            </View>
+                            <Text style={styles.cellDate}>{order.buyer.name}</Text>
+                            <Text style={styles.cell}>{order.approved_at?new Date(order.approved_at).toLocaleDateString('id-ID',DToptions):'-'}</Text>
+                            <Text style={styles.cell}>{order.delivered_at?new Date(order.delivered_at).toLocaleDateString('id-ID',DToptions):'-'}</Text>
                             <Text style={styles.cellStatus}>{order.status}</Text>
                         </View>
                     ))
@@ -69,4 +75,4 @@ export const DeliveryOrderReportDoc = ({ orders }) => (
             </View>
         </Page>
     </Document>
-)
+);

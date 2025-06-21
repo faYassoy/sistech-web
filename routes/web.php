@@ -17,7 +17,7 @@ use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
 
-Broadcast::routes();
+// Broadcast::routes();
 
 Route::get('/', function () {
     return Inertia::render('auth/login');
