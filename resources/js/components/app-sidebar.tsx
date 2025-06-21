@@ -8,13 +8,30 @@ import { Link, usePage } from '@inertiajs/react';
 import {  BookUser, Boxes, Container, LayoutGrid, ScrollText, Users2, Warehouse } from 'lucide-react';
 import AppLogo from './app-logo';
 
-export const mainNavItems = {
+
+const footerNavItems: NavItem[] = [
+    // {
+    //     title: 'Repository',
+    //     url: 'https://github.com/laravel/react-starter-kit',
+    //     icon: Folder,
+    // },
+    // {
+    //     title: 'Documentation',
+    //     url: 'https://laravel.com/docs/starter-kits',
+    //     icon: BookOpen,
+    // },
+];
+
+export function AppSidebar() {
+    const { auth,pendingCount } = usePage().props;
+
+    const mainNavItems = {
     admin: [
       {
         colapsableGroup: "Beranda",
         items: [
           { title: "Dashboard", url: "/dashboard", icon: LayoutGrid },
-          { title: "Surat Jalan", url: "/delivery-orders", icon: Warehouse },
+          { title: "Surat Jalan", url: "/delivery-orders", icon: Warehouse, numBadge:pendingCount },
           { title: "Daftar Harga", url: "/price-list", icon: ScrollText }
         ],
       },
@@ -63,23 +80,6 @@ export const mainNavItems = {
       },
     ],
   };
-
-
-const footerNavItems: NavItem[] = [
-    // {
-    //     title: 'Repository',
-    //     url: 'https://github.com/laravel/react-starter-kit',
-    //     icon: Folder,
-    // },
-    // {
-    //     title: 'Documentation',
-    //     url: 'https://laravel.com/docs/starter-kits',
-    //     icon: BookOpen,
-    // },
-];
-
-export function AppSidebar() {
-    const { auth } = usePage().props;
     // @ts-ignore
     const role = auth?.user?.roles[0];
     // @ts-ignore

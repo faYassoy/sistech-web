@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\DeliveryOrder;
 use Illuminate\Foundation\Inspiring;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
@@ -38,6 +39,7 @@ class HandleInertiaRequests extends Middleware
     {
 
         $logoImg = asset('logo.png');
+        $pendingCount = DeliveryOrder::where('status', 'pending')->count();
 
         return [
             ...parent::share($request),
@@ -46,6 +48,7 @@ class HandleInertiaRequests extends Middleware
                 'error' => session('error'),
             ],
             'name' => config('app.name'),
+            'pendingCount' => $pendingCount,
             'auth' => [
                 'user' => $request->user() ? [
                     'id' => $request->user()->id,

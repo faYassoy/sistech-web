@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\DeliveryOrderChanged;
 use App\Events\DeliveryOrderCreated;
 use App\Models\Customer;
 use App\Models\DeliveryOrder;
@@ -161,7 +162,7 @@ class DeliveryOrderController extends Controller
                 }
             }
         });
-
+        event(new DeliveryOrderChanged());
         return redirect()->route('delivery-orders.index')->with('success', 'Delivery order created successfully.');
     }
 
@@ -283,6 +284,7 @@ class DeliveryOrderController extends Controller
             }
 
             $deliveryOrder->update(['status' => 'approved']);
+            $deliveryOrder->update(['approved_at' => now()]);
         });
 
         return redirect()->route('delivery-orders.index')->with('success', 'Delivery Order approved and stock deducted!');
@@ -350,8 +352,9 @@ class DeliveryOrderController extends Controller
         }
 
         DB::transaction(function () use ($deliveryOrder) {
-            
+
             $deliveryOrder->status = 'delivered';
+            $deliveryOrder->delivered_at = now();
             $deliveryOrder->save();
         });
 

@@ -49,7 +49,7 @@ const DeliveryOrdersIndex: React.FC = () => {
         {
             name: 'Di kirim',
             width: '150px',
-            selector: (row: any) => row.status=='delivered'&&new Date(row.updated_at).toLocaleDateString(),
+            selector: (row: any) => row.status=='delivered'&& row.delivered_at && new Date(row.delivered_at).toLocaleDateString(),
             sortable: true,
             hide: 'sm',
         },
